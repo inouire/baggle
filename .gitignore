@@ -1,5 +1,9 @@
 *.class
 
+baggle-*/build/
+baggle-*/dist/
+baggle-*/nbproject/private/
+
 # Package Files #
 *.jar
 *.war
