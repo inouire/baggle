@@ -1,4 +1,4 @@
- /* Copyright 2009-2012 Edouard Garnier de Labareyre
+ /* Copyright 2009-2013 Edouard Garnier de Labareyre
   *
   * This file is part of B@ggle.
   *

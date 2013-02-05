@@ -10,7 +10,7 @@ package inouire.baggle.solver;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 
-public class Dawg {
+public class DawgDictionnary {
 	
             
     private static final int CHILD_BIT_SHIFT = 5;
@@ -31,7 +31,7 @@ public class Dawg {
         theDawgArray = new int[numberOfNodes];
 
         for (int x = 0; x < numberOfNodes; x++) {
-                theDawgArray[x] = endianConversion(dawgDataFile.readInt());
+            theDawgArray[x] = endianConversion(dawgDataFile.readInt());
         }
         dawgDataFile.close();
     }
@@ -105,42 +105,42 @@ public class Dawg {
     
 
     private String searchForStringRecurse(String thisString, int position, int thisIndex, boolean[] result) {
-		int currentIndex = thisIndex;
-		char currentChar = thisString.charAt(position);
-		String addThisMessage = new String("----------------------------------------\n");
-		addThisMessage += "Seek |" + currentChar + "| in position |" + position + "|.\n";
-		String returnHolder;
-		while ( currentIndex != 0 ) {
-			addThisMessage += "Node|" + currentIndex + "| Letter|" + nodeLetter(currentIndex) + "| "; 
-			if ( currentChar > nodeLetter(currentIndex) ) {
-				currentIndex = nodeNext(currentIndex);
-				addThisMessage += "- Letter too small.\n";
-			}
-			else if ( currentChar < nodeLetter(currentIndex) ) {
-				result[0]= false; 
-				return (addThisMessage + "- Letter too big\n\nWord Not Found\n");
-			}
-			else if ( thisString.length() == (position + 1) ) {
-				addThisMessage += "= Letter match.\n";
-				if ( nodeEndOfWord(currentIndex) ) {
-					result[0] = true;
-					return (addThisMessage + "\nWord Found.\n");
-				}
-				else {
-					result[0] = false;
-					return (addThisMessage + "\nWord Not Found.\n");
-				}
-			}
-			else {
-				addThisMessage += "= Letter match.\n";
-				returnHolder = searchForStringRecurse(thisString, position + 1, nodeChild(currentIndex), result);
-				addThisMessage += returnHolder;
-				return addThisMessage;
-			}
-		}
-		result[0] = false;
-		return (addThisMessage + "Reached end of list.\n\nWord Not Found\n");
-	}
+        int currentIndex = thisIndex;
+        char currentChar = thisString.charAt(position);
+        String addThisMessage = new String("----------------------------------------\n");
+        addThisMessage += "Seek |" + currentChar + "| in position |" + position + "|.\n";
+        String returnHolder;
+        while ( currentIndex != 0 ) {
+                addThisMessage += "Node|" + currentIndex + "| Letter|" + nodeLetter(currentIndex) + "| "; 
+                if ( currentChar > nodeLetter(currentIndex) ) {
+                        currentIndex = nodeNext(currentIndex);
+                        addThisMessage += "- Letter too small.\n";
+                }
+                else if ( currentChar < nodeLetter(currentIndex) ) {
+                        result[0]= false; 
+                        return (addThisMessage + "- Letter too big\n\nWord Not Found\n");
+                }
+                else if ( thisString.length() == (position + 1) ) {
+                        addThisMessage += "= Letter match.\n";
+                        if ( nodeEndOfWord(currentIndex) ) {
+                                result[0] = true;
+                                return (addThisMessage + "\nWord Found.\n");
+                        }
+                        else {
+                                result[0] = false;
+                                return (addThisMessage + "\nWord Not Found.\n");
+                        }
+                }
+                else {
+                        addThisMessage += "= Letter match.\n";
+                        returnHolder = searchForStringRecurse(thisString, position + 1, nodeChild(currentIndex), result);
+                        addThisMessage += returnHolder;
+                        return addThisMessage;
+                }
+        }
+        result[0] = false;
+        return (addThisMessage + "Reached end of list.\n\nWord Not Found\n");
+    }
 
     public String searchForString(String toSearchFor) {
 		boolean[] found = new boolean[1];

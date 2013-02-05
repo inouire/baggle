@@ -1,4 +1,4 @@
- /* Copyright 2009-2012 Edouard Garnier de Labareyre
+ /* Copyright 2009-2013 Edouard Garnier de Labareyre
   *
   * This file is part of B@ggle.
   *
@@ -23,15 +23,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+
 /**
  * 
  * @author Edouard de Labareyre
  */
-public class Dictionnary {
+public class TrieDictionnary {
     
     private Node rootnode=null;
 
-    public Dictionnary () {
+    public TrieDictionnary () {
     }
 
     public void createParentalFilterDictionnary(String language) throws IOException{
@@ -105,7 +106,6 @@ public class Dictionnary {
         return true;
     }
 }
-
 class Node {
 
     char letter;

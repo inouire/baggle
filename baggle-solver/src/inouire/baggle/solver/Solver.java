@@ -1,4 +1,4 @@
- /* Copyright 2009-2012 Edouard Garnier de Labareyre
+ /* Copyright 2009-2013 Edouard Garnier de Labareyre
   *
   * This file is part of B@ggle.
   *
@@ -27,8 +27,8 @@ import java.util.LinkedList;
  */
 public class Solver {
 
-    public Dawg dictionnary = new Dawg();
-    private Dawg parentalFilter = new Dawg();
+    public DawgDictionnary dictionnary = new DawgDictionnary();
+    private DawgDictionnary parentalFilter = new DawgDictionnary();
 
     private ArrayList<Letter> letters;
 
