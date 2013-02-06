@@ -43,7 +43,7 @@ public class Solver {
         try {
             System.out.print("Building "+language+" dictionnary...");
             //dictionnary.createDictionnary(language);
-            dictionnary.createDawg("dawg_dic_"+language+".dat");
+            dictionnary.createDawg("dawg_dict_"+language+".dat");
             System.out.println("done.");
         } catch (Exception ex) {
             System.out.println("Error while building dictionnary:"+ ex);

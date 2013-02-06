@@ -37,7 +37,7 @@ public class DawgDictionnaryTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         test_dict = new DawgDictionnary();
-        test_dict.createDawg("dawg_dic_fr.dat");
+        test_dict.createDawg("dawg_dict_fr.dat");
     }
     
     @AfterClass
