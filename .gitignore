@@ -3,6 +3,7 @@
 baggle-*/build/
 baggle-*/dist/
 baggle-*/nbproject/private/
+dict-gen/bin/blitzkrieg
 
 # Package Files #
 *.jar

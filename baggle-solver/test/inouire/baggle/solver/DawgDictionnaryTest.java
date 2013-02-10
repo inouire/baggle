@@ -52,7 +52,7 @@ public class DawgDictionnaryTest {
         System.out.print("Test content of DAWG french dictionnary...");
         
         //check real words
-        String[] real_words={"bonjour","ciel","maitrise","pigeon","zebre"};
+        String[] real_words={"do","bonjour","ciel","maitrise","pigeon","zebre"};
         for(String word : real_words){
             if(!test_dict.contains(word)){
                 fail(word+" should be in the dictionnary");
@@ -60,7 +60,7 @@ public class DawgDictionnaryTest {
         }
         
         //check false words
-        String[] false_words={"plop","merco","zef","abraca","bonjo"};
+        String[] false_words={"plop","merco","racro","abraca","bonjo"};
         for(String word : false_words){
             if(test_dict.contains(word)){
                 fail(word+" should not be in the dictionnary");
