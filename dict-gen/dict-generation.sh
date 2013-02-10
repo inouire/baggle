@@ -3,9 +3,10 @@
 function generateDawg() {
     type=$1
     lang=$2
+    echo "Generate $1 for lang $2"
     cp "plain-dict/plain_"$type"_"$lang".txt" bin/plain_dic.txt
     cd bin
-    ./blitzkrieg
+    ./blitzkrieg &> /dev/null
     cd ..
     rm bin/plain_dic.txt
     rm bin/dawg_dic.txt
@@ -18,6 +19,7 @@ gcc -o blitzkrieg blitzkrieg-trie-attack-dawg-creator.c
 cd ..
 
 #generate dict one by one
+
 generateDawg "dict" "fr"
 generateDawg "dict" "en"
 generateDawg "blacklist" "fr"
