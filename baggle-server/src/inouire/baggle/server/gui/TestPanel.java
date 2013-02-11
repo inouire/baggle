@@ -60,12 +60,12 @@ public class TestPanel extends JPanel{
 
         JPanel left=new JPanel(new BorderLayout());
         JLabel local=new JLabel();
-        local.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/lan.png")));
+        local.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/lan.png")));
         left.add(local,BorderLayout.CENTER);
         
         JPanel right = new JPanel(new BorderLayout());
         JLabel web = new JLabel();
-        web.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/web.png")));
+        web.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/web.png")));
         right.add(web,BorderLayout.CENTER);
 
         JPanel upP=new JPanel(new FlowLayout());
@@ -77,7 +77,7 @@ public class TestPanel extends JPanel{
         JPanel middleP=new JPanel(new FlowLayout());
         refresh=new JButton();
         refresh.setText("Relancer le test");
-        refresh.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/refresh.png")));
+        refresh.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/refresh.png")));
         refresh.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
                launchTest();
@@ -114,32 +114,32 @@ public class TestPanel extends JPanel{
     public void setUplinkArrow(int status){
         switch(status){
             case 0:
-                uplinkIcon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/ltr_ok.png")));
+                uplinkIcon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/ltr_ok.png")));
                 break;
             case 1:
-                uplinkIcon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/ltr_error.png")));
+                uplinkIcon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/ltr_error.png")));
                 break;
             case 2:
-                uplinkIcon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/ltr_wait.png")));
+                uplinkIcon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/ltr_wait.png")));
                 break;
         }
     }
     public void setDownlinkArrow(int status){
         switch(status){
             case 0:
-                downlinkIcon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/rtl_ok.png")));
+                downlinkIcon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/rtl_ok.png")));
                 break;
             case 1:
-                downlinkIcon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/rtl_error.png")));
+                downlinkIcon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/rtl_error.png")));
                 break;
             case 2:
-                downlinkIcon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/rtl_wait.png")));
+                downlinkIcon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/rtl_wait.png")));
                 break;
         }
     }
     public void setOkButton(){
         link.setText("Lancer le serveur");
-        link.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/ok.png")));
+        link.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/ok.png")));
         link.setVisible(true);
         link.setEnabled(true);
         link.addActionListener(new ActionListener(){
@@ -151,7 +151,7 @@ public class TestPanel extends JPanel{
     }
     public void setHelpButton(){
         link.setText("Lancer le tutoriel de redirection de port");
-        link.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/tool.png")));
+        link.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/tool.png")));
         link.setVisible(true);
         link.setEnabled(true);
         link.addActionListener(new ActionListener(){

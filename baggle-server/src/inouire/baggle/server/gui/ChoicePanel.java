@@ -40,12 +40,12 @@ public class ChoicePanel extends JPanel{
 
         JLabel al = new JLabel("b@ggle-server v"+Main.VERSION);
         al.setFont(new Font("Serial", Font.PLAIN, 12));
-        al.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/wizard.png")));
+        al.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/wizard.png")));
         a.add(al);
 
         JButton bb = new JButton("Créer une partie accessible sur internet");
         bb.setFont(new Font("Serial", Font.PLAIN, 18));
-        bb.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/web.png")));
+        bb.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/web.png")));
         bb.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent arg0) {
                 Main.mainFrame.configuration.setListenOnLan(true);
@@ -57,7 +57,7 @@ public class ChoicePanel extends JPanel{
 
         JButton cb = new JButton("Créer une partie en réseau local             ");
         cb.setFont(new Font("Serial", Font.PLAIN, 18));
-        cb.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/lan.png")));
+        cb.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/lan.png")));
         cb.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent arg0) {
                 Main.mainFrame.configuration.setListenOnLan(true);

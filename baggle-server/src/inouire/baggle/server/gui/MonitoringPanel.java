@@ -57,9 +57,9 @@ public class MonitoringPanel extends JPanel{
         JPanel top = new JPanel(new BorderLayout());
         name=new JLabel("le salon de b@ggle");
         name.setFont(new Font("Serial", Font.BOLD, 20));
-        name.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/wait.png")));
+        name.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/wait.png")));
         JButton stop_server = new JButton();
-        stop_server.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/stop.png")));
+        stop_server.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/stop.png")));
         stop_server.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 if(players.getValue()>0){
@@ -76,13 +76,13 @@ public class MonitoringPanel extends JPanel{
 
         JPanel time_panel=new JPanel(new BorderLayout());
                 JLabel clock=new JLabel();
-                clock.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/clock.png")));
+                clock.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/clock.png")));
             time_panel.add(clock,BorderLayout.WEST);
             time_panel.add(time,BorderLayout.CENTER);
 
         JPanel players_panel=new JPanel(new BorderLayout());
                 JLabel player=new JLabel();
-                player.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/players.png")));
+                player.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/players.png")));
             players_panel.add(player,BorderLayout.WEST);
             players_panel.add(players,BorderLayout.CENTER);
 
@@ -99,7 +99,7 @@ public class MonitoringPanel extends JPanel{
 
     public void resetComponent() {
         name.setText(MonitoringPanel.server_name);
-        name.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/wait.png")));
+        name.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/wait.png")));
         time.setValue(0);
         players.setValue(0);
         players.setMaximum(MonitoringPanel.max_players);
