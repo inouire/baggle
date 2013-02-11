@@ -2,7 +2,9 @@
 
 baggle-*/build/
 baggle-*/dist/
+baggle-*/log/
 baggle-*/nbproject/private/
+
 dict-gen/bin/blitzkrieg
 
 # Package Files #
