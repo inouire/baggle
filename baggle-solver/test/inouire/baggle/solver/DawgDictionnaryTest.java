@@ -42,6 +42,7 @@ public class DawgDictionnaryTest {
     
     @AfterClass
     public static void tearDownClass() {
+        test_dict = null;
     }
 
     /**
@@ -49,7 +50,7 @@ public class DawgDictionnaryTest {
      */
     @Test
     public void testDictContent() throws Exception {
-        System.out.print("Test content of DAWG french dictionnary...");
+        System.out.println("Test content of DAWG french dictionnary");
         
         //check real words
         String[] real_words={"do","bonjour","ciel","maitrise","pigeon","zebre"};
@@ -66,8 +67,6 @@ public class DawgDictionnaryTest {
                 fail(word+" should not be in the dictionnary");
             }
         }
-        
-        System.out.println(" done");
 
     }
 }
