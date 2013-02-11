@@ -64,13 +64,13 @@ public class SetupPanel extends JPanel{
         JPanel top=new JPanel();
         top.setLayout(new BorderLayout());
         server_icon=new JLabel();
-        server_icon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/mode_0.png")));
+        server_icon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/mode_0.png")));
         server_name_field = new JTextField();
         server_name_field.setMaximumSize(new Dimension(1000,8));
         server_name_field.setText("le salon de "+System.getProperty("user.name"));
         server_name_field.setFont(new Font("Serial", Font.BOLD, 20));
         start_server=new JButton();
-        start_server.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/ok.png")));
+        start_server.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/ok.png")));
         top.add(server_icon,BorderLayout.WEST);
         top.add(server_name_field,BorderLayout.CENTER);
         top.add(start_server,BorderLayout.EAST);
@@ -249,13 +249,13 @@ public class SetupPanel extends JPanel{
 
     public void refreshServerIcon(){
         if(ghost_check.isSelected()){
-            server_icon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/ghost.png")));
+            server_icon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/ghost.png")));
             return;
         }
         if(password_check.isSelected()){
-            server_icon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/mode_1.png")));
+            server_icon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/mode_1.png")));
         }else{
-            server_icon.setIcon(new ImageIcon(getClass().getResource("/net/inouire/baggle/server/icons/mode_0.png")));
+            server_icon.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/mode_0.png")));
         }
     }
     
