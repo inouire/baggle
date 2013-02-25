@@ -33,7 +33,6 @@ gcc -o blitzkrieg-5x5 blitzkrieg-trie-attack-dawg-creator-5x5.c
 cd ..
 
 #generate dict one by one
-
 generateDawg "dict" "fr"
 generateDawg "dict" "en"
 generateDawg "blacklist" "fr"

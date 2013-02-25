@@ -29,33 +29,39 @@ import org.junit.Test;
  */
 public class DawgDictionnaryTest {
     
-    private static DawgDictionnary test_dict;
+    private static DawgDictionnary test_dict_4x4;
+    private static DawgDictionnary test_dict_5x5;
     
     public DawgDictionnaryTest() {
     }
     
     @BeforeClass
     public static void setUpClass() throws Exception {
-        test_dict = new DawgDictionnary();
-        test_dict.createDawg("dawg_dict_fr.dat");
+        test_dict_4x4 = new DawgDictionnary();
+        test_dict_4x4.createDawg("dawg_dict_fr.dat");
+        
+        test_dict_5x5 = new DawgDictionnary();
+        test_dict_5x5.createDawg("dawg_dict_fr_5x5.dat");
     }
     
     @AfterClass
     public static void tearDownClass() {
-        test_dict = null;
+        test_dict_4x4 = null;
+        test_dict_5x5 = null;
     }
 
     /**
-     * Test dictionnary content
+     * Test 4x4 grid dictionnary content
      */
     @Test
-    public void testDictContent() throws Exception {
-        System.out.println("Test content of DAWG french dictionnary");
+    public void testDictContent4x4() throws Exception
+    {
+        System.out.println("Test content of DAWG french dictionnary for 4x4 grids");
         
         //check real words
         String[] real_words={"do","bonjour","ciel","maitrise","pigeon","zebre"};
         for(String word : real_words){
-            if(!test_dict.contains(word)){
+            if(!test_dict_4x4.contains(word)){
                 fail(word+" should be in the dictionnary");
             }
         }
@@ -63,10 +69,34 @@ public class DawgDictionnaryTest {
         //check false words
         String[] false_words={"plop","merco","racro","abraca","bonjo"};
         for(String word : false_words){
-            if(test_dict.contains(word)){
+            if(test_dict_4x4.contains(word)){
                 fail(word+" should not be in the dictionnary");
             }
         }
-
+    }
+    
+        /**
+     * Test 5x5 grid dictionnary content
+     */
+    @Test
+    public void testDictContent5x5() throws Exception
+    {
+        System.out.println("Test content of DAWG french dictionnary for 5x5 grids");
+        
+        //check real words
+        String[] real_words={"zebre","bonjour","handballeur","maitrise","nomenclature","abasourdissement"};
+        for(String word : real_words){
+            if(!test_dict_5x5.contains(word)){
+                fail(word+" should be in the dictionnary");
+            }
+        }
+        
+        //check false words
+        String[] false_words={"ete","ciel","racro","abraca","bonjo"};
+        for(String word : false_words){
+            if(test_dict_5x5.contains(word)){
+                fail(word+" should not be in the dictionnary");
+            }
+        }
     }
 }
