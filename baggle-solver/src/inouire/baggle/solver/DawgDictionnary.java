@@ -18,7 +18,6 @@ public class DawgDictionnary {
     private static final int LETTER_BIT_MASK = 0X0000001F;
     private static final int END_OF_WORD_BIT_MASK = 0X80000000;
     private static final int END_OF_LIST_BIT_MASK = 0X40000000;
-    
 
     private int numberOfNodes;
 
@@ -143,17 +142,17 @@ public class DawgDictionnary {
     }
 
     public String searchForString(String toSearchFor) {
-		boolean[] found = new boolean[1];
-		String holder;
-		String upperString = toSearchFor.toUpperCase();
-		String traversalResult = new String("Searching for:  |" + upperString + "| - ");
-		found[0] = false;
-		holder = searchForStringRecurse(upperString, 0, (upperString.charAt(0) - 'A' + 1), found);
-		if ( found[0] ) traversalResult += "Word Found.\n";
-		else traversalResult += "Word Not Found.\n";
-		traversalResult += holder;
-		return traversalResult;
-	}
+            boolean[] found = new boolean[1];
+            String holder;
+            String upperString = toSearchFor.toUpperCase();
+            String traversalResult = new String("Searching for:  |" + upperString + "| - ");
+            found[0] = false;
+            holder = searchForStringRecurse(upperString, 0, (upperString.charAt(0) - 'A' + 1), found);
+            if ( found[0] ) traversalResult += "Word Found.\n";
+            else traversalResult += "Word Not Found.\n";
+            traversalResult += holder;
+            return traversalResult;
+    }
     
 
 }

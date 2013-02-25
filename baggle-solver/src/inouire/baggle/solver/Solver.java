@@ -27,45 +27,64 @@ import java.util.LinkedList;
  */
 public class Solver {
 
-    public DawgDictionnary dictionnary = new DawgDictionnary();
+    private DawgDictionnary dictionnary = new DawgDictionnary();
     private DawgDictionnary parentalFilter = new DawgDictionnary();
-
-    private ArrayList<Letter> letters;
-
-    private LinkedList<Letter> already_seen=new LinkedList<Letter>();
-    private ArrayList<String> found = new ArrayList<String>();
 
     private boolean PARENTAL_FILTER=false;
     private int MIN_LENGTH=3;
+    private boolean BIG_GRID=false;
+    private int MAX_LENGTH=16;
+    
+    private ArrayList<Letter> letters;
+    private LinkedList<Letter> already_seen=new LinkedList<Letter>();
+    private ArrayList<String> found = new ArrayList<String>();
 
-    public Solver(String language,boolean with_parental_filter){
+    /**
+     * Default constructor for Solver
+     * @param language
+     * @param with_parental_filter
+     * @param big_grid 
+     */
+    public Solver(String language,boolean with_parental_filter,boolean big_grid) throws Exception
+    {
+        BIG_GRID = big_grid;
         PARENTAL_FILTER=with_parental_filter;
-        try {
-            System.out.print("Building "+language+" dictionnary...");
-            //dictionnary.createDictionnary(language);
-            dictionnary.createDawg("dawg_dict_"+language+".dat");
-            System.out.println("done.");
-        } catch (Exception ex) {
-            System.out.println("Error while building dictionnary:"+ ex);
-            System.out.println("Exiting");
-            System.exit(1);
+        if(BIG_GRID){
+            MAX_LENGTH = 25;
         }
-        try {
-            if(PARENTAL_FILTER){
-                System.out.print("Building "+language+" parental filter...");
-                parentalFilter.createDawg("dawg_blacklist_"+language+".dat");
-                System.out.println("done.");
-            }
-        } catch (Exception ex) {
-            System.out.println("Error while building parental filter dictionnary:"+ ex);
+        //build dict name from args
+        String dict_reference="dawg_dict_";
+        dict_reference+=language;
+        if(big_grid){
+            dict_reference+="_5x5";
+        }
+        dict_reference+=".dat";
+        
+        //create dawg stucture from file
+        dictionnary.createDawg(dict_reference);
+
+        //load parental filter if necessary
+        if(PARENTAL_FILTER){
+            parentalFilter.createDawg("dawg_blacklist_"+language+".dat");
         }
     }
 
-    public synchronized ArrayList<String> solveGrid(GameBoard board,int min_length){
-        System.out.print("Computing and solving generated grid...");
-
-        MIN_LENGTH=min_length;
-
+    /**
+     * Set a min length for the words that shall be found by the solver.
+     * @param min_length 
+     */
+    public void setMinLength(int min_length)
+    {
+        this.MIN_LENGTH = min_length;
+    }
+    
+    /**
+     * Solve a boggle grid based on a GameBoard structure
+     * @param board
+     * @return the list of words found in the grid by the solver
+     */
+    public synchronized ArrayList<String> solveGrid(GameBoard board)
+    {    
         //build special structure used by solver
         try {
             letters = board.exportLetters();
@@ -74,32 +93,27 @@ public class Solver {
             return null;
         }
         
-        //solve the grid
-        double duration=System.currentTimeMillis();
-        ArrayList<String> solutions=solvePrefix();
-        duration=System.currentTimeMillis()-duration;
-        System.out.println("Grid computed and solved in "+duration+" ms");
-
-        //return solutions
-        return solutions;
+         //solve the grid and return solutions
+        return solveGrid();
     }
 
-    public synchronized ArrayList<String> solveGrid(String grid , int min_length){
-        System.out.println("Computing and solving received grid...");
-
-        MIN_LENGTH=min_length;
-        
+    /**
+     * Solve a boggle grid based on a string
+     * @param grid
+     * @return  the list of words found in the grid by the solver
+     */
+    public synchronized ArrayList<String> solveGrid(String grid)
+    {
         //guess grid size
         int SIZE=(int) Math.floor(Math.sqrt(grid.length()));
-        
+
+        //build special structure needed by solver
         char[][] board=new char[SIZE][SIZE];
         for(int i=0 ; i < SIZE ; i++){
             for(int j=0 ; j <  SIZE ; j++){
                 board[i][j] = grid.charAt(i+SIZE*j);
             }
         }
-
-        //build special structure used by solver
         this.letters = new ArrayList<Letter>();
         for(int i = 0 ; i < SIZE; i++){
             for(int j = 0 ; j < SIZE; j++){
@@ -111,17 +125,12 @@ public class Solver {
             l.findNear( this.letters);
         }
         
-        //solve the grid
-        double duration=System.currentTimeMillis();
-        ArrayList<String> solutions=solvePrefix();
-        duration=System.currentTimeMillis()-duration;
-        System.out.println("Grid computed and solved in "+duration+" ms");
-
-        //return solutions
-        return solutions;
+        //solve the grid and return solutions
+        return solveGrid();
     }
 
-    private ArrayList<String> solvePrefix(){
+    private ArrayList<String> solveGrid()
+    {
         found.clear();
         for(Letter L:letters){
             usolvePrefix(L,"");
@@ -129,7 +138,8 @@ public class Solver {
         return found;
     }
 
-    private void usolvePrefix(Letter L, String word){
+    private void usolvePrefix(Letter L, String word)
+    {
         already_seen.addFirst(L);
         word+=L.name;
         if(word.length()>=MIN_LENGTH){
@@ -149,7 +159,7 @@ public class Solver {
                 }
             }
         }
-        if(word.length() > 16){
+        if(word.length() > MAX_LENGTH){
             already_seen.removeFirst();
             return;
         }
@@ -161,7 +171,13 @@ public class Solver {
         already_seen.removeFirst();
     }
 
-    public static int getNbPoints(ArrayList<String> solutions){
+    /**
+     * Get the total number of points of a given set of solutions
+     * @param solutions
+     * @return the nb of points that the grid worth
+     */
+    public static int getNbPoints(ArrayList<String> solutions)
+    {
         int r=0;
         for(String s:solutions){
             r+=getPoints(s);
@@ -170,11 +186,22 @@ public class Solver {
     }
 
     /**
-     * Get the nb of point that a word size worth
+     * Get the number of points that a word worth
+     * @param word
+     * @return the nb of points that the word wort
+     */
+    public static int getPoints(String word)
+    {
+        return getPoints(word.length());
+    }
+        
+    /**
+     * Get the number of points that a word size worth
      * @param word_size the size of the word
      * @return the nb of points that the word worth
      */
-    public static int getPoints(int word_size){
+    public static int getPoints(int word_size)
+    {
         switch(word_size){
             case 3:
             case 4:
@@ -198,11 +225,6 @@ public class Solver {
         }
         return 0;
     }
-    
-    public static int getPoints(String a){
-        return getPoints(a.length());
-    }
-
 }
 
 class Letter{
@@ -212,13 +234,15 @@ class Letter{
     int j;
     LinkedList<Letter> neighbors=new LinkedList<Letter>();
 	
-    public Letter(char name,int i,int j){
+    public Letter(char name,int i,int j)
+    {
          this.name = name;
          this.i = i;
          this.j = j;
     }
 
-    public void findNear(ArrayList<Letter> L){
+    public void findNear(ArrayList<Letter> L)
+    {
         for(Letter l : L){
             int x = l.i;
             int y = l.j;
