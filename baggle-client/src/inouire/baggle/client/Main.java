@@ -28,6 +28,9 @@ import inouire.utils.Args;
 import inouire.utils.Utils;
 import java.io.File;
 import java.util.Timer;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -64,7 +67,7 @@ public class Main {
     public static AvatarFactory avatarFactory;
     public static UserConfiguration configuration;
     
-    public static Logger logger = Logger.getLogger(Main.class);
+    public static final Logger logger = Logger.getLogger(Main.class);
     
     public static void printUsage(){
         System.out.println("B@ggle client version "+Main.VERSION);
@@ -74,7 +77,13 @@ public class Main {
         System.out.println("All parameters are optionnal.");
     }
 
+    public static void initApplicationLogger(){
+        logger.addAppender(new ConsoleAppender());
+    }
+    
     /**
+     * Main function for baggle-client.
+     * Schedules all the others
      * @param Args the command line Arguments
      */
     public static void main(String[] args) throws InterruptedException {
@@ -82,6 +91,8 @@ public class Main {
         Utils.setBestLookAndFeelAvailable();
 
         printUsage();
+        
+        initApplicationLogger();
         
         MASTER_SERVER_HOST=Args.getStringOption("M",args,MASTER_SERVER_HOST);
         MASTER_SERVER_PORT=Args.getIntOption("P", args, MASTER_SERVER_PORT);
@@ -94,7 +105,6 @@ public class Main {
         }else{
             CONFIG_FOLDER=new File(System.getProperty("user.home")+File.separator+".baggle"+File.separator);
         }
-        
         
         //init graphical elements
         avatarFactory=new AvatarFactory();
@@ -121,7 +131,5 @@ public class Main {
              
         //check for new version in the background
         mainFrame.connectionPane.sideConnectionPane.newVersionPane.checkForNewVersion();
-     
     }
-
 }

@@ -70,6 +70,15 @@ public class Solver {
     }
 
     /**
+     * Get the dictionnary object
+     * @return DawgDictionnary
+     */
+    public DawgDictionnary getDictionnary()
+    {
+        return this.dictionnary;
+    }
+    
+    /**
      * Set a min length for the words that shall be found by the solver.
      * @param min_length 
      */
@@ -134,6 +143,9 @@ public class Solver {
         found.clear();
         for(Letter L:letters){
             usolvePrefix(L,"");
+        }
+        for(String a : found){
+            System.out.println(a);
         }
         return found;
     }

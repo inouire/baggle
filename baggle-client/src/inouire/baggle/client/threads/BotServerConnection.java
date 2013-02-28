@@ -114,7 +114,7 @@ public class BotServerConnection extends Thread{
         String welcome_message=Datagram.replaceAccents(Language.getString(71));
         send(new CHATDatagram(welcome_message).toString());
 
-        solver=new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER);
+
 
         //game phase
 
@@ -156,7 +156,13 @@ public class BotServerConnection extends Thread{
                             break;
                         case START:
                             STARTDatagram startD = new STARTDatagram(datagram);
-                            solutions = solver.solveGrid(startD.grid,Main.connection.MIN_LENGTH);
+                            boolean big_board=false;
+                            if(startD.grid.length()>16){
+                                big_board=true;
+                            }
+                            solver=new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER,big_board);
+                            solver.setMinLength(Main.connection.MIN_LENGTH);
+                            solutions = solver.solveGrid(startD.grid);
                             is_playing=true;
                             gameStart_hook();
                             break;
