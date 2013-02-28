@@ -61,17 +61,22 @@ public class ResultsPanel extends JPanel{
         this.add(sap,BorderLayout.SOUTH);
         
         all_results.addComponentListener(new ComponentListener() {
+            @Override
             public void componentResized(ComponentEvent e) {
                 all_results.notifyResize();
             }
+            @Override
             public void componentMoved(ComponentEvent e) {}
 
+            @Override
             public void componentShown(ComponentEvent e) {}
 
+            @Override
             public void componentHidden(ComponentEvent e) {}
         });
         
         display_all_button.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent ae) {
                 allSolutionsClicked();
             }
@@ -109,9 +114,13 @@ public class ResultsPanel extends JPanel{
         repaint();
     }
     
-    public void allSolutionsClicked(){
-        SolutionsFrame solutions = new SolutionsFrame(grid);
-        solutions.setVisible(true);
+    public void allSolutionsClicked() {
+        try{
+            SolutionsFrame solutions = new SolutionsFrame(grid);
+            solutions.setVisible(true);
+        }catch(Exception ex){
+            //display error message: impossible to load dictionnary
+        }
     }
 
 }

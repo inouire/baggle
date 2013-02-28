@@ -41,7 +41,7 @@ public class MiniBoardPanel extends JComponent{
     final static private int b=4;//taille du bord
     final static private int i=1;//taille de l'inter-dé
 
-    private int SIZE=4;
+    public int SIZE=4;
 
     final static int STYLE=Font.BOLD;
     private MiniDice[][] des=new MiniDice[SIZE][SIZE];

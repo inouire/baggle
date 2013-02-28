@@ -27,6 +27,8 @@ import java.util.LinkedList;
 import javax.swing.JFrame;
 import inouire.baggle.client.Main;
 import inouire.baggle.solver.Solver;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -39,13 +41,19 @@ public class SolutionsFrame extends JFrame{
     //détournement de l'usage original pour y placer les mots de différentes longueur
     private PlayersResultsPanel all_results = new PlayersResultsPanel(true);
     
-    public SolutionsFrame(String grid){
+    public SolutionsFrame(String grid) throws Exception{
         super();
         
         miniboard.setGrid(grid);
         miniboard.setMode(Main.connection.GAME_MODE);
-        Solver solver=new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER);
-        ArrayList<String> solutions =  solver.solveGrid(grid,Main.connection.MIN_LENGTH);
+        boolean big_board=false;
+        if(grid.length()>16){
+            big_board=true;
+        }
+        Solver solver;
+        solver = new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER,big_board);
+        solver.setMinLength(Main.connection.MIN_LENGTH);
+        ArrayList<String> solutions =  solver.solveGrid(grid);
         Collections.sort(solutions,new WordComparator());
         
         all_results.addComponentListener(new ComponentListener() {
