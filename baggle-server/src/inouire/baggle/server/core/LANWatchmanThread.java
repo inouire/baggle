@@ -22,6 +22,7 @@ import java.net.*;
 import inouire.baggle.datagrams.PINGDatagram;
 import inouire.baggle.server.Main;
 import inouire.baggle.types.IllegalDatagramException;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -40,16 +41,16 @@ public class LANWatchmanThread extends Thread{
             address = InetAddress.getByName("230.0.0.1");
             socket.joinGroup(address);
         }catch(UnknownHostException uhe){
-            BaggleServer.logger.error("Impossible to listen for lan watching on port "+port,uhe);
+            SimpleLog.logger.error("Impossible to listen for lan watching on port "+port,uhe);
         }catch(IOException ioe){
-            BaggleServer.logger.error("Impossible to listen for lan watching on port "+port,ioe);
+            SimpleLog.logger.error("Impossible to listen for lan watching on port "+port,ioe);
         }
     }
     
     @Override
     public void run(){
         
-        BaggleServer.logger.info("Listening for local broadcast on port "+Main.server.configuration.getLanListenningPort());
+        SimpleLog.logger.info("Listening for local broadcast on port "+Main.server.configuration.getLanListenningPort());
         
         DatagramPacket packet;
         PINGDatagram pingD;
@@ -60,7 +61,7 @@ public class LANWatchmanThread extends Thread{
                 packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
                 String received = new String(packet.getData(), 0, packet.getLength());
-                BaggleServer.logger.info("[<LANRCV] "+received);
+                SimpleLog.logger.info("[<LANRCV] "+received);
                 try{
                     
                     //parse the content of the message
@@ -74,11 +75,11 @@ public class LANWatchmanThread extends Thread{
                     answerLANAsker(answerHost,pingD.returnPort);
                     
                 }catch(IllegalDatagramException ide){
-                    BaggleServer.logger.warn("Invalid PING broadcast message: "+received,ide);
+                    SimpleLog.logger.warn("Invalid PING broadcast message: "+received,ide);
                 }
             }
         }catch(Exception e){
-            BaggleServer.logger.error("Error while watching lan, abort LAN watching",e);
+            SimpleLog.logger.error("Error while watching lan, abort LAN watching",e);
         }finally{
             try{
                 socket.leaveGroup(address);
@@ -97,16 +98,16 @@ public class LANWatchmanThread extends Thread{
             // send the answer to the client at "address" and "port"
             DatagramPacket packet = new DatagramPacket(answer, answer.length, host, port);
             socket.send(packet);
-            BaggleServer.logger.trace("[LANSND>] "+answerAsString);
-            BaggleServer.logger.info("Answering to LAN asker with a PING");
+            SimpleLog.logger.trace("[LANSND>] "+answerAsString);
+            SimpleLog.logger.info("Answering to LAN asker with a PING");
         } catch (UnknownHostException e) {
-            BaggleServer.logger.warn("Impossible to anwser to asker, unknow host "+host);
+            SimpleLog.logger.warn("Impossible to anwser to asker, unknow host "+host);
         } catch(ConnectException ce){
-            BaggleServer.logger.warn("Asker refused connection for answer");
+            SimpleLog.logger.warn("Asker refused connection for answer");
         } catch (IOException e) {
-            BaggleServer.logger.warn("IO error when trying to answer LAN asker",e);
+            SimpleLog.logger.warn("IO error when trying to answer LAN asker",e);
         } catch (IllegalArgumentException e) {
-            BaggleServer.logger.warn("Error when trying to answer LAN asker",e);
+            SimpleLog.logger.warn("Error when trying to answer LAN asker",e);
         }
     }
 }

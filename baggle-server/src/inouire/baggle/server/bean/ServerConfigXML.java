@@ -17,6 +17,7 @@
   */
 package inouire.baggle.server.bean;
 
+import inouire.basics.SimpleLog;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -28,8 +29,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import inouire.baggle.server.core.BaggleServer;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -80,10 +79,7 @@ public class ServerConfigXML {
     public int zombieTimeout=60000;//msec, = 1min
     @XmlTransient
     public int kickTimeout=600000;//msec, = 60min
-    @XmlTransient
-    private static Logger logger = Logger.getLogger(ServerConfigXML.class);
-    
-    
+
     public ServerConfigXML(){
         this.roomName="le salon de "+System.getProperty("user.name");
         this.welcomeMessage="Bienvenue dans ce salon !";
@@ -119,9 +115,9 @@ public class ServerConfigXML {
             JAXBContext context = JAXBContext.newInstance(ServerConfigXML.class);
             Unmarshaller um = context.createUnmarshaller();
             configXML  = (ServerConfigXML) um.unmarshal(new FileReader(uri));
-            logger.info("Configuration loaded from file "+uri);
+            SimpleLog.logger.info("Configuration loaded from file "+uri);
         } catch (Exception ex) {
-            logger.warn("Impossible to load configuration from file "+uri);
+            SimpleLog.logger.warn("Impossible to load configuration from file "+uri);
         }
         return configXML;
     }
@@ -146,12 +142,12 @@ public class ServerConfigXML {
             //m.marshal(configXML, System.out);
             fw=new FileWriter(uri);
             m.marshal(configXML, fw);
-            logger.info("Configuration saved to file "+uri);
+            SimpleLog.logger.info("Configuration saved to file "+uri);
         }catch(JAXBException jbe){
-            logger.warn("Impossible to save configuration to file "+uri);
+            SimpleLog.logger.warn("Impossible to save configuration to file "+uri);
             jbe.printStackTrace();
         }catch(IOException ioe){
-            logger.warn("Impossible to save configuration to file "+uri);
+            SimpleLog.logger.warn("Impossible to save configuration to file "+uri);
         }finally {
             try {
                 fw.close();
@@ -161,15 +157,15 @@ public class ServerConfigXML {
     }
     
     public void printRecap(){
-        BaggleServer.logger.info("----------------------------------------");
-        BaggleServer.logger.info("B@ggle room: "+roomName);
+        SimpleLog.logger.info("----------------------------------------");
+        SimpleLog.logger.info("B@ggle room: "+roomName);
         
         //rules
         String board="Using classical 4x4 board";
         if(bigBoard){
              board="Using big 5x5 board";
         }
-        BaggleServer.logger.info(board);
+        SimpleLog.logger.info(board);
         
         //rules
         String rule="game time "+gameTime+"s, ";
@@ -180,7 +176,7 @@ public class ServerConfigXML {
             rule+="traditionnal rule, ";
         }
         rule+=nbLettersMin+" letters min";
-        BaggleServer.logger.info(rule);
+        SimpleLog.logger.info(rule);
         
         //network
         String network="port "+listenningPort+", ";
@@ -189,12 +185,12 @@ public class ServerConfigXML {
         }else{
             network+="not registering to masterserver";
         }
-        BaggleServer.logger.info(network);
+        SimpleLog.logger.info(network);
         
         //access
-        BaggleServer.logger.info(maxPlayers+" players max");
+        SimpleLog.logger.info(maxPlayers+" players max");
         if(isPrivate){
-            BaggleServer.logger.info("protected by password '"+password+"'");
+            SimpleLog.logger.info("protected by password '"+password+"'");
         }
         
         //properties
@@ -206,9 +202,9 @@ public class ServerConfigXML {
             properties+="parental filter, ";
         }
         if(properties.length()>0){
-            BaggleServer.logger.info(properties);
+            SimpleLog.logger.info(properties);
         }
-        BaggleServer.logger.info("----------------------------------------");
+        SimpleLog.logger.info("----------------------------------------");
     }
 
     public void setShortInactivityTimeout(){

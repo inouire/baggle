@@ -30,6 +30,7 @@ import java.nio.channels.spi.SelectorProvider;
 import java.util.*;
 import inouire.baggle.server.bean.ChangeRequest;
 import inouire.baggle.server.bean.ServerConfigXML;
+import inouire.basics.SimpleLog;
 
 
 /**
@@ -88,12 +89,12 @@ public class NioServer implements Runnable {
                     success=true;
                 }catch (IOException e) {
                     if(configuration.isAutoPortIncrement()){
-                        BaggleServer.logger.warn("Couldn't create listenning socket on port "+port);
+                        SimpleLog.logger.warn("Couldn't create listenning socket on port "+port);
                         port++;
-                        BaggleServer.logger.info("Trying port "+port+" instead");
+                        SimpleLog.logger.info("Trying port "+port+" instead");
                     }else{
-                        BaggleServer.logger.error("Couldn't create listenning socket on port "+port);
-                        BaggleServer.logger.info("Set 'autoPortIncrement' to 'true' if you expect the server to try another port automatically");
+                        SimpleLog.logger.error("Couldn't create listenning socket on port "+port);
+                        SimpleLog.logger.info("Set 'autoPortIncrement' to 'true' if you expect the server to try another port automatically");
                         System.exit(1);
                     }
                 }
@@ -107,7 +108,7 @@ public class NioServer implements Runnable {
             return socketSelector;
         
         }catch(Exception e){
-            BaggleServer.logger.fatal("Impossible to init NioServer selector, aborting",e);
+            SimpleLog.logger.fatal("Impossible to init NioServer selector, aborting",e);
             System.exit(1);
         }
         return null;
@@ -136,7 +137,7 @@ public class NioServer implements Runnable {
         
     @Override
     public void run() {
-        BaggleServer.logger.info("Listenning for incoming connections on port "+configuration.getListenningPort());
+        SimpleLog.logger.info("Listenning for incoming connections on port "+configuration.getListenningPort());
         
         while (true) {
             
@@ -154,12 +155,12 @@ public class NioServer implements Runnable {
                                     if(key!=null && key.isValid()){
                                         key.interestOps(change.ops);
                                     }else{
-                                        BaggleServer.logger.warn("Invalid key "+key.toString());
+                                        SimpleLog.logger.warn("Invalid key "+key.toString());
                                     }
                                     break;
                             }
                         }else{
-                            BaggleServer.logger.debug("Socket not connected, closing it");
+                            SimpleLog.logger.debug("Socket not connected, closing it");
                             worker.players.turnPlayerToZombie(change.socket);
                             change.socket.close();
                         }
@@ -178,7 +179,7 @@ public class NioServer implements Runnable {
                     selectedKeys.remove();
 
                     if (!key.isValid()) {
-                        BaggleServer.logger.warn("Invalid key on the iterator "+key.toString());
+                        SimpleLog.logger.warn("Invalid key on the iterator "+key.toString());
                         continue;
                     }
 
@@ -192,14 +193,14 @@ public class NioServer implements Runnable {
                     }
                 }
             } catch (Exception e) {
-                BaggleServer.logger.warn("Exception in main NioServer loop");
-                BaggleServer.logger.warn(e.getStackTrace().toString());
+                SimpleLog.logger.warn("Exception in main NioServer loop");
+                SimpleLog.logger.warn(e.getStackTrace().toString());
             }
         }
     }
     
     private void accept(SelectionKey key) throws IOException {
-        BaggleServer.logger.debug("Accept connection");
+        SimpleLog.logger.debug("Accept connection");
         // For an accept to be pending the channel must be a server socket channel.
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
 
@@ -226,7 +227,7 @@ public class NioServer implements Runnable {
         } catch (IOException e) {
             // The remote forcibly closed the connection, cancel
             // the selection key and close the channel.
-            BaggleServer.logger.info("Abrut close of connection");
+            SimpleLog.logger.info("Abrut close of connection");
 
             //it's brutal: we must not delete this player immmediatly
             //just turn it into a zombie
@@ -240,7 +241,7 @@ public class NioServer implements Runnable {
         if (numRead == -1) {
             // Remote entity shut the socket down cleanly. Do the
             // same from our end and cancel the channel.
-            BaggleServer.logger.debug("Soft close of connection");
+            SimpleLog.logger.debug("Soft close of connection");
             worker.players.removePlayer(socketChannel);
             key.channel().close();
             key.cancel();
@@ -277,7 +278,7 @@ public class NioServer implements Runnable {
                     key.interestOps(SelectionKey.OP_READ);
                 }
             }catch(IOException ioe){
-                BaggleServer.logger.warn("Error while writing to socket",ioe);
+                SimpleLog.logger.warn("Error while writing to socket",ioe);
                 worker.players.turnPlayerToZombie(socketChannel);
                 try{socketChannel.close();}catch(IOException e){}
                 key.cancel();
@@ -306,11 +307,11 @@ public class NioServer implements Runnable {
     
     public void send(SocketChannel socket, String message){
         if(message != null && !message.isEmpty()){
-            BaggleServer.logger.trace("[SND>>] >"+message+"<");
+            SimpleLog.logger.trace("[SND>>] >"+message+"<");
             message+="\n";
             send(socket,message.getBytes());
         }else{
-            BaggleServer.logger.warn("Empty message, impossible to send");
+            SimpleLog.logger.warn("Empty message, impossible to send");
         }
     }
 }

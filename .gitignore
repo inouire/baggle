@@ -3,6 +3,8 @@
 baggle-*/build/
 baggle-*/dist/
 baggle-*/log/
+baggle-*/*.log
+baggle-server/conf/*.xml
 baggle-*/nbproject/private/
 
 dict-gen/bin/blitzkrieg

@@ -30,6 +30,7 @@ import inouire.baggle.types.IllegalDatagramException;
 import inouire.baggle.types.Key;
 import inouire.baggle.types.Status;
 import inouire.baggle.types.Words;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -77,7 +78,7 @@ public class MainWorker implements Runnable {
                 dataEvent = (ServerDataEvent) queue.remove(0);
             }
 
-            BaggleServer.logger.trace("[RCV<<] >"+dataEvent.message+"<");
+            SimpleLog.logger.trace("[RCV<<] >"+dataEvent.message+"<");
             
             //try to get the author of the data
             author = players.getPlayer(dataEvent.socket);
@@ -110,13 +111,13 @@ public class MainWorker implements Runnable {
                     //Test if the server if full
                     if(Main.server.gameThread.players.isFull()){
                         dataEvent.nioServer.send(dataEvent.socket,new DENYDatagram("server_full").toString());
-                        BaggleServer.logger.warn("Negociation failed: server is full");
+                        SimpleLog.logger.warn("Negociation failed: server is full");
                     }else{
                         CONNECTDatagram connectD = new CONNECTDatagram(dataEvent.datagram);
                         if(connectD!=null){
                             connectAction(connectD,dataEvent.socket);
                             //TODO gérer le cas ou ça ne marche pas
-                            BaggleServer.logger.debug("Negociation successful!");
+                            SimpleLog.logger.debug("Negociation successful!");
                         }
                     }
                     
@@ -128,14 +129,14 @@ public class MainWorker implements Runnable {
                     }
                     break;
                 default:
-                    BaggleServer.logger.debug("Unexpected datagram during negociation: "+dataEvent.message);
+                    SimpleLog.logger.debug("Unexpected datagram during negociation: "+dataEvent.message);
                     break;
             }
         }catch(IllegalDatagramException ide){
-            BaggleServer.logger.debug("Illegal datagram during negociation: "+dataEvent.message);
+            SimpleLog.logger.debug("Illegal datagram during negociation: "+dataEvent.message);
         }
 //        send(new DENYDatagram("bad_syntax").toString());
-//        BaggleServer.logger.error("Negociation failed: bad syntax of first datagram.");
+//        SimpleLog.logger.error("Negociation failed: bad syntax of first datagram.");
     }
     
     public void handleGame(ServerDataEvent dataEvent){
@@ -158,11 +159,11 @@ public class MainWorker implements Runnable {
                     disconnectAction(dataEvent);
                     break;
                 default:
-                    BaggleServer.logger.warn("Unexpected message "+dataEvent.message);
+                    SimpleLog.logger.warn("Unexpected message "+dataEvent.message);
                     break;
             }
         }catch(Exception e){
-            BaggleServer.logger.warn("Illegal message "+dataEvent.message);
+            SimpleLog.logger.warn("Illegal message "+dataEvent.message);
         }
     }
     
@@ -231,16 +232,16 @@ public class MainWorker implements Runnable {
     
     private void reconnectAction(RECONNECTDatagram reconnect,SocketChannel socket) {
 
-        BaggleServer.logger.debug("Trying reconnection");
+        SimpleLog.logger.debug("Trying reconnection");
 
         players.displayZombiePlayers();
 
         Player back = players.tryToComeBack(reconnect.id,reconnect.auth,socket);
         if(back==null){
-            BaggleServer.logger.info("Nobody has been resurrected.");
+            SimpleLog.logger.info("Nobody has been resurrected.");
             return;
         }else{
-            BaggleServer.logger.info(back.name+" has been resurrected!");
+            SimpleLog.logger.info(back.name+" has been resurrected!");
             
             String mode;
             if(Main.server.configuration.isAllWordsCount()){
@@ -302,7 +303,7 @@ public class MainWorker implements Runnable {
                     status=Words.GOOD;
                 }
             }else{
-                if(game.grid_solver.dictionnary.contains(wordD.word)){
+                if(game.grid_solver.getDictionnary().contains(wordD.word)){
                     status=Words.NOT_IN_GRID;
                 }else{
                     status=Words.NOT_IN_DIC;

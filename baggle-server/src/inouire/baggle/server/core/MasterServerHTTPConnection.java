@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.LinkedList;
 import inouire.baggle.server.Main;
 import inouire.baggle.server.bean.OneScore;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -43,9 +44,9 @@ public class MasterServerHTTPConnection {
         String result=callWs("registerserver.php?port="+Main.server.configuration.getListenningPort());
         
         if(result==null){
-            BaggleServer.logger.error("Impossible to contact masterserver on "+Main.server.configuration.getMasterServerHost()+":"+
+            SimpleLog.logger.error("Impossible to contact masterserver on "+Main.server.configuration.getMasterServerHost()+":"+
                         Main.server.configuration.getMasterServerPort());
-            BaggleServer.logger.info("You should consider not registering to masterserver if you know that "+
+            SimpleLog.logger.info("You should consider not registering to masterserver if you know that "+
                     Main.server.configuration.getMasterServerHost()+
                     " is not reachable from this network");
             return;
@@ -56,12 +57,12 @@ public class MasterServerHTTPConnection {
             String[] decomp=result.split("\"");
             if(decomp[5].equals("token")){
                 token=decomp[7];
-                BaggleServer.logger.debug("Registration token updated");
+                SimpleLog.logger.debug("Registration token updated");
             }else{
-                BaggleServer.logger.warn("Error during registration to master server: "+decomp[7]);
+                SimpleLog.logger.warn("Error during registration to master server: "+decomp[7]);
             }
         }catch(Exception e){
-            BaggleServer.logger.warn("Error while parsing json for registration token");
+            SimpleLog.logger.warn("Error while parsing json for registration token");
             e.printStackTrace();
         }
         
@@ -74,7 +75,7 @@ public class MasterServerHTTPConnection {
         String result=callWs("pingme.php?port="+Main.server.configuration.getListenningPort());
         
         if(result==null){
-            BaggleServer.logger.error("Impossible to contact masterserver on "+Main.server.configuration.getMasterServerHost()+":"+
+            SimpleLog.logger.error("Impossible to contact masterserver on "+Main.server.configuration.getMasterServerHost()+":"+
                         Main.server.configuration.getMasterServerPort());
             return 1;
         }
@@ -86,14 +87,14 @@ public class MasterServerHTTPConnection {
             result=result.trim();
             String[] decomp=result.split("\"");
             if(decomp[2].equals("0")){
-                BaggleServer.logger.info("Server pingable on port "+Main.server.configuration.getListenningPort());
+                SimpleLog.logger.info("Server pingable on port "+Main.server.configuration.getListenningPort());
                 return 0;
             }else{
-                BaggleServer.logger.warn("Server not pingable on port "+Main.server.configuration.getListenningPort());
+                SimpleLog.logger.warn("Server not pingable on port "+Main.server.configuration.getListenningPort());
                 return 2;
             }
         }catch(Exception e){
-            BaggleServer.logger.warn("Error while parsing json for result code");
+            SimpleLog.logger.warn("Error while parsing json for result code");
             return 2;
         }
     }
@@ -122,12 +123,12 @@ public class MasterServerHTTPConnection {
         String result=callWs(serviceURL);
         
         if(result==null){
-            BaggleServer.logger.warn("Impossible to submit score at "+serviceURL);
+            SimpleLog.logger.warn("Impossible to submit score at "+serviceURL);
             return;
         }else if(result.trim().equals("{\"status\":\"0\"}")){
-            BaggleServer.logger.debug("Score successfully submitted to "+serviceURL);
+            SimpleLog.logger.debug("Score successfully submitted to "+serviceURL);
         }else{
-            BaggleServer.logger.warn("Error while submitting score at "+serviceURL+", "+result);
+            SimpleLog.logger.warn("Error while submitting score at "+serviceURL+", "+result);
         }
     }
     
@@ -140,7 +141,7 @@ public class MasterServerHTTPConnection {
         synchronized(scoresSubmitQueue){
             scoresSubmitQueue.add(score);
         }
-        BaggleServer.logger.debug("Adding score: "+score.toURL());
+        SimpleLog.logger.debug("Adding score: "+score.toURL());
         
     }
     /**
@@ -162,7 +163,7 @@ public class MasterServerHTTPConnection {
             in.close();
         }catch(Exception e){
             //e.printStackTrace();
-            BaggleServer.logger.debug("Error while getting ws answer from masterserver");
+            SimpleLog.logger.debug("Error while getting ws answer from masterserver");
         }
         return line;
     }

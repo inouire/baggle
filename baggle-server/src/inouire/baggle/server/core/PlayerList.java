@@ -29,6 +29,7 @@ import inouire.baggle.server.Main;
 import inouire.baggle.server.bean.OneScore;
 import inouire.baggle.server.bean.Player;
 import inouire.baggle.types.Status;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -88,7 +89,7 @@ public class PlayerList {
      * @param newPlayer the player to add to the list
      */
     public synchronized void addPlayer(Player newPlayer){
-        BaggleServer.logger.info("New player "+newPlayer.name);
+        SimpleLog.logger.info("New player "+newPlayer.name);
         for(int k=0;k<maxPlayers;k++){
             if(playerList[k] == null){
                 playerList[k] = newPlayer;
@@ -109,7 +110,7 @@ public class PlayerList {
                     Main.server.gameThread.removeNbWordsFound(playerList[k].getNumberOfWordsFound());
                     playerList[k]=null;
                     broadcast(new LEAVEDatagram(id).toString());
-                    BaggleServer.logger.info("Player "+name+" left the room");
+                    SimpleLog.logger.info("Player "+name+" left the room");
                     return;
                 }
             }
@@ -129,7 +130,7 @@ public class PlayerList {
                     Main.server.gameThread.removeNbWordsFound(playerList[k].getNumberOfWordsFound());
                     playerList[k]=null;
                     broadcast(new LEAVEDatagram(id).toString());
-                    BaggleServer.logger.info("Player "+name+" left the room");
+                    SimpleLog.logger.info("Player "+name+" left the room");
                     return;
                 }
             }
@@ -145,7 +146,7 @@ public class PlayerList {
             if(p!=null){
                 if(p.socket==socket){
                     p.is_zombie=true;
-                    BaggleServer.logger.info("Player "+p.name+" is now a zombie");
+                    SimpleLog.logger.info("Player "+p.name+" is now a zombie");
                     p.socket=null;
                     p.goToStatus(Status.PAUSE);
                     return;
@@ -158,7 +159,7 @@ public class PlayerList {
      * Touch all the players that are not in pause
      */
     public void touchAll(){
-        BaggleServer.logger.debug("Touching all non-paused players");
+        SimpleLog.logger.debug("Touching all non-paused players");
         for(Player p : playerList){
             if(p != null && !p.is_zombie && p.status!=Status.PAUSE){
                 p.touch();
@@ -172,7 +173,7 @@ public class PlayerList {
     public void displayZombiePlayers(){
         for(Player p : playerList){
             if(p != null && p.is_zombie){
-                BaggleServer.logger.debug("zombie: "+p.toString());
+                SimpleLog.logger.debug("zombie: "+p.toString());
                 return;
             }
         }
@@ -202,14 +203,14 @@ public class PlayerList {
      * If it's the case, set the player to pause.
      */
     public void pauseInactivePlayers() {
-        BaggleServer.logger.debug("Setting inactive players to pause");
+        SimpleLog.logger.debug("Setting inactive players to pause");
         double now_time=System.currentTimeMillis();
         for(Player p : playerList){
             if(p!=null){
                 if(p.status==Status.IDLE && now_time - p.getTimeOfLastAction()
                         > Main.server.configuration.inactivityTimeout ){
                     p.goToStatus(Status.PAUSE);
-                    BaggleServer.logger.info(p.name+" is having an automatic break.");
+                    SimpleLog.logger.info(p.name+" is having an automatic break.");
                 }
             }
         }
@@ -219,12 +220,12 @@ public class PlayerList {
      * Remove the zombies who (which?) are too old.
      */
     public void cleanupOldZombies() {
-        BaggleServer.logger.debug("Cleaning up zombies");
+        SimpleLog.logger.debug("Cleaning up zombies");
         double now_time=System.currentTimeMillis();
         for(Player p : playerList){
             if(p != null && p.is_zombie){
                 if(now_time - p.zombie_time > Main.server.configuration.zombieTimeout){
-                    BaggleServer.logger.info("Killing a zombie");
+                    SimpleLog.logger.info("Killing a zombie");
                     removePlayer(p.id);
                 }
             }
@@ -235,12 +236,12 @@ public class PlayerList {
      * Remove the players in pause who are really too old (>60min)
      */
     public void cleanupOldPausedPlayers() {
-        BaggleServer.logger.debug("Cleaning up players paused for too long");
+        SimpleLog.logger.debug("Cleaning up players paused for too long");
         double now_time=System.currentTimeMillis();
         for(Player p : playerList){
             if(p != null && p.status==Status.PAUSE){
                 if(now_time - p.getTimeOfLastAction() > Main.server.configuration.kickTimeout){
-                    BaggleServer.logger.info("Killing a player paused for too old");
+                    SimpleLog.logger.info("Killing a player paused for too old");
                     removePlayer(p.id);
                 }
             }
@@ -461,7 +462,7 @@ public class PlayerList {
             for(Player p : participants){
                 //get sorted list of words found + score
                 p.sortResultsAndComputeScore();
-                BaggleServer.logger.debug(p.name+": "+p.score_result+" points (total "+p.total_score+")");
+                SimpleLog.logger.debug(p.name+": "+p.score_result+" points (total "+p.total_score+")");
             }
         }else{
             for(Player p : participants){
@@ -474,7 +475,7 @@ public class PlayerList {
                 }
                 //get agregated and sorted list of words found + score
                 p.agregateResultsAndComputeScore(all);
-                BaggleServer.logger.debug(p.name+": "+p.score_result+" points (total "+p.total_score+")");
+                SimpleLog.logger.debug(p.name+": "+p.score_result+" points (total "+p.total_score+")");
             }
         }
         
