@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Timer;
 import inouire.baggle.server.bean.ServerConfigXML;
+import inouire.basics.SimpleLog;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
@@ -43,29 +44,22 @@ public class BaggleServer {
     public LANWatchmanThread lanWatchmanThread;
     public GameThread gameThread;
         
-    public static Logger logger = Logger.getLogger(BaggleServer.class);
     
     public BaggleServer(ServerConfigXML configuration){
         
         //assign configuration for this server
         this.configuration = configuration;
                
-        //ajust log4j file
-        PatternLayout layout = new PatternLayout("%d - %-5p - %m%n");
-        try{
-            logger.addAppender(new FileAppender(layout, "./log/"+configuration.getRoomName().replaceAll(" ","_")+".log"));
-            logger.setLevel(Level.toLevel(configuration.getLogLevel(),Level.INFO));
-        }catch(IOException ioe){
-            logger.warn("Impossible to add log4j appender to file log/"+configuration.getRoomName().replaceAll(" ","_")+".log");
-        }
+        //ajust log level
+        SimpleLog.logger.setLevel(Level.toLevel(configuration.getLogLevel(),Level.INFO));
     }
     
     public void addLog4jAppender(OutputStream out){
         ConsoleAppender ca = new ConsoleAppender();
         ca.setWriter(new OutputStreamWriter(out));
         ca.setLayout(new PatternLayout("%d - %-5p - %m%n"));
-        logger.setLevel(Level.toLevel(configuration.getLogLevel(),Level.INFO));
-        logger.addAppender(ca);
+        SimpleLog.logger.setLevel(Level.toLevel(configuration.getLogLevel(),Level.INFO));
+        SimpleLog.logger.addAppender(ca);
     }
     
     public void setConfiguration(ServerConfigXML configuration){
@@ -110,7 +104,7 @@ public class BaggleServer {
     
     public boolean stopServer(){
         //TODO
-        logger.info("Stopping server (not implemented yet)");
+        SimpleLog.logger.info("Stopping server (not implemented yet)");
         return true;
     }
     

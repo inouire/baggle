@@ -22,8 +22,8 @@ import java.io.File;
 import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.baggle.server.core.BaggleServer;
 import inouire.baggle.server.gui.MainFrame;
+import inouire.basics.SimpleLog;
 import inouire.utils.Args;
-import org.apache.log4j.Logger;
 /**
  *
  * @author Edouard de Labareyre
@@ -42,8 +42,6 @@ public class Main {
     
     public static String defaultConfig="conf/baggle-server_config.xml";
     
-    private static Logger logger = Logger.getLogger(Main.class);
-    
     /**
      * @param args the command line arguments
      */
@@ -60,11 +58,13 @@ public class Main {
 
         WITH_GUI = Args.getOption("gui", args);
         
+        SimpleLog.initDevConfig();
+        
         if(WITH_GUI){
-            logger.info("Starting application with graphical user interface");
+            SimpleLog.logger.info("Starting application with graphical user interface");
             defaultConfig = System.getProperty("user.home")+File.separator+".baggle"+File.separator+"baggle-server_config.xml";
         }else{
-            logger.info("Starting application");
+            SimpleLog.logger.info("Starting application");
             defaultConfig = "conf/baggle-server_config.xml";
         }
         
@@ -78,19 +78,19 @@ public class Main {
             if(CONFIG_FILE.length()>0){//load from file
                 configuration = ServerConfigXML.loadFromFile(CONFIG_FILE);
                 if(configuration==null){
-                    logger.fatal("Impossible to load config from "+CONFIG_FILE);
+                    SimpleLog.logger.fatal("Impossible to load config from "+CONFIG_FILE);
                     return;
                 }
             }else{
-                logger.fatal("You must specify a config after -c option");
+                SimpleLog.logger.fatal("You must specify a config after -c option");
                 return;
             }
         }else{ //or use default config file
             if(!new File(defaultConfig).exists()){
                 configuration=new ServerConfigXML();
                 ServerConfigXML.writeToFile(configuration,defaultConfig);
-                logger.info("Default config file has been created in "+defaultConfig+". You can edit it and restart b@ggle server.");
-                logger.info("Un fichier de configuration par défaut a été créé dans "+defaultConfig+". Editez le (ou pas) et "+
+                SimpleLog.logger.info("Default config file has been created in "+defaultConfig+". You can edit it and restart b@ggle server.");
+                SimpleLog.logger.info("Un fichier de configuration par défaut a été créé dans "+defaultConfig+". Editez le (ou pas) et "+
                             "redémarrez b@ggle server pour prendre en compte les modifications.");              
             }else{
                 configuration = ServerConfigXML.loadFromFile(defaultConfig);
@@ -98,7 +98,7 @@ public class Main {
         }
         
         if(configuration==null){
-            logger.fatal("Error while loading configuration at "+defaultConfig);
+            SimpleLog.logger.fatal("Error while loading configuration at "+defaultConfig);
             return;
         }
         

@@ -21,6 +21,7 @@ package inouire.baggle.server.core;
 
 import java.util.TimerTask;
 import inouire.baggle.server.Main;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -38,13 +39,13 @@ public class OccasionalTask extends TimerTask{
             try{
                 MasterServerHTTPConnection.submitScores();
             }catch(Exception e){
-                BaggleServer.logger.warn("Error while submitting scores");
+                SimpleLog.logger.warn("Error while submitting scores");
             }
             //register
             try{
                 MasterServerHTTPConnection.register();
             }catch(Exception e){
-                BaggleServer.logger.warn("Error while registering to master server");
+                SimpleLog.logger.warn("Error while registering to master server");
             }
         }
         

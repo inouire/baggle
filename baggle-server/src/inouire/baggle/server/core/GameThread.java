@@ -23,6 +23,9 @@ import inouire.baggle.server.Main;
 import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.baggle.solver.GameBoard;
 import inouire.baggle.solver.Solver;
+import inouire.basics.SimpleLog;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -55,16 +58,20 @@ public class GameThread extends Thread{
         game_board= new GameBoard(config.isBigBoard(),config.getLanguage());
         if(config.isBigBoard()){
             grid="BAGGLEBAGGLEBAGGLEBAGGLEB";
-        }    
+        }
         
         //solver initialisation
-        grid_solver=new Solver(config.getLanguage(),config.isParentalFilter());
+        try {
+            grid_solver=new Solver(config.getLanguage(),config.isParentalFilter(),config.isBigBoard());
+        } catch (Exception ex) {
+            SimpleLog.logException(ex);
+        }
     }
 
     @Override
     public void run(){
-        BaggleServer.logger.info("Starting game thread");
-        BaggleServer.logger.info("Waiting for players to connect");
+        SimpleLog.logger.info("Starting game thread");
+        SimpleLog.logger.info("Waiting for players to connect");
 
         boolean was_reset=false;//true if players performed a reset
 
@@ -78,24 +85,24 @@ public class GameThread extends Thread{
                     //special inactivity timeout when waiting for ready players
                     Main.server.configuration.setShortInactivityTimeout();
                 
-                    BaggleServer.logger.info("Waiting for players to be ready");
+                    SimpleLog.logger.info("Waiting for players to be ready");
                     while(!players.hasEnoughReadyPlayers()){
                         //sleep while waiting for players
                         Thread.sleep(800);
                     }
                 }
                 was_reset=false;
-                BaggleServer.logger.info("Starting a new game ("+players.getNumberOfPlayers()+" players)");
+                SimpleLog.logger.info("Starting a new game ("+players.getNumberOfPlayers()+" players)");
 
                 //mix grid
-                BaggleServer.logger.debug("Virtually rolling dices to create a new grid");
+                SimpleLog.logger.debug("Virtually rolling dices to create a new grid");
                 grid=game_board.mixBoard();
 
                 //solve grid
-                BaggleServer.logger.debug("Solving grid");
+                SimpleLog.logger.debug("Solving grid");
                 ArrayList<String> S;
-                while((S = grid_solver.solveGrid(game_board,Main.server.configuration.getNbLettersMin()))==null){
-                    BaggleServer.logger.warn("Error while solving grid, retrying");
+                while((S = grid_solver.solveGrid(game_board))==null){
+                    SimpleLog.logger.warn("Error while solving grid, retrying");
                 }
                 solutions=S;
                 grid_total=Solver.getNbPoints(solutions);
@@ -116,8 +123,8 @@ public class GameThread extends Thread{
                 elapsed_time=0;
                 long start_date=System.currentTimeMillis();
                 
-                BaggleServer.logger.debug("Start game");
-                BaggleServer.logger.info("Grid: "+grid);
+                SimpleLog.logger.debug("Start game");
+                SimpleLog.logger.info("Grid: "+grid);
 
                 //game loop, break when no more time or when reset expected
                 while(elapsed_time<Main.server.configuration.getGameTime()){
@@ -130,7 +137,7 @@ public class GameThread extends Thread{
 
                     if(elapsed_time%5==0){
                         players.broadcastTime(elapsed_time);
-                        BaggleServer.logger.info(elapsed_time+" seconds elapsed");
+                        SimpleLog.logger.info(elapsed_time+" seconds elapsed");
                     }
 
                     //listen to the people
@@ -143,17 +150,17 @@ public class GameThread extends Thread{
                 is_playing=false;
                 players.resetStatus();
                 
-                BaggleServer.logger.info("End of the game");
+                SimpleLog.logger.info("End of the game");
                 
                 if(!was_reset){
-                    BaggleServer.logger.info("Sending results");
+                    SimpleLog.logger.info("Sending results");
                     players.computeAndBroadcastResults();
                 }else{
                     players.broadcastResetSignal();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                BaggleServer.logger.error("Anormal exception caught in game thread: please report this");
+                SimpleLog.logger.error("Anormal exception caught in game thread: please report this");
             }
         }
     }
