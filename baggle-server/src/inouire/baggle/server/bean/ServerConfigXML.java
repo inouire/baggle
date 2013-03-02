@@ -29,7 +29,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -57,6 +56,7 @@ public class ServerConfigXML {
     private boolean listenOnLan;
     private int lanListenningPort;
     
+    @XmlTransient
     private boolean bigBoard;
     
     private int maxPlayers;

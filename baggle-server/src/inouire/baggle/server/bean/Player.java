@@ -28,6 +28,7 @@ import inouire.baggle.datagrams.STATUSDatagram;
 import inouire.baggle.server.Main;
 import inouire.baggle.solver.Solver;
 import inouire.baggle.types.Status;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -155,7 +156,7 @@ public class Player {
                 }
             }
         }catch(Exception ex){
-            ex.printStackTrace();
+            SimpleLog.logException(ex);
         }finally{
             wfm.unlock();
         }
@@ -211,6 +212,7 @@ public class Player {
 
 class StringLengthComparator implements Comparator<String> {
     
+    @Override
     public int compare(String o1, String o2) {
         if (o1.length() > o2.length()){
             return -1;

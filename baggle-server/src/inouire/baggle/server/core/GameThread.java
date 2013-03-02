@@ -24,8 +24,6 @@ import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.baggle.solver.GameBoard;
 import inouire.baggle.solver.Solver;
 import inouire.basics.SimpleLog;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

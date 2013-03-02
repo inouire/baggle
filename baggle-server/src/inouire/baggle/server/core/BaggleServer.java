@@ -18,16 +18,13 @@
 
 package inouire.baggle.server.core;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Timer;
 import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.basics.SimpleLog;
 import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 /**

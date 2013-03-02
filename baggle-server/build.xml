@@ -71,4 +71,18 @@
     nbproject/build-impl.xml file. 
 
     -->
+
+    <target name="-post-jar"> 
+      <jar jarfile="dist/baggle-server-standalone.jar">
+    	<zipfileset src="${dist.jar}" excludes="META-INF/*" /> 
+        <zipfileset src="dist/lib/log4j-1.2.17.jar" excludes="META-INF/*" />
+        <zipfileset src="dist/lib/baggle-solver.jar" excludes="META-INF/*" />
+        <zipfileset src="dist/lib/baggle-datagrams.jar" excludes="META-INF/*" />
+	<zipfileset src="dist/lib/java-basics.jar" excludes="META-INF/*" />
+        <manifest> 
+            <attribute name="Main-Class" value="${main.class}"/>
+        </manifest> 
+      </jar> 
+    </target>
+
 </project>
