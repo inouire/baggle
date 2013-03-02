@@ -22,8 +22,9 @@ import java.io.File;
 import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.baggle.server.core.BaggleServer;
 import inouire.baggle.server.gui.MainFrame;
+import inouire.basics.Args;
 import inouire.basics.SimpleLog;
-import inouire.utils.Args;
+
 /**
  *
  * @author Edouard de Labareyre
@@ -42,23 +43,27 @@ public class Main {
     
     public static String defaultConfig="conf/baggle-server_config.xml";
     
+    private static final String[] helpFlags = new String[] {"help","-h","--help"};
+    private static final String[] guiFlags = new String[] {"gui","-g","--gui"};
+    private static final String[] configFlags = new String[] {"config","-c","--config"};
+    
     /**
+     * Main function
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         
-        //check if the user just want to display the help
-        if(args.length>0 && (args[0].startsWith("-h")||args[0].startsWith("--h"))){
+        if(Args.getOption(helpFlags, args)){
             printHelp();
             return;
         }else{
             printVersion();
-            System.out.println("Use -help to know more about the provided options");
+            System.out.println("Use --help to know more about the provided options");
         }
 
-        WITH_GUI = Args.getOption("gui", args);
+        WITH_GUI = Args.getOption(guiFlags, args);
         
-        SimpleLog.initDevConfig();
+        SimpleLog.initConsoleConfig();
         
         if(WITH_GUI){
             SimpleLog.logger.info("Starting application with graphical user interface");
@@ -73,16 +78,16 @@ public class Main {
         ServerConfigXML configuration;
         
         //use config file from args ?
-        if(Args.getOption("c", args)){
-            CONFIG_FILE=Args.getStringOption("c", args, CONFIG_FILE);
-            if(CONFIG_FILE.length()>0){//load from file
+        if(Args.getOption(configFlags, args)){
+            CONFIG_FILE=Args.getStringOption(configFlags, args, CONFIG_FILE);
+            if(CONFIG_FILE.length()>0){
                 configuration = ServerConfigXML.loadFromFile(CONFIG_FILE);
                 if(configuration==null){
-                    SimpleLog.logger.fatal("Impossible to load config from "+CONFIG_FILE);
+                    SimpleLog.logger.error("Impossible to load config from "+CONFIG_FILE);
                     return;
                 }
             }else{
-                SimpleLog.logger.fatal("You must specify a config after -c option");
+                SimpleLog.logger.error("You must specify a config file after -c option");
                 return;
             }
         }else{ //or use default config file
@@ -98,11 +103,16 @@ public class Main {
         }
         
         if(configuration==null){
-            SimpleLog.logger.fatal("Error while loading configuration at "+defaultConfig);
+            SimpleLog.logger.error("Error while loading configuration at "+defaultConfig);
             return;
         }
         
-        //start gui or directly server
+        //log in a room-named file
+        String log_file = "log/"+configuration.getRoomName().replaceAll(" ","-")+".log";
+        SimpleLog.logger.info("Everything is now logged into "+log_file+", see ya !");
+        SimpleLog.initProdConfig(log_file);
+        
+        //start gui assistant, or server directly
         if(WITH_GUI){
             mainFrame = new MainFrame(configuration);
             mainFrame.setVisible(true);
@@ -113,15 +123,20 @@ public class Main {
 
     }
 
-    
+    /**
+     * Displays basic options for the program
+     */
     public static void printHelp(){
         printVersion();
         System.out.println("Usage:"
-                        + "\n\t-gui             Use graphical user interface to start the server"
+                        + "\n\t--gui            Use graphical user interface to start the server"
                         + "\n\t-c [config file] Use specified config file instead"
                         + "\n\t                 (by default baggle-server_default_config.xml is used)");
     }
     
+    /**
+     * Displays name and version for the program
+     */
     public static void printVersion(){
         System.out.println("B@ggle server version "+Main.VERSION);
     }
