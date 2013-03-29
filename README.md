@@ -1,6 +1,8 @@
 B@ggle: the fun & free multiplayer boggle game
 ==============================================
 
+![b@ggle client screenshot](http://baggle.org/img/baggle-2.1-mac.png "This is how b@ggle client looks like")
+
 ## What is b@ggle ?
 
 B@ggle is a free online multiplayer boggle game. You can join an existing b@ggle room or create your own.
