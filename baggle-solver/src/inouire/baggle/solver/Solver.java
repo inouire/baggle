@@ -144,9 +144,9 @@ public class Solver {
         for(Letter L:letters){
             usolvePrefix(L,"");
         }
-        for(String a : found){
-            System.out.println(a);
-        }
+//        for(String a : found){
+//            System.out.println(a);
+//        }
         return found;
     }
 
