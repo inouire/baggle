@@ -24,7 +24,7 @@
 // General high-level program constants.
 #define SORT_THRESHOLD 1
 #define MIN 2 //default 2
-#define MAX 15 //default 15
+#define MAX 30 //default 15
 #define NUMBER_OF_ENGLISH_LETTERS 26
 #define INPUT_LIMIT 35
 #define LOWER_IT 32

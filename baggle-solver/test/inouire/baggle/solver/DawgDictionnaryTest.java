@@ -67,7 +67,7 @@ public class DawgDictionnaryTest {
         }
         
         //check false words
-        String[] false_words={"plop","merco","racro","abraca","bonjo"};
+        String[] false_words={"plop","ferrari","racro","abraca","bonjo"};
         for(String word : false_words){
             if(test_dict_4x4.contains(word)){
                 fail(word+" should not be in the dictionnary");
