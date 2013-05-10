@@ -32,8 +32,9 @@ public class Solver {
 
     private boolean PARENTAL_FILTER=false;
     private int MIN_LENGTH=3;
-    private boolean BIG_GRID=false;
+    private int GRID_SIZE=4;
     private int MAX_LENGTH=16;
+    
     
     private ArrayList<Letter> letters;
     private LinkedList<Letter> already_seen=new LinkedList<Letter>();
@@ -45,17 +46,18 @@ public class Solver {
      * @param with_parental_filter
      * @param big_grid 
      */
-    public Solver(String language,boolean with_parental_filter,boolean big_grid) throws Exception
+    public Solver(String language,boolean with_parental_filter,BoardType board_type) throws Exception
     {
-        BIG_GRID = big_grid;
+        GRID_SIZE = board_type.getSize();
+        
         PARENTAL_FILTER=with_parental_filter;
-        if(BIG_GRID){
+        if(board_type.isBig()){
             MAX_LENGTH = 25;
         }
         //build dict name from args
         String dict_reference="dawg_dict_";
         dict_reference+=language;
-        if(big_grid){
+        if(board_type.isBig()){
             dict_reference+="_5x5";
         }
         dict_reference+=".dat";

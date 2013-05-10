@@ -31,7 +31,8 @@ public class GameBoard {
 
     private static Dice[] Dices;
 
-    private static int SIZE=4;
+    private BoardType type;
+    private int size;
 
     //dices distribution for french 4x4 grid
     final static Dice[] dices_fr_4=new Dice[]{
@@ -101,29 +102,32 @@ public class GameBoard {
         new Dice("N","M","I","Q","H","U"),
         new Dice("O","B","B","A","O","J")
     };
+    
+    //TODO add english dices for 5x5 grid
 
     /**
      * Create a board with real dices
-     * @param language
      */
-    public GameBoard(boolean big_board , String language){
+    public GameBoard(BoardType board_type , String language){
+        this.type = board_type;
+        this.size = board_type.getSize();
+        
         if(language.equals("fr")){
-            if(big_board){
+            if(this.size == 4){
                 Dices=dices_fr_5;
-                SIZE=5;
             }else{
                 Dices=dices_fr_4;
-                SIZE=4;
+
             }
         }else if(language.equals("en")){
             Dices=dices_en;
         }
-        this.Board = new Dice[SIZE][SIZE];
+        this.Board = new Dice[this.size][this.size];
     }
 
     public String mixBoard(){
-        for(int i=0 ; i < SIZE ; i++){
-            for(int j=0 ; j <  SIZE ; j++){
+        for(int i=0 ; i < size ; i++){
+            for(int j=0 ; j <  size ; j++){
                 Board[i][j] = null;
             }
         }
@@ -131,27 +135,23 @@ public class GameBoard {
         for(Dice d : Dices ){
             d.rollDice();
             do{
-                x = r.nextInt(SIZE);
-                y = r.nextInt(SIZE);
+                x = r.nextInt(size);
+                y = r.nextInt(size);
             }while(Board[x][y]!=null);
             Board[x][y] = d;
         }
         return this.toString();
     }
 
-    public char getDice(int i , int j) throws Exception{
-        if( i<0 || j<0 || i>SIZE || j>SIZE ){
-            throw new Exception();
-        }
+    private char getDice(int i , int j){
         return this.Board[i][j].getDisplayedFace().charAt(0);
     }
 
 
-    ArrayList<Letter> exportLetters() throws Exception{
+    ArrayList<Letter> exportLetters(){
         ArrayList<Letter> L = new ArrayList<Letter>();
-
-        for(int i = 0 ; i < SIZE; i++){
-            for(int j = 0 ; j < SIZE; j++){
+        for(int i = 0 ; i < size; i++){
+            for(int j = 0 ; j < size; j++){
                 L.add(new Letter(getDice(i, j),i,j));
             }
         }
@@ -165,13 +165,9 @@ public class GameBoard {
     @Override
     public String toString(){
         String s="";
-        for(int i=0 ; i < SIZE ; i++){
-            for(int j=0 ; j < SIZE ; j++){
-                try {
-                    s += getDice(i, j);
-                } catch (Exception ex) {
-                    System.out.println(ex);
-                }
+        for(int i=0 ; i < size ; i++){
+            for(int j=0 ; j < size ; j++){
+                s += getDice(i, j);
             }
         }
         return s;

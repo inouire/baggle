@@ -21,6 +21,7 @@ package inouire.baggle.server.core;
 import java.util.ArrayList;
 import inouire.baggle.server.Main;
 import inouire.baggle.server.bean.ServerConfigXML;
+import inouire.baggle.solver.BoardType;
 import inouire.baggle.solver.GameBoard;
 import inouire.baggle.solver.Solver;
 import inouire.basics.SimpleLog;
@@ -52,15 +53,19 @@ public class GameThread extends Thread{
         
         ServerConfigXML config = Main.server.configuration;
         
+        BoardType board_type=BoardType.NORMAL;
+        if(config.isBigBoard()){
+             board_type = BoardType.BIG;
+        }
         //game board init
-        game_board= new GameBoard(config.isBigBoard(),config.getLanguage());
+        game_board= new GameBoard(board_type,config.getLanguage());
         if(config.isBigBoard()){
             grid="BAGGLEBAGGLEBAGGLEBAGGLEB";
         }
         
         //solver initialisation
         try {
-            grid_solver=new Solver(config.getLanguage(),config.isParentalFilter(),config.isBigBoard());
+            grid_solver=new Solver(config.getLanguage(),config.isParentalFilter(),board_type);
         } catch (Exception ex) {
             SimpleLog.logException(ex);
         }
