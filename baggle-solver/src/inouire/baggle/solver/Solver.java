@@ -30,30 +30,26 @@ public class Solver {
     private DawgDictionnary dictionnary = new DawgDictionnary();
     private DawgDictionnary parentalFilter = new DawgDictionnary();
 
+    private BoardType grid_type=BoardType.CLASSIC;
     private boolean PARENTAL_FILTER=false;
     private int MIN_LENGTH=3;
-    private int GRID_SIZE=4;
-    private int MAX_LENGTH=16;
-    
-    
+
     private ArrayList<Letter> letters;
     private LinkedList<Letter> already_seen=new LinkedList<Letter>();
     private ArrayList<String> found = new ArrayList<String>();
 
+   
     /**
      * Default constructor for Solver
      * @param language
      * @param with_parental_filter
      * @param big_grid 
      */
-    public Solver(String language,boolean with_parental_filter,BoardType board_type) throws Exception
-    {
-        GRID_SIZE = board_type.getSize();
+    public Solver(String language,boolean with_parental_filter,BoardType board_type) throws Exception{
         
-        PARENTAL_FILTER=with_parental_filter;
-        if(board_type.isBig()){
-            MAX_LENGTH = 25;
-        }
+        this.grid_type = board_type;
+        this.PARENTAL_FILTER=with_parental_filter;
+
         //build dict name from args
         String dict_reference="dawg_dict_";
         dict_reference+=language;
@@ -72,21 +68,20 @@ public class Solver {
     }
 
     /**
-     * Get the dictionnary object
-     * @return DawgDictionnary
-     */
-    public DawgDictionnary getDictionnary()
-    {
-        return this.dictionnary;
-    }
-    
-    /**
      * Set a min length for the words that shall be found by the solver.
      * @param min_length 
      */
-    public void setMinLength(int min_length)
-    {
+    public Solver setMinLength(int min_length){
         this.MIN_LENGTH = min_length;
+        return this;
+    }
+    
+    /**
+     * Get the dictionnary object
+     * @return DawgDictionnary
+     */
+    public DawgDictionnary getDictionnary(){
+        return this.dictionnary;
     }
     
     /**
@@ -94,13 +89,13 @@ public class Solver {
      * @param board
      * @return the list of words found in the grid by the solver
      */
-    public synchronized ArrayList<String> solveGrid(GameBoard board)
-    {    
+    public synchronized ArrayList<String> solveGrid(GameBoard board){    
         //build special structure used by solver
         try {
             letters = board.exportLetters();
         } catch (Exception ex) {
-            System.out.println("Error while preparing grid !");
+            //TODO use application wide logger
+            System.out.println("Error while preparing grid");
             return null;
         }
         
@@ -116,7 +111,12 @@ public class Solver {
     public synchronized ArrayList<String> solveGrid(String grid)
     {
         //guess grid size
-        int SIZE=(int) Math.floor(Math.sqrt(grid.length()));
+        int SIZE;
+        if(grid.length()==25){
+            SIZE = 5;
+        }else{
+            SIZE = 4;
+        }
 
         //build special structure needed by solver
         char[][] board=new char[SIZE][SIZE];
@@ -173,7 +173,7 @@ public class Solver {
                 }
             }
         }
-        if(word.length() > MAX_LENGTH){
+        if(word.length() > grid_type.getMaxLength()){
             already_seen.removeFirst();
             return;
         }

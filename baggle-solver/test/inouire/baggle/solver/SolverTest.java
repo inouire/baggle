@@ -38,7 +38,7 @@ public class SolverTest {
     @BeforeClass
     public static void setUpClass() throws Exception
     {
-        Solver test_solver_4x4 = new Solver("fr",false,BoardType.NORMAL);
+        Solver test_solver_4x4 = new Solver("fr",false,BoardType.CLASSIC);
         test_solver_4x4.setMinLength(3);
         test_results_4x4 = test_solver_4x4.solveGrid("HIODLCIOTTERLNON");
         

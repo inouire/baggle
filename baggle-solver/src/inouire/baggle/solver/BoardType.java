@@ -19,11 +19,11 @@ package inouire.baggle.solver;
 
 /**
  *
- * @author edouard
+ * @author Edouard de Labareyre
  */
 public enum BoardType {
     
-    NORMAL,BIG;
+    CLASSIC,BIG;
     
     public int getSize(){
         if(this == BoardType.BIG){
@@ -36,5 +36,22 @@ public enum BoardType {
     public boolean isBig(){
         return this == BoardType.BIG;
     }
+    
+    public static BoardType fromGrid(String grid){
+        if(grid.length()>16){
+            return BIG;
+        }else{
+            return CLASSIC;
+        }
+    }
+    
+    public int getMaxLength(){
+        if(this == BoardType.BIG){
+            return 25;
+        }else{
+            return 16;
+        }
+    }
+   
     
 }
