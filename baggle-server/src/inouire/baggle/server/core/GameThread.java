@@ -53,7 +53,7 @@ public class GameThread extends Thread{
         
         ServerConfigXML config = Main.server.configuration;
         
-        BoardType board_type=BoardType.NORMAL;
+        BoardType board_type=BoardType.CLASSIC;
         if(config.isBigBoard()){
              board_type = BoardType.BIG;
         }

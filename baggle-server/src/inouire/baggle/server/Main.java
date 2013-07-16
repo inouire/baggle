@@ -19,7 +19,6 @@
 package inouire.baggle.server;
 
 import java.io.File;
-import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.baggle.server.core.BaggleServer;
 import inouire.baggle.server.gui.MainFrame;
 import inouire.basics.Args;
@@ -31,21 +30,22 @@ import inouire.basics.SimpleLog;
  */
 public class Main {
 
-    public static String VERSION = "2.5";
+    public static String VERSION = "3.0 alpha";
     public static boolean WITH_GUI = false;
     public static String CONFIG_FILE="";
-    
+    public static String DEFAULT_CONFIG_FILE="conf/baggle-server_config.myml";
+
+        
     //core process
     public static BaggleServer server;
     
     //main frame (gui only)
     public static MainFrame mainFrame = null;
     
-    public static String defaultConfig="conf/baggle-server_config.xml";
     
     private static final String[] helpFlags = new String[] {"help","-h","--help"};
-    private static final String[] guiFlags = new String[] {"gui","-g","--gui"};
-    private static final String[] configFlags = new String[] {"config","-c","--config"};
+    private static final String[] guiFlags = new String[] {"-g","--gui"};
+    private static final String[] configFlags = new String[] {"-c","--config"};
     
     /**
      * Main function
@@ -58,7 +58,7 @@ public class Main {
             return;
         }else{
             printVersion();
-            System.out.println("Use --help to know more about the provided options");
+            System.out.println("Use --help option to know more about the provided options");
         }
 
         WITH_GUI = Args.getOption(guiFlags, args);
@@ -66,52 +66,44 @@ public class Main {
         SimpleLog.initConsoleConfig();
         
         if(WITH_GUI){
-            SimpleLog.logger.info("Starting application with graphical user interface");
-            defaultConfig = System.getProperty("user.home")+File.separator+".baggle"+File.separator+"baggle-server_config.xml";
-        }else{
-            SimpleLog.logger.info("Starting application");
-            defaultConfig = "conf/baggle-server_config.xml";
+            SimpleLog.logger.info("Starting graphical user interface");
+            DEFAULT_CONFIG_FILE = System.getProperty("user.home")+File.separator+".baggle"+File.separator+"baggle-server_config.myml";
         }
         
-        //load configuration
+        SimpleLog.logger.info("Loading server configuration");
+        ServerConfiguration server_config=null;
         
-        ServerConfigXML configuration;
-        
-        //use config file from args ?
+        //use config file from args
         if(Args.getOption(configFlags, args)){
             CONFIG_FILE=Args.getStringOption(configFlags, args, CONFIG_FILE);
             if(CONFIG_FILE.length()>0){
-                configuration = ServerConfigXML.loadFromFile(CONFIG_FILE);
-                if(configuration==null){
-                    SimpleLog.logger.error("Impossible to load config from "+CONFIG_FILE);
-                    return;
-                }
+                server_config = ServerConfiguration.loadFromFile(CONFIG_FILE);
             }else{
                 SimpleLog.logger.error("You must specify a config file after -c option");
-                return;
             }
         }else{ //or use default config file
-            if(!new File(defaultConfig).exists()){
-                configuration=new ServerConfigXML();
-                ServerConfigXML.writeToFile(configuration,defaultConfig);
-                SimpleLog.logger.info("Default config file has been created in "+defaultConfig+". You can edit it and restart b@ggle server.");
-                SimpleLog.logger.info("Un fichier de configuration par défaut a été créé dans "+defaultConfig+". Editez le (ou pas) et "+
+            CONFIG_FILE=DEFAULT_CONFIG_FILE;
+            if(!new File(CONFIG_FILE).exists()){
+                server_config = ServerConfiguration.createDefault(CONFIG_FILE);
+                SimpleLog.logger.info("Default config file has been created in "+CONFIG_FILE+". You can edit it and restart b@ggle server.");
+                SimpleLog.logger.info("Un fichier de configuration par défaut a été créé dans "+CONFIG_FILE+". Editez le (ou pas) et "+
                             "redémarrez b@ggle server pour prendre en compte les modifications.");              
             }else{
-                configuration = ServerConfigXML.loadFromFile(defaultConfig);
+                server_config = ServerConfiguration.loadFromFile(CONFIG_FILE);
             }
         }
         
-        if(configuration==null){
-            SimpleLog.logger.error("Error while loading configuration at "+defaultConfig);
+        if(server_config==null){
+            SimpleLog.logger.error("Impossible to load server configuration from "+CONFIG_FILE);
             return;
         }
         
         //log in a room-named file
-        String log_file = "log/"+configuration.getRoomName().replaceAll(" ","-")+".log";
-        SimpleLog.logger.info("Everything is now logged into "+log_file+", see ya !");
-        SimpleLog.initProdConfig(log_file);
+        String log_file = "log/"+server_config.getValue("room.name").replaceAll(" ","-")+".log";
+        SimpleLog.logger.info("From now on everything will be logged into "+log_file+", see ya !");
+        SimpleLog.initDevConfig();
         
+        /*
         //start gui assistant, or server directly
         if(WITH_GUI){
             mainFrame = new MainFrame(configuration);
@@ -119,8 +111,8 @@ public class Main {
         }else{
             server = new BaggleServer(configuration);
             server.startServer();
-        }
-
+        }*/
+        
     }
 
     /**
@@ -131,7 +123,7 @@ public class Main {
         System.out.println("Usage:"
                         + "\n\t--gui            Use graphical user interface to start the server"
                         + "\n\t-c [config file] Use specified config file instead"
-                        + "\n\t                 (by default baggle-server_default_config.xml is used)");
+                        + "\n\t                 (by default "+DEFAULT_CONFIG_FILE+" is used)");
     }
     
     /**
