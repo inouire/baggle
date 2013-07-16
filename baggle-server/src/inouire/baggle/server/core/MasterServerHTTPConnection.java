@@ -70,7 +70,6 @@ public class MasterServerHTTPConnection {
     
     public static int testPing(){
 
-        
         //call web service
         String result=callWs("pingme.php?port="+Main.server.configuration.getListenningPort());
         

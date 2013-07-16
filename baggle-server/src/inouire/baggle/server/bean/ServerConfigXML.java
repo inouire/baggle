@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(propOrder={"roomName","welcomeMessage","listenningPort","autoPortIncrement",
                     "registerToMasterServer","masterServerHost","masterServerPort",
                     "listenOnLan","lanListenningPort",
-                    "maxPlayers","gameTime","nbLettersMin","allWordsCount","language",
+                    "maxPlayers","gameTime","nbLettersMin","allWordsCount","language","bigBoard",
                     "blockChat","isPrivate","parentalFilter","password","logLevel"})
 public class ServerConfigXML {
     
@@ -55,14 +55,12 @@ public class ServerConfigXML {
     private boolean listenOnLan;
     private int lanListenningPort;
     
-    @XmlTransient
-    private boolean bigBoard;
-    
     private int maxPlayers;
     private int gameTime;
     private int nbLettersMin;
     private boolean allWordsCount;
     private String language;
+    private boolean bigBoard;
     
     private boolean blockChat;
     private boolean parentalFilter;
@@ -359,7 +357,6 @@ public class ServerConfigXML {
         this.logLevel = logLevel;
     }
 
-    @XmlTransient
     public void setBigBoard(boolean bigBoard){
         this.bigBoard=bigBoard;
     }

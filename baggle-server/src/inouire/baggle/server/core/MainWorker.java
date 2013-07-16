@@ -26,6 +26,7 @@ import inouire.baggle.server.Main;
 import inouire.baggle.server.bean.Player;
 import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.baggle.server.bean.ServerDataEvent;
+import inouire.baggle.types.BoardType;
 import inouire.baggle.types.IllegalDatagramException;
 import inouire.baggle.types.Key;
 import inouire.baggle.types.Status;
@@ -182,7 +183,7 @@ public class MainWorker implements Runnable {
                             configuration.isParentalFilter(), mode,nb_players,
                             configuration.getMaxPlayers(),configuration.isIsPrivate(),
                             Main.server.gameThread.grid,configuration.getGameTime(),
-                            players.toString());
+                            players.toString(), BoardType.CLASSIC);
         return P.toString();
     }
 
@@ -210,7 +211,7 @@ public class MainWorker implements Runnable {
         }
         reply(new ACCEPTDatagram(auth,new_player_id,configuration.getLanguage(),
                                 !configuration.isBlockChat(),configuration.getNbLettersMin(),
-                                configuration.isParentalFilter(),mode,configuration.getGameTime()).toString(),
+                                configuration.isParentalFilter(),mode,configuration.getGameTime(),BoardType.CLASSIC).toString(),//TODO make this dynamic
                 socket);
 
         //send information to this new player
@@ -251,7 +252,7 @@ public class MainWorker implements Runnable {
             }
             reply(new ACCEPTDatagram(back.auth_token,back.id,configuration.getLanguage(),
                                 !configuration.isBlockChat(),configuration.getNbLettersMin(),
-                                configuration.isParentalFilter(),mode,configuration.getGameTime()).toString(),socket);
+                                configuration.isParentalFilter(),mode,configuration.getGameTime(),BoardType.CLASSIC).toString(),socket);//TODO make this dynamic
 
             //send information to this player and add it to the players list
             players.sendInitInformation(back);

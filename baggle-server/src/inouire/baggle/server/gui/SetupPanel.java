@@ -234,7 +234,7 @@ public class SetupPanel extends JPanel{
                 Main.server.startServer();
                 
                 //store this new config
-                ServerConfigXML.writeToFile(Main.server.configuration,Main.defaultConfig);
+                ServerConfigXML.writeToFile(Main.server.configuration,Main.DEFAULT_CONFIG_FILE);
             }
         });
         
