@@ -17,6 +17,7 @@
   */
 
 package inouire.baggle.datagrams;
+import inouire.baggle.types.BoardType;
 import inouire.baggle.types.IllegalDatagramException;
 
 public class PINGDatagram {
@@ -34,6 +35,7 @@ public class PINGDatagram {
     public Integer time=null;
     public Integer port=null;
     public String players=null;
+    public BoardType board=BoardType.CLASSIC;
     
     public Integer returnPort=null;
     
@@ -41,8 +43,8 @@ public class PINGDatagram {
         this.returnPort=returnPort;
     }
     
-    //PING|lang=fr|chat=yes|min=3|pf=no|mode=trad|nb=3|max=5|name=salut a toi|priv=no|grid=BAGRIURGUIGIUEG|time=120|players=bibi,beber,mika
-    public PINGDatagram(int port,String name,String lang,boolean chat,int min,boolean pf, String mode,int nb,int max,boolean priv,String grid,int time,String players){
+    //PING|lang=fr|chat=yes|min=3|pf=no|mode=trad|nb=3|max=5|name=salut a toi|priv=no|grid=BAGRIURGUIGIUEG|time=120|players=bibi,beber,mika|board=classic
+    public PINGDatagram(int port,String name,String lang,boolean chat,int min,boolean pf, String mode,int nb,int max,boolean priv,String grid,int time,String players, BoardType board){
         this.port=port;
         this.lang=lang;
         this.chat=chat;
@@ -56,6 +58,7 @@ public class PINGDatagram {
         this.grid=grid;
         this.time=time;
         this.players=players;
+        this.board=board;
     }
 
     public PINGDatagram(String[] args) throws IllegalDatagramException{
@@ -124,6 +127,8 @@ public class PINGDatagram {
                 port=Integer.parseInt(value);
             }else if(key.equals("players")){
                 players=value;
+            }else if(key.equals("board")){
+                this.board = BoardType.valueOf(value.toUpperCase());
             }
         }
     }
@@ -155,7 +160,8 @@ public class PINGDatagram {
                 pl="";
             }
             return "PING|port="+port+"|lang="+lang+"|chat="+c+"|min="+min+"|pf="+p+"|mode="+mode+"|nb="+nb+
-                    "|max="+max+"|name="+Datagram.replaceAccents(name)+"|priv="+pr+"|grid="+grid+"|time="+time+pl;
+                    "|max="+max+"|name="+Datagram.replaceAccents(name)+"|priv="+pr+"|grid="+grid+"|time="+time+pl+
+                    "|board="+board.toString().toLowerCase();
         }
     }
 
