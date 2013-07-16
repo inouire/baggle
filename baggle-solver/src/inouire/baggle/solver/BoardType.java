@@ -52,6 +52,5 @@ public enum BoardType {
             return 16;
         }
     }
-   
     
 }
