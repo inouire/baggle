@@ -17,7 +17,6 @@
   */
 
 package inouire.baggle.datagrams;
-import inouire.baggle.types.BoardType;
 import inouire.baggle.types.IllegalDatagramException;
 
 public class PINGDatagram {
@@ -35,7 +34,7 @@ public class PINGDatagram {
     public Integer time=null;
     public Integer port=null;
     public String players=null;
-    public BoardType board=BoardType.CLASSIC;
+    public Boolean big=false;
     
     public Integer returnPort=null;
     
@@ -44,7 +43,7 @@ public class PINGDatagram {
     }
     
     //PING|lang=fr|chat=yes|min=3|pf=no|mode=trad|nb=3|max=5|name=salut a toi|priv=no|grid=BAGRIURGUIGIUEG|time=120|players=bibi,beber,mika|board=classic
-    public PINGDatagram(int port,String name,String lang,boolean chat,int min,boolean pf, String mode,int nb,int max,boolean priv,String grid,int time,String players, BoardType board){
+    public PINGDatagram(int port,String name,String lang,boolean chat,int min,boolean pf, String mode,int nb,int max,boolean priv,String grid,int time,String players, boolean big){
         this.port=port;
         this.lang=lang;
         this.chat=chat;
@@ -58,7 +57,7 @@ public class PINGDatagram {
         this.grid=grid;
         this.time=time;
         this.players=players;
-        this.board=board;
+        this.big=big;
     }
 
     public PINGDatagram(String[] args) throws IllegalDatagramException{
@@ -127,8 +126,12 @@ public class PINGDatagram {
                 port=Integer.parseInt(value);
             }else if(key.equals("players")){
                 players=value;
-            }else if(key.equals("board")){
-                this.board = BoardType.valueOf(value.toUpperCase());
+            }else if(key.equals("big")){
+                if(value.equals("yes")){
+                    this.big=true;
+                }else if(value.equals("no")){
+                    this.big=false;
+                }
             }
         }
     }
@@ -138,7 +141,7 @@ public class PINGDatagram {
         if(returnPort!=null){
             return "PING|returnPort="+returnPort;
         }else{
-            String p,c,pr,pl;
+            String p,c,pr,pl,b;
             if(pf){
                 p="yes";
             }else{
@@ -159,9 +162,14 @@ public class PINGDatagram {
             }else{
                 pl="";
             }
+            if(big){
+                b="yes";
+            }else{
+                b="no";
+            }
             return "PING|port="+port+"|lang="+lang+"|chat="+c+"|min="+min+"|pf="+p+"|mode="+mode+"|nb="+nb+
                     "|max="+max+"|name="+Datagram.replaceAccents(name)+"|priv="+pr+"|grid="+grid+"|time="+time+pl+
-                    "|board="+board.toString().toLowerCase();
+                    "|big="+b;
         }
     }
 

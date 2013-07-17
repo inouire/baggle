@@ -26,7 +26,6 @@ import inouire.baggle.server.Main;
 import inouire.baggle.server.ServerConfiguration;
 import inouire.baggle.server.bean.Player;
 import inouire.baggle.server.bean.ServerDataEvent;
-import inouire.baggle.types.BoardType;
 import inouire.baggle.types.IllegalDatagramException;
 import inouire.baggle.types.Key;
 import inouire.baggle.types.Status;
@@ -183,7 +182,7 @@ public class MainWorker implements Runnable {
                             configuration.parentalFilter, mode,nb_players,
                             configuration.maxPlayers,false,
                             Main.server.gameThread.grid,configuration.gameTime,
-                            players.toString(), BoardType.CLASSIC);
+                            players.toString(), configuration.bigBoard);
         return P.toString();
     }
 
@@ -211,7 +210,7 @@ public class MainWorker implements Runnable {
         }
         reply(new ACCEPTDatagram(auth,new_player_id,configuration.language,
                                 !configuration.blockChat,configuration.nbLettersMin,
-                                configuration.parentalFilter,mode,configuration.gameTime,BoardType.CLASSIC).toString(),//TODO make this dynamic
+                                configuration.parentalFilter,mode,configuration.gameTime,configuration.bigBoard).toString(),//TODO make this dynamic
                 socket);
 
         //send information to this new player
@@ -252,7 +251,7 @@ public class MainWorker implements Runnable {
             }
             reply(new ACCEPTDatagram(back.auth_token,back.id,configuration.language,
                                 !configuration.blockChat,configuration.nbLettersMin,
-                                configuration.parentalFilter,mode,configuration.gameTime,BoardType.CLASSIC).toString(),socket);//TODO make this dynamic
+                                configuration.parentalFilter,mode,configuration.gameTime,configuration.bigBoard).toString(),socket);//TODO make this dynamic
 
             //send information to this player and add it to the players list
             players.sendInitInformation(back);

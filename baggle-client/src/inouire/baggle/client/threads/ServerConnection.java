@@ -33,7 +33,6 @@ import inouire.baggle.client.Language;
 import inouire.baggle.client.Main;
 import inouire.baggle.client.gui.RoomPanel;
 import inouire.baggle.datagrams.*;
-import inouire.baggle.types.BoardType;
 import inouire.baggle.types.Key;
 import inouire.baggle.types.Words;
 import inouire.basics.SimpleLog;
@@ -59,7 +58,7 @@ public class ServerConnection extends Thread{
     public int MIN_LENGTH;
     public boolean PARENTAL_FILTER;
     public String GAME_MODE;
-    public BoardType BOARD_TYPE;
+    public boolean BIG_BOARD;
             
     //communication channels
     public PrintWriter out = null;
@@ -193,11 +192,7 @@ public class ServerConnection extends Thread{
         MIN_LENGTH=acceptD.min;
         PARENTAL_FILTER=acceptD.pf;
         GAME_MODE=acceptD.mode;
-        if(acceptD.board!=null){
-            BOARD_TYPE=acceptD.board;
-        }else{
-            BOARD_TYPE = BOARD_TYPE.CLASSIC;
-        }
+        BIG_BOARD=acceptD.big;
         my_id=acceptD.id;
 
         //update UI
@@ -397,7 +392,7 @@ public class ServerConnection extends Thread{
         in_game=true;
         grid=startD.grid;
         
-        Main.mainFrame.roomPane.boardPane.setBigBoard(BOARD_TYPE==BoardType.BIG);
+        Main.mainFrame.roomPane.boardPane.setBigBoard(BIG_BOARD);
         Main.mainFrame.roomPane.boardPane.enableAll();
         Main.mainFrame.roomPane.boardPane.enableAll();
         Main.mainFrame.roomPane.resetActionPane.setToMode(true);

@@ -21,7 +21,6 @@ package inouire.baggle.server.core;
 import java.util.ArrayList;
 import inouire.baggle.server.Main;
 import inouire.baggle.server.ServerConfiguration;
-import inouire.baggle.solver.BoardType;
 import inouire.baggle.solver.GameBoard;
 import inouire.baggle.solver.Solver;
 import inouire.basics.SimpleLog;
@@ -60,20 +59,18 @@ public class GameThread extends Thread{
         ServerConfiguration config = Main.server.configuration;
         String language = config.get("room.rules.language");
         boolean hasParentalFilter = config.parentalFilter;
-        BoardType board_type=BoardType.CLASSIC;
         if(config.bigBoard){
-             board_type = BoardType.BIG;
              grid="BAGGLEBAGGLEBAGGLEBAGGLEB";
         }
         long_inactivity_timeout = config.gameTime*1000;
         short_inactivity_timeout = 25000;//25 sec
         
         //game board initialisation
-        game_board= new GameBoard(board_type,language);
+        game_board= new GameBoard(language, Main.server.configuration.bigBoard);
         
         //solver initialisation
         try {
-            grid_solver=new Solver(language,hasParentalFilter,board_type);
+            grid_solver=new Solver(language,hasParentalFilter,Main.server.configuration.bigBoard);
         } catch (Exception ex) {
             SimpleLog.logException(ex);
         }

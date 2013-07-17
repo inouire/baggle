@@ -31,8 +31,8 @@ public class GameBoard {
 
     private static Dice[] Dices;
 
-    private BoardType type;
-    private int size;
+    private int GRID_SIZE=4;
+    private boolean BIG_BOARD=false;
 
     //dices distribution for french 4x4 grid
     final static Dice[] dices_fr_4=new Dice[]{
@@ -108,12 +108,14 @@ public class GameBoard {
     /**
      * Create a board with real dices
      */
-    public GameBoard(BoardType board_type , String language){
-        this.type = board_type;
-        this.size = board_type.getSize();
+    public GameBoard(String language, boolean big_board){
+        if(big_board){
+            this.BIG_BOARD=true;
+            this.GRID_SIZE=5;
+        }
         
         if(language.equals("fr")){
-            if(this.size == 4){
+            if(GRID_SIZE == 4){
                 Dices=dices_fr_4;
             }else{
                 Dices=dices_fr_5;
@@ -121,12 +123,12 @@ public class GameBoard {
         }else if(language.equals("en")){
             Dices=dices_en;
         }
-        this.Board = new Dice[this.size][this.size];
+        this.Board = new Dice[GRID_SIZE][GRID_SIZE];
     }
 
     public String mixBoard(){
-        for(int i=0 ; i < size ; i++){
-            for(int j=0 ; j <  size ; j++){
+        for(int i=0 ; i < GRID_SIZE ; i++){
+            for(int j=0 ; j <  GRID_SIZE ; j++){
                 Board[i][j] = null;
             }
         }
@@ -134,8 +136,8 @@ public class GameBoard {
         for(Dice d : Dices ){
             d.rollDice();
             do{
-                x = r.nextInt(size);
-                y = r.nextInt(size);
+                x = r.nextInt(GRID_SIZE);
+                y = r.nextInt(GRID_SIZE);
             }while(Board[x][y]!=null);
             Board[x][y] = d;
             //SimpleLog.
@@ -150,8 +152,8 @@ public class GameBoard {
 
     ArrayList<Letter> exportLetters(){
         ArrayList<Letter> L = new ArrayList<Letter>();
-        for(int i = 0 ; i < size; i++){
-            for(int j = 0 ; j < size; j++){
+        for(int i = 0 ; i < GRID_SIZE; i++){
+            for(int j = 0 ; j < GRID_SIZE; j++){
                 L.add(new Letter(getDice(i, j),i,j));
             }
         }
@@ -165,8 +167,8 @@ public class GameBoard {
     @Override
     public String toString(){
         String s="";
-        for(int i=0 ; i < size ; i++){
-            for(int j=0 ; j < size ; j++){
+        for(int i=0 ; i < GRID_SIZE ; i++){
+            for(int j=0 ; j < GRID_SIZE ; j++){
                 s += getDice(i, j);
             }
         }
