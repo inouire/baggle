@@ -28,9 +28,11 @@ import java.util.Random;
 import inouire.baggle.client.Language;
 import inouire.baggle.client.Main;
 import inouire.baggle.datagrams.*;
+import inouire.baggle.solver.BoardType;
 import inouire.baggle.solver.Solver;
 import inouire.baggle.types.Key;
 import inouire.baggle.types.Status;
+import inouire.basics.SimpleLog;
 
 /**
  * Thread that handles the bot connection
@@ -100,7 +102,7 @@ public class BotServerConnection extends Thread{
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (Exception e) {
-            Main.logger.error("Error while connecting to the server");
+            SimpleLog.logger.error("Error while connecting to the server");
             return;
         }
 
@@ -156,11 +158,7 @@ public class BotServerConnection extends Thread{
                             break;
                         case START:
                             STARTDatagram startD = new STARTDatagram(datagram);
-                            boolean big_board=false;
-                            if(startD.grid.length()>16){
-                                big_board=true;
-                            }
-                            solver=new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER,big_board);
+                            solver=new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER,BoardType.fromGrid(startD.grid));
                             solver.setMinLength(Main.connection.MIN_LENGTH);
                             solutions = solver.solveGrid(startD.grid);
                             is_playing=true;
@@ -174,7 +172,7 @@ public class BotServerConnection extends Thread{
                             break;
                     }
                 }catch(Exception e){
-                    Main.logger.debug("Illegal datagram received from server: "+packet);
+                    SimpleLog.logger.debug("Illegal datagram received from server: "+packet);
                 }
             }
         }catch(IOException e){
@@ -213,11 +211,11 @@ public class BotServerConnection extends Thread{
                             //TODO
                             break;
                         default:
-                            Main.logger.debug("Unexpected message: "+packet);
+                            SimpleLog.logger.debug("Unexpected message: "+packet);
                             break;
                     }
                 }catch(Exception e){
-                    Main.logger.debug("Illegal datagram received from server: "+packet);
+                    SimpleLog.logger.debug("Illegal datagram received from server: "+packet);
                 }
             }
         }catch(IOException e){
@@ -267,7 +265,7 @@ public class BotServerConnection extends Thread{
                         break;
                 }
                 int max=tot/div;
-                Main.logger.info("Robot level "+bot_level+": "+tot+" -> "+max+ " (/"+div+")");
+                SimpleLog.logger.info("Robot level "+bot_level+": "+tot+" -> "+max+ " (/"+div+")");
 
                 String w;
                 for(int i=0;i<max;i++){

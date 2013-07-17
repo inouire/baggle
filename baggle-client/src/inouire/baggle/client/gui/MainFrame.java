@@ -95,7 +95,6 @@ public class MainFrame extends JFrame {
      * @param evt 
      */
     private void windowClosingAction(java.awt.event.WindowEvent evt){
-        
         if(in_room){
             leaveRoom();
         }else{

@@ -23,6 +23,7 @@ import inouire.baggle.client.ServerEntry;
 import inouire.baggle.client.gui.modules.OfficialServersPanel;
 import inouire.baggle.datagrams.Datagram;
 import inouire.baggle.datagrams.PINGDatagram;
+import inouire.basics.SimpleLog;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -53,7 +54,7 @@ public class MasterServerHTTPConnection extends Thread{
         LinkedList<ServerEntry> servers = getServersList();
         //handle the case where master didn't answer: use cached list
         if(servers==null || servers.isEmpty()){
-            Main.logger.info("No server retrived from master server, using cached server list instead");
+            SimpleLog.logger.info("No server retrived from master server, using cached server list instead");
             servers=Main.cachedServers.getExplicitHostList();
         }
         
@@ -103,7 +104,7 @@ public class MasterServerHTTPConnection extends Thread{
                 //TODO rendre plus propre le renvoi d'erreurs
                 return new int[]{0};
             }
-            Main.logger.warn("Error while parsing json for score");
+            SimpleLog.logger.warn("Error while parsing json for score");
             return null;
         }
 
@@ -139,7 +140,7 @@ public class MasterServerHTTPConnection extends Thread{
             return new int[]{general_rank,nb_players,hunter_rank,brute_rank,winner_rank,star_rank};
             
         }catch(Exception e){
-            Main.logger.warn("Error while parsing json for rank");
+            SimpleLog.logger.warn("Error while parsing json for rank");
             return null;
         }
 
@@ -167,7 +168,7 @@ public class MasterServerHTTPConnection extends Thread{
                 port=Integer.parseInt(jso.get("port").toString());
                 serversList.add(new ServerEntry(host,port));
             }catch(Exception e){
-                Main.logger.warn("Error while parsing json for server list");
+                SimpleLog.logger.warn("Error while parsing json for server list");
             }
         }
         
@@ -199,7 +200,7 @@ public class MasterServerHTTPConnection extends Thread{
                 return null;
             }
          }catch(Exception e){
-            Main.logger.warn("Error while parsing json for checkversion");
+            SimpleLog.logger.warn("Error while parsing json for checkversion");
             return null;
         }  
         
@@ -224,7 +225,7 @@ public class MasterServerHTTPConnection extends Thread{
             }
             in.close();
         }catch(Exception e){
-            Main.logger.error("Error while getting ws answer from masterserver at "+ws_name);
+            SimpleLog.logger.error("Error while getting ws answer from masterserver at "+ws_name);
         }
         return line;
     }
@@ -247,12 +248,12 @@ class ServerPingThread extends Thread{
     public void run(){
         PINGDatagram pingD = ServerConnection.pingWebServer(server.host,server.port);
         if(pingD!=null){
-            Main.logger.debug("PING ok on "+server.host+":"+server.port);
+            SimpleLog.logger.debug("PING ok on "+server.host+":"+server.port);
             listener.addValidServer(id,server.host, server.port, pingD);
             Main.cachedServers.touchCached(server.host,server.port);
         }else{
             listener.addFailedServer(id);
-            Main.logger.debug("PING failed on "+server.host+":"+server.port);
+            SimpleLog.logger.debug("PING failed on "+server.host+":"+server.port);
         }
     }
 }

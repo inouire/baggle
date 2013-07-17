@@ -33,8 +33,10 @@ import inouire.baggle.client.Language;
 import inouire.baggle.client.Main;
 import inouire.baggle.client.gui.RoomPanel;
 import inouire.baggle.datagrams.*;
+import inouire.baggle.types.BoardType;
 import inouire.baggle.types.Key;
 import inouire.baggle.types.Words;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -57,7 +59,8 @@ public class ServerConnection extends Thread{
     public int MIN_LENGTH;
     public boolean PARENTAL_FILTER;
     public String GAME_MODE;
-
+    public BoardType BOARD_TYPE;
+            
     //communication channels
     public PrintWriter out = null;
     public BufferedReader in = null;
@@ -84,7 +87,7 @@ public class ServerConnection extends Thread{
     public void send(String message){
         if(out != null){
             out.println(message);
-            Main.logger.trace("[SND>>] "+message);
+            SimpleLog.logger.trace("[SND>>] "+message);
         }
     }
     
@@ -124,13 +127,13 @@ public class ServerConnection extends Thread{
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (UnknownHostException e) {
-            Main.logger.warn(Language.getString(45)+" - "+Language.getString(6));
+            SimpleLog.logger.warn(Language.getString(45)+" - "+Language.getString(6));
             return 2;
         } catch (IOException e) {
-            Main.logger.warn(Language.getString(46)+PORT+Language.getString(47)+" - "+Language.getString(6));
+            SimpleLog.logger.warn(Language.getString(46)+PORT+Language.getString(47)+" - "+Language.getString(6));
             return 1;
         } catch (IllegalArgumentException e) {
-            Main.logger.warn(Language.getString(48)+" - "+Language.getString(6));
+            SimpleLog.logger.warn(Language.getString(48)+" - "+Language.getString(6));
             return 1;
         }
 
@@ -145,7 +148,7 @@ public class ServerConnection extends Thread{
             while ((packet = in.readLine()) != null){
 
                 datagram = packet.split("\\|");
-                Main.logger.warn("[<<RECV] "+packet);
+                SimpleLog.logger.warn("[<<RECV] "+packet);
                 try{
                     key=Key.valueOf(datagram[0]);
                     switch (key){
@@ -165,15 +168,15 @@ public class ServerConnection extends Thread{
                             passwordAction();
                             break;
                         default:
-                            Main.logger.warn("Unexpected message: "+packet);
+                            SimpleLog.logger.warn("Unexpected message: "+packet);
                             break;
                     }
                 }catch(Exception e){
-                    Main.logger.warn("Illegal datagram received from server: "+packet);
+                    SimpleLog.logger.warn("Illegal datagram received from server: "+packet);
                 }
             }
         }catch(IOException e){
-            Main.logger.warn("IOException during negociation phase");
+            SimpleLog.logger.warn("IOException during negociation phase");
         }
         return 1;
     }
@@ -190,6 +193,11 @@ public class ServerConnection extends Thread{
         MIN_LENGTH=acceptD.min;
         PARENTAL_FILTER=acceptD.pf;
         GAME_MODE=acceptD.mode;
+        if(acceptD.board!=null){
+            BOARD_TYPE=acceptD.board;
+        }else{
+            BOARD_TYPE = BOARD_TYPE.CLASSIC;
+        }
         my_id=acceptD.id;
 
         //update UI
@@ -201,8 +209,6 @@ public class ServerConnection extends Thread{
         
         //by default, show nothing
         Main.mainFrame.roomPane.showNothing();
-        
-        //TODO set game mode
 
         //launch the game thread
         this.start();
@@ -213,7 +219,7 @@ public class ServerConnection extends Thread{
      * @param statusD the parsed datagram
      */
     private void denyAction(DENYDatagram statusD){
-        Main.logger.info("Access to server denied: "+statusD.reason);
+        SimpleLog.logger.info("Access to server denied: "+statusD.reason);
     }
 
     /**
@@ -221,7 +227,7 @@ public class ServerConnection extends Thread{
      */
     private void passwordAction(){
 //        send(new PASSWORDDatagram(password));
-        Main.logger.info("Sending password");
+        SimpleLog.logger.info("Sending password");
     }
 
     /**
@@ -239,7 +245,7 @@ public class ServerConnection extends Thread{
         try{
             while ((packet = in.readLine()) != null){
                 datagram = packet.split("\\|");
-                Main.logger.trace("[<<RCV] "+packet);
+                SimpleLog.logger.trace("[<<RCV] "+packet);
                 try{
                     key=Key.valueOf(datagram[0]);
                     switch (key){
@@ -297,17 +303,17 @@ public class ServerConnection extends Thread{
                             STATUSAction(statusD);
                             break;
                         default:
-                            Main.logger.warn("Unexpected message: "+packet);
+                            SimpleLog.logger.warn("Unexpected message: "+packet);
                             break;
                     }
                 }catch(Exception e){
-                    Main.logger.warn("Illegal datagram received from server: "+packet);
+                    SimpleLog.logger.warn("Illegal datagram received from server: "+packet);
                 }
             }
         }catch(IOException e){
-            Main.logger.debug("IOException during game phase");
+            SimpleLog.logger.debug("IOException during game phase");
         }
-        Main.logger.info("Connection lost unexpectly");
+        SimpleLog.logger.info("Connection lost unexpectly");
         if(is_connected){//ie on a perdu la connexion sans passer par la case "disconnect volontaire"
             JOptionPane.showMessageDialog(Main.mainFrame,
                     Language.getString(52),
@@ -391,7 +397,7 @@ public class ServerConnection extends Thread{
         in_game=true;
         grid=startD.grid;
         
-        Main.mainFrame.roomPane.boardPane.setBigBoard(grid.length()>16);
+        Main.mainFrame.roomPane.boardPane.setBigBoard(BOARD_TYPE==BoardType.BIG);
         Main.mainFrame.roomPane.boardPane.enableAll();
         Main.mainFrame.roomPane.boardPane.enableAll();
         Main.mainFrame.roomPane.resetActionPane.setToMode(true);
@@ -464,7 +470,7 @@ public class ServerConnection extends Thread{
      */
     private void CLIENTAction(CLIENTDatagram clientD) {
         //TODO
-        Main.logger.info("FYI, "+ players_id_name.get(clientD.id)+" runs version "+clientD.version+" for "+clientD.os);
+        SimpleLog.logger.info("FYI, "+ players_id_name.get(clientD.id)+" runs version "+clientD.version+" for "+clientD.os);
     }
     
     public static PINGDatagram pingLocalServer(String host,int port){
@@ -490,7 +496,7 @@ public class ServerConnection extends Thread{
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         }catch (Exception e) {
-            Main.logger.info("Connection with "+host+":"+port+" failed");
+            SimpleLog.logger.info("Connection with "+host+":"+port+" failed");
             return null;
         }
         
@@ -512,11 +518,11 @@ public class ServerConnection extends Thread{
                         pingD = new PINGDatagram(datagram);
                     }
                 }catch(Exception e){
-                    Main.logger.warn("Illegal datagram received from server: "+packet);
+                    SimpleLog.logger.warn("Illegal datagram received from server: "+packet);
                 }
             }
         }catch(IOException e){
-            Main.logger.warn("Error while sending data to server "+host+":"+port);
+            SimpleLog.logger.warn("Error while sending data to server "+host+":"+port);
         }finally{
             try{
                 out.close();

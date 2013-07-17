@@ -31,6 +31,7 @@ import inouire.baggle.client.gui.ColorFactory;
 import inouire.baggle.client.gui.ConnectionPanel;
 import inouire.baggle.client.threads.MasterServerHTTPConnection;
 import inouire.baggle.datagrams.PINGDatagram;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -97,7 +98,7 @@ public class OfficialServersPanel extends JPanel{
     private synchronized void updateNbAnswers(){
         serverListStatusPanel.setNbServersPinged(server_total_counter);
         if(server_total_counter==nb_servers){
-            Main.logger.debug("All server ping threads ended");
+            SimpleLog.logger.debug("All server ping threads ended");
             serverListStatusPanel.setOkMessage();
             if(server_ok_counter==0){
                 Main.mainFrame.connectionPane.officialServersPane.serverListStatusPanel.setErrorMessage();

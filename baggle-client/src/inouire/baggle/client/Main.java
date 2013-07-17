@@ -24,13 +24,12 @@ import inouire.baggle.client.gui.MainFrame;
 import inouire.baggle.client.threads.AutoRefresh;
 import inouire.baggle.client.threads.BotServerConnection;
 import inouire.baggle.client.threads.ServerConnection;
-import inouire.utils.Args;
+import inouire.basics.Args;
+import inouire.basics.SimpleLog;
 import inouire.utils.Utils;
 import java.io.File;
 import java.util.Timer;
 import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,7 +41,7 @@ public class Main {
     //global variables
     public static String LOCALE=System.getProperty("user.language");
     
-    public final static String VERSION = "2.5";
+    public final static String VERSION = "3.0-alpha";
     public final static int BUILD=490;
     
     public static final String OFFICIAL_WEBSITE="http://baggle.org";
@@ -66,19 +65,13 @@ public class Main {
     
     public static AvatarFactory avatarFactory;
     public static UserConfiguration configuration;
-    
-    public static final Logger logger = Logger.getLogger(Main.class);
-    
+        
     public static void printUsage(){
         System.out.println("B@ggle client version "+Main.VERSION);
         System.out.println("Usage:      \n\t-M [master server host]"+
                                        "\n\t-P [master server port]"+
                                        "\n\t-l (store config file in current directory)");
         System.out.println("All parameters are optionnal.");
-    }
-
-    public static void initApplicationLogger(){
-        logger.addAppender(new ConsoleAppender());
     }
     
     /**
@@ -92,12 +85,12 @@ public class Main {
 
         printUsage();
         
-        initApplicationLogger();
+        SimpleLog.initDevConfig();
         
-        MASTER_SERVER_HOST=Args.getStringOption("M",args,MASTER_SERVER_HOST);
-        MASTER_SERVER_PORT=Args.getIntOption("P", args, MASTER_SERVER_PORT);
-        STORE_CONFIG_LOCALLY=Args.getOption("l",args);
-        CONNECT_ONLY_TO=Args.getStringOption("only",args,CONNECT_ONLY_TO);
+        MASTER_SERVER_HOST=Args.getStringOption("-M",args,MASTER_SERVER_HOST);
+        MASTER_SERVER_PORT=Args.getIntegerOption("-P", args, MASTER_SERVER_PORT);
+        STORE_CONFIG_LOCALLY=Args.getOption("-l",args);
+        CONNECT_ONLY_TO=Args.getStringOption("--only",args,CONNECT_ONLY_TO);
         
         //set path of config folder
         if(Main.STORE_CONFIG_LOCALLY){
