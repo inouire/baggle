@@ -18,10 +18,10 @@
 package inouire.baggle.server;
 
 import inouire.basics.SimpleLog;
+import inouire.basics.Value;
 import inouire.basics.myml.MyMl;
 import inouire.basics.myml.MyMlException;
 import inouire.basics.myml.MyMlTypeValidator;
-import inouire.basics.myml.MyMlValidator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -143,7 +143,7 @@ public class ServerConfiguration {
         try{
             this.roomName = config.getValue("room.name");
             this.welcomeMessage = config.getValue("room.welcomeMessage");
-            this.maxPlayers = config.getInt("room.maxPlayers",6);
+            this.maxPlayers = Value.bound(config.getInt("room.maxPlayers",6),1,20);
             
             this.listeningPort = config.getInt("network.public.listeningPort",42705);
             this.autoPortIncrement = config.getBool("network.public.autoPortIncrement",true);
@@ -154,7 +154,7 @@ public class ServerConfiguration {
             this.lanListenningPort = config.getInt("network.lan.lanListeningPort",42710);
             
             this.gameTime = config.getInt("room.rules.gameTime",180);
-            this.nbLettersMin = config.getInt("room.rules.nbLettersMin", 3);
+            this.nbLettersMin = Value.bound(config.getInt("room.rules.nbLettersMin", 3),3,6);
             this.allWordsCount = config.getBool("room.rules.allWordsCount", true);
             this.language = config.getValue("room.rules.language");
             this.bigBoard = config.getBool("room.rules.bigBoard", false);
@@ -176,7 +176,6 @@ public class ServerConfiguration {
         "    maxPlayers: 6",
         "    rules:",
         "        gameTime: 180",
-        "        boardType: classic",
         "        nbLettersMin: 3",
         "        allWordsCount: yes",
         "        language: fr",
@@ -226,169 +225,7 @@ public class ServerConfiguration {
         "        listeningPort: integer",
         "log:",
         "    level: string"
-    };
-    
-    /*
-    public void setShortInactivityTimeout(){
-        inactivityTimeout = 25000;//25 sec
-    }
-    public void setLongInactivityTimeout(){
-        inactivityTimeout = gameTime * 1000;
-    }   
-    
-    public boolean isParentalFilter() {
-        return myml_structure.getValue("room.options.parentalFilter");
-    }
-    public void setParentalFilter(boolean parentalFilter) {
-        this.parentalFilter = parentalFilter;
-    }
-
-    public boolean isAutoPortIncrement() {
-        return autoPortIncrement;
-    }
-    public void setAutoPortIncrement(boolean autoPortIncrement) {
-        this.autoPortIncrement = autoPortIncrement;
-    }
-    
-    public boolean isAllWordsCount() {
-        return allWordsCount;
-    }
-    public void setAllWordsCount(boolean allWordsCount) {
-        this.allWordsCount = allWordsCount;
-    }
-
-    public boolean isBlockChat() {
-        return blockChat;
-    }
-    public void setBlockChat(boolean blockChat) {
-        this.blockChat = blockChat;
-    }
-
-    public String getWelcomeMessage() {
-        return welcomeMessage;
-    }
-    public void setWelcomeMessage(String welcomeMessage) {
-        this.welcomeMessage = welcomeMessage;
-    }
-
-    public int getGameTime() {
-        return gameTime;
-    }
-    public void setGameTime(int gameTime) {
-        this.gameTime = gameTime;
-        this.inactivityTimeout=gameTime*500;//in msec
-    }
-
-    public boolean isIsPrivate() {
-        return isPrivate;
-    }
-    public void setIsPrivate(boolean isPrivate) {
-        this.isPrivate = isPrivate;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-    public void setLanguage(String language) {
-        this.language = language.toLowerCase();
-    }
-
-    public int getListenningPort() {
-        return listenningPort;
-    }
-    public void setListenningPort(int listenningPort) {
-        this.listenningPort = listenningPort;
-    }
-
-    public String getMasterServerHost() {
-        return masterServerHost;
-    }
-    public void setMasterServerHost(String masterServerHost) {
-        this.masterServerHost = masterServerHost;
-    }
-
-    public int getMasterServerPort() {
-        return masterServerPort;
-    }
-    public void setMasterServerPort(int masterServerPort) {
-        this.masterServerPort = masterServerPort;
-    }
-
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-    public void setMaxPlayers(int maxPlayers) {
-        if(maxPlayers<1){
-            this.maxPlayers = 1;
-        }else if(maxPlayers>20){
-            this.maxPlayers = 20;
-        }else{
-            this.maxPlayers = maxPlayers;
-        }
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
-
-    public int getNbLettersMin() {
-        return nbLettersMin;
-    }
-    public void setNbLettersMin(int nbLettersMin) {
-        if(nbLettersMin>6 ){
-            this.nbLettersMin=6;
-        }else if(nbLettersMin<3){
-            this.nbLettersMin=3;
-        }else{
-            this.nbLettersMin = nbLettersMin;
-        }
-    }
-
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isRegisterToMasterServer() {
-        return registerToMasterServer;
-    }
-    public void setRegisterToMasterServer(boolean registerToMasterServer) {
-        this.registerToMasterServer = registerToMasterServer;
-    }
-
-    public int getLanListenningPort() {
-        return lanListenningPort;
-    }
-    public void setLanListenningPort(int lanListenningPort) {
-        this.lanListenningPort = lanListenningPort;
-    }
-
-    public boolean isListenOnLan() {
-        return listenOnLan;
-    }
-    public void setListenOnLan(boolean listenOnLan) {
-        this.listenOnLan = listenOnLan;
-    }
-
-    public String getLogLevel() {
-        return logLevel;
-    }
-    public void setLogLevel(String logLevel) {
-        this.logLevel = logLevel;
-    }
-
-    public void setBigBoard(boolean bigBoard){
-        this.bigBoard=bigBoard;
-    }
-    public boolean isBigBoard(){
-        return this.bigBoard;
-    }*/
-    
+    };    
     
 }
 
