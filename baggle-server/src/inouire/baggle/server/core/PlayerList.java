@@ -208,7 +208,7 @@ public class PlayerList {
         for(Player p : playerList){
             if(p!=null){
                 if(p.status==Status.IDLE && now_time - p.getTimeOfLastAction()
-                        > Main.server.configuration.inactivityTimeout ){
+                        > Main.server.gameThread.getInactivityTimeout() ){
                     p.goToStatus(Status.PAUSE);
                     SimpleLog.logger.info(p.name+" is having an automatic break.");
                 }

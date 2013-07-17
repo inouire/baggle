@@ -106,8 +106,8 @@ public class Main {
         
         //start server, with or without gui assistant
         if(WITH_GUI){
-            //mainFrame = new MainFrame(configuration);
-            //mainFrame.setVisible(true);
+            mainFrame = new MainFrame(server_config);
+            mainFrame.setVisible(true);
         }else{
             server = new BaggleServer(server_config);
             server.startServer();
