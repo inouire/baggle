@@ -51,13 +51,17 @@ public class SolutionsFrame extends JFrame{
         Collections.sort(solutions,new WordComparator());
         
         all_results.addComponentListener(new ComponentListener() {
+            @Override
             public void componentResized(ComponentEvent e) {
                 all_results.notifyResize();
             }
+            @Override
             public void componentMoved(ComponentEvent e) {}
 
+            @Override
             public void componentShown(ComponentEvent e) {}
 
+            @Override
             public void componentHidden(ComponentEvent e) {}
         });
         
@@ -89,6 +93,7 @@ public class SolutionsFrame extends JFrame{
 
 class WordComparator implements Comparator<String> {
 
+    @Override
     public int compare(String w1, String w2) {
         if (w1.length()>w2.length()){
             return -1;

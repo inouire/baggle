@@ -51,7 +51,7 @@ public class BoardPanel extends JComponent{
     int offset_x_mem, offset_y_mem;
     int b=2;//taille de bordure
     int border_ratio=5;//pourcentage de la taille de la bordure par rapport à la taille totale
-    static int i=1;//taille interdé
+    static int i=1;//taille inter-dé
     
     boolean surlign=false;
     int rotation=0;
@@ -99,22 +99,27 @@ public class BoardPanel extends JComponent{
         
         this.addMouseListener(new MouseListener() {
 
+            @Override
             public void mouseClicked(MouseEvent arg0) {
                 mouseClickedAction(arg0);
             }
 
+            @Override
             public void mousePressed(MouseEvent arg0) {
                 mousePressedAction(arg0);
             }
 
+            @Override
             public void mouseReleased(MouseEvent arg0) {
                 mouseReleasedAction(arg0);
             }
 
+            @Override
             public void mouseEntered(MouseEvent arg0) {
                 //do nothing
             }
 
+            @Override
             public void mouseExited(MouseEvent arg0) {
                 zone=0;
                 setCursor(Cursor.getDefaultCursor());
@@ -122,10 +127,12 @@ public class BoardPanel extends JComponent{
         });
         
         this.addMouseMotionListener(new MouseMotionListener() {
+            @Override
             public void mouseDragged(MouseEvent arg0) {
                 mouseDraggedAction(arg0);
             }
 
+            @Override
             public void mouseMoved(MouseEvent arg0) {
                 mouseMovedAction(arg0);
             }
@@ -313,11 +320,15 @@ public class BoardPanel extends JComponent{
             if(des[k][l].state!=2){
                 return false;
             }
+            int divisor=250;
+            if(SIZE==5){
+                divisor=200;
+            }
             //handle the diagonal stuff
-            int ax=(1000*(X-(X0+b))/(S-2*b))%250;
-            int bx=(1000*(Y-(Y0+b))/(S-2*b))%250;
+            int ax=(1000*(X-(X0+b))/(S-2*b))%divisor;
+            int bx=(1000*(Y-(Y0+b))/(S-2*b))%divisor;
             int T=80;
-            if((ax+bx<T)||(bx-ax>250-T)||(ax+bx>500-T)||(bx-ax<T-250)){
+            if((ax+bx<T)||(bx-ax>divisor-T)||(ax+bx>divisor*2-T)||(bx-ax<T-divisor*2)){
                 return false;
             }else{
                 return true;
