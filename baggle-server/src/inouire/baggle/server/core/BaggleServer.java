@@ -19,10 +19,7 @@
 package inouire.baggle.server.core;
 
 import inouire.baggle.server.ServerConfiguration;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Timer;
-import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.basics.SimpleLog;
 import org.apache.log4j.Level;
 
@@ -62,7 +59,7 @@ public class BaggleServer {
         this.configuration = configuration;
     }
     
-    public boolean startServer(){
+    public void startServer(){
         
         //recap the option that will be used for this server instance
         configuration.printRecap();    
@@ -98,13 +95,12 @@ public class BaggleServer {
             lanWatchmanThread.start();
         }
         
-        return true;
     }
     
-    public boolean stopServer(){
+    public void stopServer(){
         //TODO
         SimpleLog.logger.info("Stopping server (not implemented yet)");
-        return true;
+        return;
     }
     
 }
