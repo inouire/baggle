@@ -42,6 +42,7 @@ public class Player {
     public String name="Unkwown player";
     public String avatar="unknown";
     public int total_score=0;
+    public int nb_beaten=0;
     public Status status=Status.IDLE;
     public boolean is_zombie=false;
     public boolean is_bot=false;
