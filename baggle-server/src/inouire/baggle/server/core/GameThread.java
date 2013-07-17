@@ -61,7 +61,7 @@ public class GameThread extends Thread{
         String language = config.get("room.rules.language");
         boolean hasParentalFilter = config.parentalFilter;
         BoardType board_type=BoardType.CLASSIC;
-        if(config.get("room.rules.boardType").equals("big")){
+        if(config.bigBoard){
              board_type = BoardType.BIG;
              grid="BAGGLEBAGGLEBAGGLEBAGGLEB";
         }
