@@ -19,6 +19,7 @@ package inouire.baggle.client.threads;
 
 import java.util.TimerTask;
 import inouire.baggle.client.Main;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -30,7 +31,7 @@ public class AutoRefresh extends TimerTask{
     public void run() {
         
         if(!Main.mainFrame.inRoom()){
-            Main.logger.debug("Auto refresh servers list & scores");
+            SimpleLog.logger.debug("Auto refresh servers list & scores");
         
             //get information from master server
             new MasterServerHTTPConnection(Main.mainFrame.connectionPane.officialServersPane).start();

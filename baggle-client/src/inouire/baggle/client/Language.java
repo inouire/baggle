@@ -207,6 +207,7 @@ public class Language {
         if(Main.LOCALE.equals("fr")){
             s="B@ggle version "+  Main.VERSION + "\n\n"+
             "B@ggle est un logiciel libre (license GPLv3) principalement écrit par Edouard de Labareyre.\n"+
+            "- Le dictionnaire français est régulièrement mis à jour par Bernard Javerliat\n"+ 
             "- La liste des mots du filtre parental a été constituée par Ersatz.\n"+
             "- L'excellente structure de stockage du dictionnaire (DAWG) est de JohnPaul Adamovsky.\n"+
             "  http://pathcom.com/~vadco/dawg.html\n\n"+
@@ -216,7 +217,8 @@ public class Language {
         }else{
             s="B@ggle version "+  Main.VERSION + "\n\n"+
             "B@ggle is a free software (GPLv3 license) mainly developed by Edouard de Labareyre.\n"+
-            "- The list of french words for parental filter has been made by Ersatz.\n"+
+            "- The french dictionnary is continuously updated by Bernard Javerliat\n"+  
+            "- The list of french words for parental filter has been made by Ersatz.\n"+ 
             "- The awesome storage structure for dictionnary (DAWG) is from JohnPaul Adamovsky.\n"+
             "  http://pathcom.com/~vadco/dawg.html\n\n"+
             "If you don't know boggle rules, you can display them when you are connected to a room.\n\n"+

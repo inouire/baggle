@@ -17,6 +17,7 @@
   */
 package inouire.baggle.client;
 
+import inouire.basics.SimpleLog;
 import java.io.*;
 import inouire.utils.Utils;
 
@@ -42,10 +43,10 @@ public class UserConfiguration {
         
         //create config dir if necessary
         if(!Main.CONFIG_FOLDER.exists()){
-            Main.logger.info("Config dir not found, creating it: "+Main.CONFIG_FOLDER.getAbsolutePath());
+            SimpleLog.logger.info("Config dir not found, creating it: "+Main.CONFIG_FOLDER.getAbsolutePath());
             Main.CONFIG_FOLDER.mkdir();
             if(!Main.CONFIG_FOLDER.exists()){
-                Main.logger.error("Impossible to create directory: "+Main.CONFIG_FOLDER.getAbsolutePath());
+                SimpleLog.logger.error("Impossible to create directory: "+Main.CONFIG_FOLDER.getAbsolutePath());
                 return;
             }
         }
@@ -70,9 +71,9 @@ public class UserConfiguration {
             fw.write("board_width="+BOARD_WIDTH+"\n");
             fw.write("show_scores="+SHOW_SCORES+"\n");
             fw.close();
-            Main.logger.info("Config saved to "+CONFIG_FILE.getAbsolutePath());
+            SimpleLog.logger.info("Config saved to "+CONFIG_FILE.getAbsolutePath());
         }catch(IOException e){
-            Main.logger.error("Impossible to save config to "+CONFIG_FILE.getAbsolutePath());
+            SimpleLog.logger.error("Impossible to save config to "+CONFIG_FILE.getAbsolutePath());
         }
         
     }
@@ -85,7 +86,7 @@ public class UserConfiguration {
         try {
             in = new FileInputStream(CONFIG_FILE);
         } catch (FileNotFoundException ex) {
-            Main.logger.error("Impossible to open file at "+CONFIG_FILE.getAbsolutePath());
+            SimpleLog.logger.error("Impossible to open file at "+CONFIG_FILE.getAbsolutePath());
             return;
         }
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -128,7 +129,7 @@ public class UserConfiguration {
                     }
                 }
             }
-            Main.logger.info("Successfully loaded config file: "+CONFIG_FILE.getAbsolutePath());
+            SimpleLog.logger.info("Successfully loaded config file: "+CONFIG_FILE.getAbsolutePath());
             
             Main.mainFrame.setSize(WIDTH,HEIGHT);
             Main.mainFrame.setLocation(POSX,POSY);
@@ -137,7 +138,7 @@ public class UserConfiguration {
             Main.mainFrame.connectionPane.sideConnectionPane.scoresPane.setShowed(Main.configuration.SHOW_SCORES);
         
         }catch(Exception e){
-            Main.logger.warn("Error wile loading config file: "+CONFIG_FILE.getAbsolutePath());
+            SimpleLog.logger.warn("Error wile loading config file: "+CONFIG_FILE.getAbsolutePath());
         }finally{
             try{
                 reader.close();

@@ -22,10 +22,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import inouire.baggle.client.Main;
 import inouire.baggle.client.gui.modules.LANDiscoverPanel;
 import inouire.baggle.datagrams.PINGDatagram;
 import inouire.baggle.types.IllegalDatagramException;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -47,7 +47,7 @@ public class LANDiscoverThread extends Thread{
             try {
                 socket= new DatagramSocket(returnPort);
             } catch (SocketException se) {
-                Main.logger.debug("Impossible to create socket on port "+returnPort);
+                SimpleLog.logger.debug("Impossible to create socket on port "+returnPort);
                 //TODO améliorer ça, trop bourrin
                 returnPort++;
             }
@@ -58,7 +58,7 @@ public class LANDiscoverThread extends Thread{
     @Override
     public void run(){
         
-        Main.logger.info("Starting LAN discovey");
+        SimpleLog.logger.info("Starting LAN discovey");
         
         int refreshId = listener.newRefreshId();
         
@@ -81,7 +81,7 @@ public class LANDiscoverThread extends Thread{
                 socket.receive(packetR);
                 InetAddress host = packetR.getAddress();
                 received = new String(packetR.getData(), 0, packetR.getLength());
-                Main.logger.info("[<LANRCV] "+received);
+                SimpleLog.logger.info("[<LANRCV] "+received);
                 try {
                     PINGDatagram pingD = new PINGDatagram(received.split("\\|"));
                     if(pingD.port==null){
@@ -89,12 +89,12 @@ public class LANDiscoverThread extends Thread{
                     }
                     listener.addValidServer(refreshId, host.getHostName(),pingD.port,pingD);
                 } catch (IllegalDatagramException ex) {
-                    Main.logger.warn("error while parsing "+received);
+                    SimpleLog.logger.warn("error while parsing "+received);
                 }
                         
             }
         } catch (IOException e) {
-            Main.logger.error("error during lan discover",e);
+            SimpleLog.logger.error("error during lan discover",e);
         }
 	socket.close();
         

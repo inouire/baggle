@@ -47,6 +47,7 @@ import inouire.baggle.client.Main;
 import inouire.baggle.client.gui.ColorFactory;
 import inouire.baggle.client.threads.ServerConnection;
 import inouire.baggle.datagrams.PINGDatagram;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -107,7 +108,7 @@ public class ServerListPanel extends JPanel{
                 int index = getSelectedIndex(me);
                 if(index>=0){
                     OneServerPanel one = (OneServerPanel) serverListModel.get(index);
-                    Main.logger.debug(one.host+":"+one.port+" - "+one.server_name +"has been clicked");
+                    SimpleLog.logger.debug(one.host+":"+one.port+" - "+one.server_name +"has been clicked");
                 one.connectToThisServer();
                 }
             }

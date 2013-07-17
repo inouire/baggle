@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import inouire.baggle.types.IllegalDatagramException;
+import inouire.basics.SimpleLog;
 
 /**
  *
@@ -56,7 +57,7 @@ public class CachedServersList {
         try {
             in = new FileInputStream(LIST_FILE);
         } catch (FileNotFoundException ex) {
-            Main.logger.warn("Impossible to open file at "+LIST_FILE.getAbsolutePath());
+            SimpleLog.logger.warn("Impossible to open file at "+LIST_FILE.getAbsolutePath());
             return;
         }
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -73,15 +74,15 @@ public class CachedServersList {
                     if(entry.timestamp > timestamp_min){
                         cached_servers.add(entry);
                     }else{
-                        Main.logger.debug("Not adding server entry, too old: "+line);
+                        SimpleLog.logger.debug("Not adding server entry, too old: "+line);
                     }
                 }catch(IllegalDatagramException ide){
-                    Main.logger.warn("Server entry not recognized: "+line);
+                    SimpleLog.logger.warn("Server entry not recognized: "+line);
                 }
             }
-            Main.logger.info("Successfully loaded cached servers list: "+LIST_FILE.getAbsolutePath());
+            SimpleLog.logger.info("Successfully loaded cached servers list: "+LIST_FILE.getAbsolutePath());
         }catch(Exception e){
-            Main.logger.warn("Error wile loading cached server list: "+LIST_FILE.getAbsolutePath());
+            SimpleLog.logger.warn("Error wile loading cached server list: "+LIST_FILE.getAbsolutePath());
         }finally{
             try{
                 reader.close();
@@ -100,9 +101,9 @@ public class CachedServersList {
                 fw.write(server.toString()+"\n");
             }
             fw.close();
-            Main.logger.info("Cached servers list '"+list_name+"' saved to file "+LIST_FILE.getAbsolutePath());
+            SimpleLog.logger.info("Cached servers list '"+list_name+"' saved to file "+LIST_FILE.getAbsolutePath());
         }catch(IOException e){
-            Main.logger.warn("Impossible to save cached server list to "+LIST_FILE.getAbsolutePath());
+            SimpleLog.logger.warn("Impossible to save cached server list to "+LIST_FILE.getAbsolutePath());
         }
         
     }
@@ -112,12 +113,12 @@ public class CachedServersList {
             if(server.port==null){
                 if(server.host.equals(host)){
                     server.timestamp=System.currentTimeMillis();
-                    Main.logger.debug(server.host+" has been touched");
+                    SimpleLog.logger.debug(server.host+" has been touched");
                     return;
                 }
             }
         }
-        Main.logger.debug(host+" has been added");
+        SimpleLog.logger.debug(host+" has been added");
         cached_servers.add(new ServerEntry(host));
     }
     
@@ -126,12 +127,12 @@ public class CachedServersList {
             if(server.port!=null){
                 if(server.host.equals(host) && server.port==port){
                     server.timestamp=System.currentTimeMillis();
-                    Main.logger.debug(server.host+":"+server.port+" has been touched");
+                    SimpleLog.logger.debug(server.host+":"+server.port+" has been touched");
                     return;
                 }
             }
         }
-        Main.logger.debug(host+":"+port+" has been added");
+        SimpleLog.logger.debug(host+":"+port+" has been added");
         cached_servers.add(new ServerEntry(host,port));
     }
     

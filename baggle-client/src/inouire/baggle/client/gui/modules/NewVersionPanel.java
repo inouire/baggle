@@ -32,6 +32,7 @@ import inouire.baggle.client.Language;
 import inouire.baggle.client.Main;
 import inouire.baggle.client.gui.ColorFactory;
 import inouire.baggle.client.threads.MasterServerHTTPConnection;
+import inouire.basics.SimpleLog;
 
 
 public class NewVersionPanel extends JPanel{
@@ -69,7 +70,7 @@ public class NewVersionPanel extends JPanel{
         String[] new_version=MasterServerHTTPConnection.checkNewVersion();
         
         if(new_version==null){
-            Main.logger.info("No new version available");
+            SimpleLog.logger.info("No new version available");
             return;
         }
         
