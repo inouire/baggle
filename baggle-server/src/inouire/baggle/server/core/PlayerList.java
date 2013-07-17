@@ -444,14 +444,22 @@ public class PlayerList {
 
         //create the list of players taken into account for the results
         ArrayList<Player> participants=new ArrayList<Player>();
+        int nb_players=0,nb_robots=0;
         for(Player p : playerList){
             if(p!=null &&  (p.getNumberOfWordsFound()>0 || p.status != Status.PAUSE)){
                 participants.add(p);
+                if(p.is_bot){
+                    nb_robots++;
+                }else{
+                    nb_players++;
+                }
             }
         }
 
         broadcastEndSignal();
 
+
+        
         //do nothing if participants list is empty
         if(participants.isEmpty()){
             return;
@@ -480,9 +488,10 @@ public class PlayerList {
         }
         
         //sort the participants to get the top three of the players
+        //TODO handle the case of ex-aequo
         Collections.sort(participants, new PlayerScoreComparator());
         
-        //add points to total score broadcast eveything (results and rank)
+        //add points to total score + broadcast rank of the top 3
         for(Player p : participants){
             p.total_score+=p.score_result;
             int rank = participants.indexOf(p)+1;
@@ -491,12 +500,11 @@ public class PlayerList {
             }else{
                 broadcast(new RESULTDatagram(p.id,p.score_result,p.words_found_result).toString());
             }
-
+            p.nb_beaten = nb_players-nb_robots-rank;
         }
         
         //broadcast the total score of each player
         broadcastScores();
-        
         
         //tell who won the game
         int best_score=0;
@@ -532,12 +540,11 @@ public class PlayerList {
         for(Player p : participants){
             if(!p.is_bot){//only for non-bot participants
                 OneScore score = new OneScore(p.name,p.score_result);
-                if(winners.contains(p)){
+                score.setBeat(p.nb_beaten);
+                if(winners.contains(p) && nb_players-nb_robots > 1){
                     score.setWon(1);
-                    score.setBeat(participants.size()-1);
                 }else{
                     score.setWon(0);
-                    score.setBeat(0);
                 }
                 int nbLongWords=0;
                 for(String word:p.words_found_result){
