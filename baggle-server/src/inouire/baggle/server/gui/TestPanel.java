@@ -187,7 +187,7 @@ public class TestPanel extends JPanel{
                 setOkButton();
                 addText("La connexion est correctement paramétrée pour lancer un serveur.\n");
             }else if(portBusy){
-                addText("Un serveur est probablement déjà lancé sur le port "+Main.server.configuration.getListenningPort()+" de cet ordinateur !\nLa connexion ne peut pas être diagnostiquée correctement.\n\n");
+                addText("Un serveur est probablement déjà lancé sur le port "+Main.server.configuration.listeningPort+" de cet ordinateur !\nLa connexion ne peut pas être diagnostiquée correctement.\n\n");
                 setDownlinkArrow(1);
             }else{
                 setDownlinkArrow(1);

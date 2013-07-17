@@ -34,7 +34,7 @@ public class OccasionalTask extends TimerTask{
         
         //~5 minutes
         
-        if(Main.server.configuration.isRegisterToMasterServer()){
+        if(Main.server.configuration.registerToMasterServer){
             //submit scores
             try{
                 MasterServerHTTPConnection.submitScores();

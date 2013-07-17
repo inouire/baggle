@@ -18,14 +18,13 @@
 
 package inouire.baggle.server.core;
 
+import inouire.baggle.server.ServerConfiguration;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Timer;
 import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.basics.SimpleLog;
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
 
 /**
  *
@@ -33,7 +32,7 @@ import org.apache.log4j.PatternLayout;
  */
 public class BaggleServer {
 
-    public ServerConfigXML configuration;
+    public ServerConfiguration configuration;
     
     public NioServer nioServer;
     public MainWorker nioWorker;
@@ -42,24 +41,24 @@ public class BaggleServer {
     public GameThread gameThread;
         
     
-    public BaggleServer(ServerConfigXML configuration){
+    public BaggleServer(ServerConfiguration configuration){
         
         //assign configuration for this server
         this.configuration = configuration;
                
         //ajust log level
-        SimpleLog.logger.setLevel(Level.toLevel(configuration.getLogLevel(),Level.INFO));
+        SimpleLog.logger.setLevel(Level.toLevel(configuration.get("log.level"),Level.INFO));
     }
     
-    public void addLog4jAppender(OutputStream out){
+    /*public void addLog4jAppender(OutputStream out){
         ConsoleAppender ca = new ConsoleAppender();
         ca.setWriter(new OutputStreamWriter(out));
         ca.setLayout(new PatternLayout("%d - %-5p - %m%n"));
-        SimpleLog.logger.setLevel(Level.toLevel(configuration.getLogLevel(),Level.INFO));
+        SimpleLog.logger.setLevel(Level.toLevel(configuration.get("log.level"),Level.INFO));
         SimpleLog.logger.addAppender(ca);
-    }
+    }*/
     
-    public void setConfiguration(ServerConfigXML configuration){
+    public void setConfiguration(ServerConfiguration configuration){
         this.configuration = configuration;
     }
     
@@ -68,12 +67,15 @@ public class BaggleServer {
         //recap the option that will be used for this server instance
         configuration.printRecap();    
         
+        
         //game thread creation
         gameThread = new GameThread();
 
+        
         //client list initialisation
-        gameThread.players = new PlayerList(configuration.getMaxPlayers());
-
+        gameThread.players = new PlayerList(configuration.maxPlayers);
+        
+        
         //start the main worker part
         nioWorker = new MainWorker(configuration,gameThread.players);
         new Thread(nioWorker).start();
@@ -91,7 +93,7 @@ public class BaggleServer {
         gameThread.start();
         
         //listen on lan if needed
-        if(configuration.isListenOnLan()){
+        if(configuration.listenOnLan){
             lanWatchmanThread = new LANWatchmanThread();
             lanWatchmanThread.start();
         }

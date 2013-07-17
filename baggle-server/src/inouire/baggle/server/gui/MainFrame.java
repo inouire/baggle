@@ -18,7 +18,7 @@
 package inouire.baggle.server.gui;
 
 import inouire.baggle.server.Main;
-import inouire.baggle.server.bean.ServerConfigXML;
+import inouire.baggle.server.ServerConfiguration;
 import inouire.baggle.server.core.BaggleServer;
 import inouire.utils.Utils;
 import java.awt.CardLayout;
@@ -39,10 +39,10 @@ public class MainFrame extends JFrame{
     SetupPanel setupPane;
     private MonitoringPanel monitorPane;
     
-    public ServerConfigXML configuration;
+    public ServerConfiguration configuration;
     
 
-    public MainFrame( ServerConfigXML configuration){
+    public MainFrame( ServerConfiguration configuration){
         super();
         
         Utils.setBestLookAndFeelAvailable();

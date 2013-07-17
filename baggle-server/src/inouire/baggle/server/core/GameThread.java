@@ -20,7 +20,7 @@ package inouire.baggle.server.core;
 
 import java.util.ArrayList;
 import inouire.baggle.server.Main;
-import inouire.baggle.server.bean.ServerConfigXML;
+import inouire.baggle.server.ServerConfiguration;
 import inouire.baggle.solver.BoardType;
 import inouire.baggle.solver.GameBoard;
 import inouire.baggle.solver.Solver;
@@ -47,25 +47,33 @@ public class GameThread extends Thread{
     private int total_number_of_words_found=0;
     public int elapsed_time=0;
         
+    private int inactivity_timeout;
+    private int long_inactivity_timeout;
+    private int short_inactivity_timeout;
+        
+    //TODO add shortcuts for most used configs
+    
     public GameThread(){
         
         this.setName("gameThread");
         
-        ServerConfigXML config = Main.server.configuration;
-        
+        ServerConfiguration config = Main.server.configuration;
+        String language = config.get("room.rules.language");
+        boolean hasParentalFilter = config.parentalFilter;
         BoardType board_type=BoardType.CLASSIC;
-        if(config.isBigBoard()){
+        if(config.get("room.rules.boardType").equals("big")){
              board_type = BoardType.BIG;
+             grid="BAGGLEBAGGLEBAGGLEBAGGLEB";
         }
-        //game board init
-        game_board= new GameBoard(board_type,config.getLanguage());
-        if(config.isBigBoard()){
-            grid="BAGGLEBAGGLEBAGGLEBAGGLEB";
-        }
+        long_inactivity_timeout = config.gameTime*1000;
+        short_inactivity_timeout = 25000;//25 sec
+        
+        //game board initialisation
+        game_board= new GameBoard(board_type,language);
         
         //solver initialisation
         try {
-            grid_solver=new Solver(config.getLanguage(),config.isParentalFilter(),board_type);
+            grid_solver=new Solver(language,hasParentalFilter,board_type);
         } catch (Exception ex) {
             SimpleLog.logException(ex);
         }
@@ -84,9 +92,8 @@ public class GameThread extends Thread{
 
                 //wait for players to be ready
                 if(!was_reset){
-                    
                     //special inactivity timeout when waiting for ready players
-                    Main.server.configuration.setShortInactivityTimeout();
+                    setShortInactivityTimeout();
                 
                     SimpleLog.logger.info("Waiting for players to be ready");
                     while(!players.hasEnoughReadyPlayers()){
@@ -113,7 +120,7 @@ public class GameThread extends Thread{
                 //keeping it cool
                 try{sleep(250);}catch(Exception e){}
                 
-                Main.server.configuration.setLongInactivityTimeout();
+                setLongInactivityTimeout();
                 players.touchAll();
                 
                 //init a new game
@@ -130,9 +137,9 @@ public class GameThread extends Thread{
                 SimpleLog.logger.info("Grid: "+grid);
 
                 //game loop, break when no more time or when reset expected
-                while(elapsed_time<Main.server.configuration.getGameTime()){
+                while(elapsed_time<Main.server.configuration.gameTime){
                     
-                    //sleep a bit
+                    //have a nap
                     try{sleep(1000);}catch(Exception e){}
 
                     //how many time 
@@ -169,7 +176,7 @@ public class GameThread extends Thread{
     }
     
     public int getRemainingTime(){
-        return Main.server.configuration.getGameTime() - elapsed_time;
+        return Main.server.configuration.gameTime - elapsed_time;
     }
     
     public boolean isInGame(){
@@ -187,4 +194,15 @@ public class GameThread extends Thread{
     public void removeNbWordsFound(int nbWords){
         total_number_of_words_found-=nbWords;
     }
+    
+    public int getInactivityTimeout(){
+        return inactivity_timeout;
+    }
+    
+    private void setShortInactivityTimeout(){
+        inactivity_timeout = short_inactivity_timeout;
+    }
+    private void setLongInactivityTimeout(){
+        inactivity_timeout =  long_inactivity_timeout;
+    }   
 }

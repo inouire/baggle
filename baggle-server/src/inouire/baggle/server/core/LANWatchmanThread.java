@@ -35,7 +35,7 @@ public class LANWatchmanThread extends Thread{
     
     public LANWatchmanThread(){
         this.setName("lanWatchmanThread");
-        int port=Main.server.configuration.getLanListenningPort();
+        int port=Main.server.configuration.lanListenningPort;
         try{
             socket = new MulticastSocket(port);
             address = InetAddress.getByName("230.0.0.1");
@@ -50,7 +50,7 @@ public class LANWatchmanThread extends Thread{
     @Override
     public void run(){
         
-        SimpleLog.logger.info("Listening for local broadcast on port "+Main.server.configuration.getLanListenningPort());
+        SimpleLog.logger.info("Listening for local broadcast on port "+Main.server.configuration.lanListenningPort);
         
         DatagramPacket packet;
         PINGDatagram pingD;

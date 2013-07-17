@@ -33,70 +33,39 @@ import java.util.Arrays;
  */
 public class ServerConfiguration {
     
-    MyMl myml_structure;
-    
-    static String[] default_config_lines=new String[]{
-        "room:",
-        "    name: le salon de "+System.getProperty("user.name"),
-        "    welcomeMessage: Bienvenue dans ce salon",
-        "    rules:",
-        "        maxPlayers: 6",
-        "        gameTime: 180",
-        "        boardType: classic",
-        "        nbLettersMin: 3",
-        "        allWordsCount: true",
-        "        language: fr",
-        "    options:",
-        "        blockChat: false",
-        "        parentalFilter: false",
-        "        private: false",
-        "network:",
-        "    public:",
-        "        listeningPort: 42705",
-        "        portAutoIncrement: true",
-        "    masterServer:",
-        "        register: true",
-        "        host: masterserver.baggle.org",
-        "        port: 80",
-        "    lan:",
-        "        listenOnLan: true",
-        "        listeningPort: 42710",
-        "log:",
-        "    level: INFO"
-    };
-    
-    static String[] config_validator=new String[]{
-        "room:",
-        "    name: string",
-        "    welcomeMessage: string",
-        "    rules:",
-        "        maxPlayers: integer",
-        "        gameTime: integer",
-        "        boardType: string",
-        "        nbLettersMin: integer",
-        "        allWordsCount: boolean",
-        "        language: string",
-        "    options:",
-        "        blockChat: boolean",
-        "        parentalFilter: boolean",
-        "        private: boolean",
-        "network:",
-        "    public:",
-        "        listeningPort: integer",
-        "        portAutoIncrement: boolean",
-        "    masterServer:",
-        "        register: boolean",
-        "        host: string",
-        "        port: integer",
-        "    lan:",
-        "        listenOnLan: boolean",
-        "        listeningPort: integer",
-        "log:",
-        "    level: string"
-    };
+    MyMl config;
+
        
+    public String roomName;
+    public String welcomeMessage;
+    public int maxPlayers;
+    
+    public int listeningPort;
+    public boolean autoPortIncrement;
+    public boolean registerToMasterServer;
+    public String masterServerHost;
+    public int masterServerPort;
+    public boolean listenOnLan;
+    public int lanListenningPort;
+    
+    public int gameTime;
+    public int nbLettersMin;
+    public boolean allWordsCount;
+    public String language;
+    public boolean bigBoard;
+    
+    public boolean blockChat;
+    public boolean parentalFilter;
+    
+    public String logLevel;
+    
+    //non exposed parameters
+    public int inactivityTimeout;//msec
+    public int zombieTimeout=60000;//msec, = 1min
+    public int kickTimeout=600000;//msec, = 60min
+    
     public ServerConfiguration(MyMl myml_structure){
-        this.myml_structure = myml_structure;
+        this.config = myml_structure;
     }
     
     public static ServerConfiguration createDefault(String config_file){
@@ -112,7 +81,9 @@ public class ServerConfiguration {
         }
         
         //no need to validate, this one is safe        
-        return new ServerConfiguration(default_config);
+        ServerConfiguration loaded_config = new ServerConfiguration(default_config);
+        loaded_config.attribute();
+        return loaded_config;
     }
     
     public static ServerConfiguration loadFromFile(String config_file){
@@ -149,17 +120,114 @@ public class ServerConfiguration {
         }
         
         //return final config
-        return new ServerConfiguration(config);
+        ServerConfiguration loaded_config = new ServerConfiguration(config);
+        loaded_config.attribute();
+        return loaded_config;
     }
     
-    public String getValue(String absolute_key){
+    public String get(String absolute_key){
         try {
-            return myml_structure.getValue(absolute_key);
+            return config.getValue(absolute_key);
         } catch (MyMlException ex) {
             SimpleLog.logger.warn(ex.getMessage());
             return "N/A";
         }
     }
+        
+    public void printRecap(){
+        SimpleLog.logger.info("----------------------------------------");
+        SimpleLog.logger.info("The following config will be used:\n"+config.toString());
+    }
+    
+    private void attribute(){
+        try{
+            this.roomName = config.getValue("room.name");
+            this.welcomeMessage = config.getValue("room.welcomeMessage");
+            this.maxPlayers = config.getInt("room.maxPlayers",6);
+            
+            this.listeningPort = config.getInt("network.public.listeningPort",42705);
+            this.autoPortIncrement = config.getBool("network.public.autoPortIncrement",true);
+            this.registerToMasterServer = config.getBool("network.masterServer.register",true);
+            this.masterServerHost = config.getValue("network.masterServer.host");
+            this.masterServerPort  = config.getInt("network.masterServer.port",80);
+            this.listenOnLan = config.getBool("network.lan.listenOnLan", true);
+            this.lanListenningPort = config.getInt("network.lan.lanListeningPort",42710);
+            
+            this.gameTime = config.getInt("room.rules.gameTime",180);
+            this.nbLettersMin = config.getInt("room.rules.nbLettersMin", 3);
+            this.allWordsCount = config.getBool("room.rules.allWordsCount", true);
+            this.language = config.getValue("room.rules.language");
+            this.bigBoard = config.getBool("room.rules.bigBoard", false);
+            
+            this.blockChat = config.getBool("room.options.blockChat", false);
+            this.parentalFilter = config.getBool("room.options.parentalFilter", false);
+            
+            this.logLevel = config.getValue("log.level");
+        }catch(MyMlException ex){
+            ex.printStackTrace();
+        }
+        
+    }
+    
+    static String[] default_config_lines=new String[]{
+        "room:",
+        "    name: le salon de "+System.getProperty("user.name"),
+        "    welcomeMessage: Bienvenue dans ce salon",
+        "    maxPlayers: 6",
+        "    rules:",
+        "        gameTime: 180",
+        "        boardType: classic",
+        "        nbLettersMin: 3",
+        "        allWordsCount: yes",
+        "        language: fr",
+        "        bigBoard: no",
+        "    options:",
+        "        blockChat: no",
+        "        parentalFilter: no",
+        "network:",
+        "    public:",
+        "        listeningPort: 42705",
+        "        portAutoIncrement: yes",
+        "    masterServer:",
+        "        register: yes",
+        "        host: masterserver.baggle.org",
+        "        port: 80",
+        "    lan:",
+        "        listenOnLan: yes",
+        "        listeningPort: 42710",
+        "log:",
+        "    level: INFO"
+    };
+    
+    static String[] config_validator=new String[]{
+        "room:",
+        "    name: string",
+        "    welcomeMessage: string",
+        "    maxPlayers: integer",
+        "    rules:",
+        "        gameTime: integer",
+        "        bigBoard: boolean",
+        "        nbLettersMin: integer",
+        "        allWordsCount: boolean",
+        "        language: string",
+        "    options:",
+        "        blockChat: boolean",
+        "        parentalFilter: boolean",
+        "network:",
+        "    public:",
+        "        listeningPort: integer",
+        "        portAutoIncrement: boolean",
+        "    masterServer:",
+        "        register: boolean",
+        "        host: string",
+        "        port: integer",
+        "    lan:",
+        "        listenOnLan: boolean",
+        "        listeningPort: integer",
+        "log:",
+        "    level: string"
+    };
+    
     /*
     public void setShortInactivityTimeout(){
         inactivityTimeout = 25000;//25 sec

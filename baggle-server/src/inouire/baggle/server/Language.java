@@ -43,7 +43,7 @@ public class Language {
     public static String getString(int id){
         String a="###";
         try{
-            if(Main.server.configuration.getLanguage().equals("fr")){
+            if(Main.server.configuration.get("room.rules.language").equals("fr")){
                 a=fr[id];
             }else if(Main.server.configuration.equals("en")){
                 a=en[id];
