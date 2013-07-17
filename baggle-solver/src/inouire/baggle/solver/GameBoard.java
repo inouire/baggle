@@ -114,10 +114,9 @@ public class GameBoard {
         
         if(language.equals("fr")){
             if(this.size == 4){
-                Dices=dices_fr_5;
-            }else{
                 Dices=dices_fr_4;
-
+            }else{
+                Dices=dices_fr_5;
             }
         }else if(language.equals("en")){
             Dices=dices_en;
@@ -139,6 +138,7 @@ public class GameBoard {
                 y = r.nextInt(size);
             }while(Board[x][y]!=null);
             Board[x][y] = d;
+            //SimpleLog.
         }
         return this.toString();
     }
