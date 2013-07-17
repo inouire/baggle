@@ -56,9 +56,9 @@ public class Solver {
         //build dict name from args
         String dict_reference="dawg_dict_";
         dict_reference+=language;
-        if(BIG_BOARD){
+        /*if(BIG_BOARD){
             dict_reference+="_5x5";
-        }
+        }*/
         dict_reference+=".dat";
         
         //create dawg stucture from file
