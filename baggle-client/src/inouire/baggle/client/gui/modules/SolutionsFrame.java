@@ -26,7 +26,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import javax.swing.JFrame;
 import inouire.baggle.client.Main;
-import inouire.baggle.solver.BoardType;
 import inouire.baggle.solver.Solver;
 
 /**
@@ -46,7 +45,7 @@ public class SolutionsFrame extends JFrame{
         miniboard.setGrid(grid);
         miniboard.setMode(Main.connection.GAME_MODE);
         Solver solver;
-        solver = new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER,BoardType.fromGrid(grid));
+        solver = new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER,Main.connection.BIG_BOARD);
         solver.setMinLength(Main.connection.MIN_LENGTH);
         ArrayList<String> solutions =  solver.solveGrid(grid);
         Collections.sort(solutions,new WordComparator());

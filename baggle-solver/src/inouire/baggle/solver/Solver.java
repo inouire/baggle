@@ -30,9 +30,10 @@ public class Solver {
     private DawgDictionnary dictionnary = new DawgDictionnary();
     private DawgDictionnary parentalFilter = new DawgDictionnary();
 
-    private BoardType grid_type=BoardType.CLASSIC;
+    private boolean BIG_BOARD=false;
     private boolean PARENTAL_FILTER=false;
     private int MIN_LENGTH=3;
+    private int MAX_LENGTH=16;
 
     private ArrayList<Letter> letters;
     private LinkedList<Letter> already_seen=new LinkedList<Letter>();
@@ -45,15 +46,17 @@ public class Solver {
      * @param with_parental_filter
      * @param big_grid 
      */
-    public Solver(String language,boolean with_parental_filter,BoardType board_type) throws Exception{
+    public Solver(String language,boolean with_parental_filter,boolean big_board) throws Exception{
         
-        this.grid_type = board_type;
         this.PARENTAL_FILTER=with_parental_filter;
-
+        if(big_board){
+            this.BIG_BOARD=true;
+            this.MAX_LENGTH=25;
+        }
         //build dict name from args
         String dict_reference="dawg_dict_";
         dict_reference+=language;
-        if(board_type.isBig()){
+        if(BIG_BOARD){
             dict_reference+="_5x5";
         }
         dict_reference+=".dat";
@@ -173,7 +176,7 @@ public class Solver {
                 }
             }
         }
-        if(word.length() > grid_type.getMaxLength()){
+        if(word.length() > MAX_LENGTH){
             already_seen.removeFirst();
             return;
         }

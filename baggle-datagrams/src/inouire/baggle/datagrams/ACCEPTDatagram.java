@@ -18,7 +18,6 @@
 
 package inouire.baggle.datagrams;
 
-import inouire.baggle.types.BoardType;
 import inouire.baggle.types.IllegalDatagramException;
 
 public class ACCEPTDatagram {
@@ -31,10 +30,10 @@ public class ACCEPTDatagram {
     public Boolean pf=null;
     public String mode=null;
     public Integer time=null;
-    public BoardType board=BoardType.CLASSIC;
+    public Boolean big=false;
 
-    //ACCEPT|id=654|auth=45RT76TR|lang=fr|chat=yes|min=3|pf=no|mode=trad|time=120|board=classic
-    public ACCEPTDatagram(String auth,int id,String lang,boolean chat,int min,boolean pf, String mode,Integer time, BoardType board){
+    //ACCEPT|id=654|auth=45RT76TR|lang=fr|chat=yes|min=3|pf=no|mode=trad|time=120|big=false
+    public ACCEPTDatagram(String auth,int id,String lang,boolean chat,int min,boolean pf, String mode,Integer time, boolean big){
         this.auth=auth;
         this.id=id;
         this.lang=lang;
@@ -43,7 +42,7 @@ public class ACCEPTDatagram {
         this.pf=pf;
         this.mode=mode;
         this.time=time;
-        this.board=board;
+        this.big=big;
     }
 
     public ACCEPTDatagram(String[] args) throws IllegalDatagramException{
@@ -94,15 +93,19 @@ public class ACCEPTDatagram {
                 }
             }else if(key.equals("time")){
                 this.time=Integer.parseInt(value);
-            }else if(key.equals("board")){
-                this.board = BoardType.valueOf(value.toUpperCase());
+            }else if(key.equals("big")){
+                if(value.equals("yes")){
+                    this.big=true;
+                }else if(value.equals("no")){
+                    this.big=false;
+                }
             }
         }
     }
   
     @Override
     public String toString(){
-        String p,c;
+        String p,c,b;
         if(pf){
             p="yes";
         }else{
@@ -113,7 +116,12 @@ public class ACCEPTDatagram {
         }else{
             c="no";
         }
-        return "ACCEPT|id="+id+"|auth="+auth+"|lang="+lang+"|chat="+c+"|min="+min+"|pf="+p+"|mode="+mode+"|time="+time+"|board="+board.toString().toLowerCase();
+        if(big){
+            b="yes";
+        }else{
+            b="no";
+        }
+        return "ACCEPT|id="+id+"|auth="+auth+"|lang="+lang+"|chat="+c+"|min="+min+"|pf="+p+"|mode="+mode+"|time="+time+"|big="+b;
     }
 
 }

@@ -38,11 +38,11 @@ public class SolverTest {
     @BeforeClass
     public static void setUpClass() throws Exception
     {
-        Solver test_solver_4x4 = new Solver("fr",false,BoardType.CLASSIC);
+        Solver test_solver_4x4 = new Solver("fr",false,false);
         test_solver_4x4.setMinLength(3);
         test_results_4x4 = test_solver_4x4.solveGrid("HIODLCIOTTERLNON");
         
-        Solver test_solver_5x5 = new Solver("fr",false,BoardType.BIG);
+        Solver test_solver_5x5 = new Solver("fr",false,true);
         test_solver_5x5.setMinLength(3);
         test_results_5x5 = test_solver_5x5.solveGrid("ABASOSIDRUSEMENEDCITERTUO");
     }

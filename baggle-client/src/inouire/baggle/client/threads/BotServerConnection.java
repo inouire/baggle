@@ -28,7 +28,6 @@ import java.util.Random;
 import inouire.baggle.client.Language;
 import inouire.baggle.client.Main;
 import inouire.baggle.datagrams.*;
-import inouire.baggle.solver.BoardType;
 import inouire.baggle.solver.Solver;
 import inouire.baggle.types.Key;
 import inouire.baggle.types.Status;
@@ -116,8 +115,6 @@ public class BotServerConnection extends Thread{
         String welcome_message=Datagram.replaceAccents(Language.getString(71));
         send(new CHATDatagram(welcome_message).toString());
 
-
-
         //game phase
 
         String packet;
@@ -158,7 +155,7 @@ public class BotServerConnection extends Thread{
                             break;
                         case START:
                             STARTDatagram startD = new STARTDatagram(datagram);
-                            solver=new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER,BoardType.fromGrid(startD.grid));
+                            solver=new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER,Main.connection.BIG_BOARD);
                             solver.setMinLength(Main.connection.MIN_LENGTH);
                             solutions = solver.solveGrid(startD.grid);
                             is_playing=true;
