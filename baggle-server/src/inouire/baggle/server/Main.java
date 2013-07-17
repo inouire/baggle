@@ -99,19 +99,19 @@ public class Main {
         }
         
         //log in a room-named file
-        String log_file = "log/"+server_config.getValue("room.name").replaceAll(" ","-")+".log";
+        String log_file = "log/"+server_config.get("room.name").replaceAll(" ","-")+".log";
         SimpleLog.logger.info("From now on everything will be logged into "+log_file+", see ya !");
         SimpleLog.initDevConfig();
         
-        /*
-        //start gui assistant, or server directly
+        
+        //start server, with or without gui assistant
         if(WITH_GUI){
-            mainFrame = new MainFrame(configuration);
-            mainFrame.setVisible(true);
+            //mainFrame = new MainFrame(configuration);
+            //mainFrame.setVisible(true);
         }else{
-            server = new BaggleServer(configuration);
+            server = new BaggleServer(server_config);
             server.startServer();
-        }*/
+        }
         
     }
 

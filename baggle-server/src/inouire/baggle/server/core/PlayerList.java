@@ -383,7 +383,7 @@ public class PlayerList {
         if(Main.server.gameThread.isInGame()){
             new_player.send(new STARTDatagram(Main.server.gameThread.grid,Main.server.gameThread.grid_total).toString());
             broadcastGauge();
-            new_player.send(new TIMEDatagram(Main.server.gameThread.getRemainingTime(),Main.server.configuration.getGameTime()).toString());
+            new_player.send(new TIMEDatagram(Main.server.gameThread.getRemainingTime(),Main.server.configuration.gameTime).toString());
         }else{
             new_player.send(new STOPDatagram("nogame").toString());
         }
@@ -458,7 +458,7 @@ public class PlayerList {
         }
         
         //all words count rule
-        if(Main.server.configuration.isAllWordsCount()){
+        if(Main.server.configuration.allWordsCount){
             for(Player p : participants){
                 //get sorted list of words found + score
                 p.sortResultsAndComputeScore();
@@ -597,7 +597,7 @@ public class PlayerList {
      * @param time
      */
     public void broadcastTime(int time){
-        broadcast(new TIMEDatagram(Main.server.configuration.getGameTime()-time,Main.server.configuration.getGameTime()).toString());
+        broadcast(new TIMEDatagram(Main.server.configuration.gameTime-time,Main.server.configuration.gameTime).toString());
     }
 
     /**

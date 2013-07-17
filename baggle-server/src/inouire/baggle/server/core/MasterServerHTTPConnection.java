@@ -41,13 +41,13 @@ public class MasterServerHTTPConnection {
     public static void register(){
         
         //register to master
-        String result=callWs("registerserver.php?port="+Main.server.configuration.getListenningPort());
-        
+        String result=callWs("registerserver.php?port="+Main.server.configuration.listeningPort);
+        SimpleLog.logger.trace("registerserver.php?port="+Main.server.configuration.listeningPort);
         if(result==null){
-            SimpleLog.logger.error("Impossible to contact masterserver on "+Main.server.configuration.getMasterServerHost()+":"+
-                        Main.server.configuration.getMasterServerPort());
+            SimpleLog.logger.error("Impossible to contact masterserver on "+Main.server.configuration.masterServerHost+":"+
+                        Main.server.configuration.masterServerPort);
             SimpleLog.logger.info("You should consider not registering to masterserver if you know that "+
-                    Main.server.configuration.getMasterServerHost()+
+                    Main.server.configuration.masterServerHost+
                     " is not reachable from this network");
             return;
         }
@@ -71,11 +71,11 @@ public class MasterServerHTTPConnection {
     public static int testPing(){
 
         //call web service
-        String result=callWs("pingme.php?port="+Main.server.configuration.getListenningPort());
+        String result=callWs("pingme.php?port="+Main.server.configuration.listeningPort);
         
         if(result==null){
-            SimpleLog.logger.error("Impossible to contact masterserver on "+Main.server.configuration.getMasterServerHost()+":"+
-                        Main.server.configuration.getMasterServerPort());
+            SimpleLog.logger.error("Impossible to contact masterserver on "+Main.server.configuration.masterServerHost+":"+
+                        Main.server.configuration.masterServerPort);
             return 1;
         }
         
@@ -86,10 +86,10 @@ public class MasterServerHTTPConnection {
             result=result.trim();
             String[] decomp=result.split("\"");
             if(decomp[2].equals("0")){
-                SimpleLog.logger.info("Server pingable on port "+Main.server.configuration.getListenningPort());
+                SimpleLog.logger.info("Server pingable on port "+Main.server.configuration.listeningPort);
                 return 0;
             }else{
-                SimpleLog.logger.warn("Server not pingable on port "+Main.server.configuration.getListenningPort());
+                SimpleLog.logger.warn("Server not pingable on port "+Main.server.configuration.listeningPort);
                 return 2;
             }
         }catch(Exception e){
@@ -151,7 +151,7 @@ public class MasterServerHTTPConnection {
     private static String callWs(String ws_name){
         String line=null;
         try{
-            URL serverListURL = new URL("http", Main.server.configuration.getMasterServerHost(),Main.server.configuration.getMasterServerPort(),"/ws/"+ws_name);
+            URL serverListURL = new URL("http", Main.server.configuration.masterServerHost,Main.server.configuration.masterServerPort,"/ws/"+ws_name);
             BufferedReader in = new BufferedReader(new InputStreamReader(serverListURL.openStream()));
             line="";
             String a="";

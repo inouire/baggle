@@ -18,6 +18,7 @@
 
 package inouire.baggle.server.core;
 
+import inouire.baggle.server.ServerConfiguration;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -42,7 +43,7 @@ public class NioServer implements Runnable {
     // The host:port combination to listen on
     private InetAddress hostAddress;
 
-    private ServerConfigXML configuration;
+    private ServerConfiguration configuration;
     
     private MainWorker worker;
     
@@ -61,7 +62,7 @@ public class NioServer implements Runnable {
     // Maps a SocketChannel to a list of ByteBuffer instances
     private final Map pendingData = new HashMap();
     
-    public NioServer(InetAddress hostAddress, ServerConfigXML configuration,MainWorker worker){
+    public NioServer(InetAddress hostAddress, ServerConfiguration configuration,MainWorker worker){
         this.hostAddress = hostAddress;
         this.configuration = configuration;
         this.selector = this.initSelector();
@@ -79,7 +80,7 @@ public class NioServer implements Runnable {
             this.serverChannel.configureBlocking(false);
             
             //auto find available port
-            int port=configuration.getListenningPort();
+            int port=configuration.listeningPort;
             boolean success=false;
             do{
                 try{
@@ -88,7 +89,7 @@ public class NioServer implements Runnable {
                     serverChannel.socket().bind(isa);
                     success=true;
                 }catch (IOException e) {
-                    if(configuration.isAutoPortIncrement()){
+                    if(configuration.autoPortIncrement){
                         SimpleLog.logger.warn("Couldn't create listenning socket on port "+port);
                         port++;
                         SimpleLog.logger.info("Trying port "+port+" instead");
@@ -99,7 +100,7 @@ public class NioServer implements Runnable {
                     }
                 }
             }while(!success);
-            configuration.setListenningPort(port);
+            configuration.listeningPort = port;
             
             // Register the server socket channel, indicating an interest in 
             // accepting new connections
@@ -137,7 +138,7 @@ public class NioServer implements Runnable {
         
     @Override
     public void run() {
-        SimpleLog.logger.info("Listenning for incoming connections on port "+configuration.getListenningPort());
+        SimpleLog.logger.info("Listenning for incoming connections on port "+configuration.listeningPort);
         
         while (true) {
             

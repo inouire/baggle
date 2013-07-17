@@ -48,8 +48,8 @@ public class ChoicePanel extends JPanel{
         bb.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/web.png")));
         bb.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent arg0) {
-                Main.mainFrame.configuration.setListenOnLan(true);
-                Main.mainFrame.configuration.setRegisterToMasterServer(true);
+                Main.mainFrame.configuration.listenOnLan=true;
+                Main.mainFrame.configuration.registerToMasterServer=true;
                 Main.mainFrame.switchToTestPane();
             }
         });
@@ -60,8 +60,8 @@ public class ChoicePanel extends JPanel{
         cb.setIcon(new ImageIcon(getClass().getResource("/inouire/baggle/server/icons/lan.png")));
         cb.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent arg0) {
-                Main.mainFrame.configuration.setListenOnLan(true);
-                Main.mainFrame.configuration.setRegisterToMasterServer(false);
+                Main.mainFrame.configuration.listenOnLan = true;
+                Main.mainFrame.configuration.registerToMasterServer=false;
                 Main.mainFrame.switchToSetup();
             }
         });

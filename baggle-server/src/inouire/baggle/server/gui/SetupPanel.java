@@ -30,7 +30,9 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import inouire.baggle.server.Main;
+import inouire.baggle.server.ServerConfiguration;
 import inouire.baggle.server.bean.ServerConfigXML;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 /**
  *
  * @author edouard
@@ -234,7 +236,8 @@ public class SetupPanel extends JPanel{
                 Main.server.startServer();
                 
                 //store this new config
-                ServerConfigXML.writeToFile(Main.server.configuration,Main.DEFAULT_CONFIG_FILE);
+                //TODO re activate this
+                //ServerConfigXML.writeToFile(Main.server.configuration,Main.DEFAULT_CONFIG_FILE);
             }
         });
         
@@ -259,19 +262,21 @@ public class SetupPanel extends JPanel{
         }
     }
     
-    public void loadConfiguration(ServerConfigXML config){
-        server_name_field.setText(config.getRoomName());
-        game_mode.setSelected(config.isAllWordsCount());
-        max_players_slider.setValue(config.getMaxPlayers());
-        parental_filter_check.setSelected(config.isParentalFilter());
-        disable_chat_check.setSelected(config.isBlockChat());
-        ghost_check.setSelected(!config.isRegisterToMasterServer());
-        password_check.setSelected(config.isIsPrivate());
-        password_field.setText(config.getPassword());
-        port_field.setText(config.getLanListenningPort()+"");
+    public void loadConfiguration(ServerConfiguration config){
+        server_name_field.setText(config.roomName);
+        game_mode.setSelected(config.allWordsCount);
+        max_players_slider.setValue(config.maxPlayers);
+        parental_filter_check.setSelected(config.parentalFilter);
+        disable_chat_check.setSelected(config.blockChat);
+        ghost_check.setSelected(!config.registerToMasterServer);
+        password_check.setSelected(false);//TODO remove this
+        password_field.setText("");//TODO remove this
+        port_field.setText(config.lanListenningPort+"");
     }
     
-    public void updateConfigurationFromUserInput(ServerConfigXML config){
+    public void updateConfigurationFromUserInput(ServerConfiguration config){
+        throw new NotImplementedException();
+        /*
         config.setRoomName(server_name_field.getText().trim());
         config.setAllWordsCount(game_mode.isSelected());
         config.setMaxPlayers(max_players_slider.getValue());
@@ -284,7 +289,7 @@ public class SetupPanel extends JPanel{
             config.setListenningPort(port);
         }catch(NumberFormatException nfe){
             config.setListenningPort(42705);
-        }
+        }*/
     }
     
 }

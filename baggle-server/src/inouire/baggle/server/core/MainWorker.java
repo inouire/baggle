@@ -23,8 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import inouire.baggle.datagrams.*;
 import inouire.baggle.server.Main;
+import inouire.baggle.server.ServerConfiguration;
 import inouire.baggle.server.bean.Player;
-import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.baggle.server.bean.ServerDataEvent;
 import inouire.baggle.types.BoardType;
 import inouire.baggle.types.IllegalDatagramException;
@@ -42,9 +42,9 @@ public class MainWorker implements Runnable {
     private List queue = new LinkedList();
 
     public PlayerList players;
-    private ServerConfigXML configuration;
+    private ServerConfiguration configuration;
     
-    public MainWorker(ServerConfigXML configuration,PlayerList players){
+    public MainWorker(ServerConfiguration configuration,PlayerList players){
         this.configuration=configuration;
         this.players = players;
     }
@@ -170,19 +170,19 @@ public class MainWorker implements Runnable {
     
     public String getAnswerToPING(){
         String mode;
-        if(configuration.isAllWordsCount()){
+        if(configuration.allWordsCount){
             mode="all";
         }else{
             mode="trad";
         }
         
         int nb_players=players.getNumberOfPlayers();
-        PINGDatagram P = new PINGDatagram(configuration.getListenningPort(),
-                            configuration.getRoomName(),configuration.getLanguage(),
-                            !configuration.isBlockChat(),configuration.getNbLettersMin(),
-                            configuration.isParentalFilter(), mode,nb_players,
-                            configuration.getMaxPlayers(),configuration.isIsPrivate(),
-                            Main.server.gameThread.grid,configuration.getGameTime(),
+        PINGDatagram P = new PINGDatagram(configuration.listeningPort,
+                            configuration.roomName,configuration.language,
+                            !configuration.blockChat,configuration.nbLettersMin,
+                            configuration.parentalFilter, mode,nb_players,
+                            configuration.maxPlayers,false,
+                            Main.server.gameThread.grid,configuration.gameTime,
                             players.toString(), BoardType.CLASSIC);
         return P.toString();
     }
@@ -204,14 +204,14 @@ public class MainWorker implements Runnable {
         Player new_player = new Player(socket,new_player_id,connect.nick,connect.logo,auth);
 
         String mode;
-        if(Main.server.configuration.isAllWordsCount()){
+        if(Main.server.configuration.allWordsCount){
             mode="all";
         }else{
             mode="trad";
         }
-        reply(new ACCEPTDatagram(auth,new_player_id,configuration.getLanguage(),
-                                !configuration.isBlockChat(),configuration.getNbLettersMin(),
-                                configuration.isParentalFilter(),mode,configuration.getGameTime(),BoardType.CLASSIC).toString(),//TODO make this dynamic
+        reply(new ACCEPTDatagram(auth,new_player_id,configuration.language,
+                                !configuration.blockChat,configuration.nbLettersMin,
+                                configuration.parentalFilter,mode,configuration.gameTime,BoardType.CLASSIC).toString(),//TODO make this dynamic
                 socket);
 
         //send information to this new player
@@ -227,7 +227,7 @@ public class MainWorker implements Runnable {
         players.broadcast(new JOINDatagram(connect.nick,connect.logo,new_player.id).toString());
 
         //send the welcome message
-        reply(new CHATDatagram(0,Main.server.configuration.getWelcomeMessage()).toString(),socket);
+        reply(new CHATDatagram(0,Main.server.configuration.welcomeMessage).toString(),socket);
 
     }
     
@@ -245,14 +245,14 @@ public class MainWorker implements Runnable {
             SimpleLog.logger.info(back.name+" has been resurrected!");
             
             String mode;
-            if(Main.server.configuration.isAllWordsCount()){
+            if(Main.server.configuration.allWordsCount){
                 mode="all";
             }else{
                 mode="trad";
             }
-            reply(new ACCEPTDatagram(back.auth_token,back.id,configuration.getLanguage(),
-                                !configuration.isBlockChat(),configuration.getNbLettersMin(),
-                                configuration.isParentalFilter(),mode,configuration.getGameTime(),BoardType.CLASSIC).toString(),socket);//TODO make this dynamic
+            reply(new ACCEPTDatagram(back.auth_token,back.id,configuration.language,
+                                !configuration.blockChat,configuration.nbLettersMin,
+                                configuration.parentalFilter,mode,configuration.gameTime,BoardType.CLASSIC).toString(),socket);//TODO make this dynamic
 
             //send information to this player and add it to the players list
             players.sendInitInformation(back);
@@ -295,7 +295,7 @@ public class MainWorker implements Runnable {
             Words status=null;
             dataEvent.author.touch();
             
-            if(wordD.word.length() < Main.server.configuration.getNbLettersMin()){ //word too short
+            if(wordD.word.length() < Main.server.configuration.nbLettersMin){ //word too short
                 status=Words.SHORT;
             }else if(game.solutions.contains(wordD.word)){
                 if(dataEvent.author.foundAWord(wordD.word)==true){//word already found

@@ -139,7 +139,7 @@ public class MonitoringPanel extends JPanel{
             write(b, 0, b.length);
             }
         };
-        Main.server.addLog4jAppender(out);
+        //Main.server.addLog4jAppender(out);
     }
     //////////////////////////////////////////////
 }
