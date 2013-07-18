@@ -21,7 +21,7 @@ import inouire.basics.SimpleLog;
 import inouire.basics.Value;
 import inouire.basics.myml.MyMl;
 import inouire.basics.myml.MyMlException;
-import inouire.basics.myml.MyMlTypeValidator;
+import inouire.basics.myml.MyMlValidator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -99,15 +99,16 @@ public class ServerConfiguration {
         }
         
         //load config validator
-        MyMlTypeValidator validator=null;
+        MyMlValidator validator=new MyMlValidator();
         try {
-            validator = new MyMlTypeValidator(new ArrayList(Arrays.asList(config_validator)));
+            validator.useFullValidation()
+                     .setValidationPattern(config_validator);
         } catch (MyMlException ex) {
             SimpleLog.logger.error(ex.getMessage());
             return null;
         }
         
-        //validate config against cosntraints
+        //validate config against constraints
         boolean invalid=false;
         try {
             validator.validate(config);
