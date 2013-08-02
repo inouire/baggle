@@ -29,11 +29,11 @@ suggestions à : FORMULAIRE ICI (envoyé sur dico@baggle.org)
 
 
 
-(1) : conjugaisons, féminins et pluriels inclus
-(2) : www.littre.org (merci François Gannaz)
-(3) : fr.wikisource.org/wiki/Grand_dictionnaire_universel_du_XIXe_siècle
-(4) : www.cnrtl.fr
-(5) : fr.wiktionary.org
-(6) : www.languefrancaise.net/bob/ (merci San-Antonio !)
-(7) : noms d'habitants. www.habitants.fr
-(8) : fr.wiktionary.org/wiki/Annexe:Rectifications_orthographiques_du_français_en_1990
+- (1) : conjugaisons, féminins et pluriels inclus
+- (2) : www.littre.org (merci François Gannaz)
+- (3) : fr.wikisource.org/wiki/Grand_dictionnaire_universel_du_XIXe_siècle
+- (4) : www.cnrtl.fr
+- (5) : fr.wiktionary.org
+- (6) : www.languefrancaise.net/bob/ (merci San-Antonio !)
+- (7) : noms d'habitants. www.habitants.fr
+- (8) : fr.wiktionary.org/wiki/Annexe:Rectifications_orthographiques_du_français_en_1990
