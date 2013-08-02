@@ -4,10 +4,11 @@ Aide de b@ggle v3
 - Généralités
 - Jouer
     - Les salons
+        - Choisir un salon        
     - Entrer les mots
         - Jouer avec le clavier
         - Jouer avec la souris
-        - Vert ou rouge !
+    - Vert ou rouge !
     - Fin de partie
     - Nouvelle partie
     - Jouer seul
@@ -21,30 +22,33 @@ Aide de b@ggle v3
 - Le Chat
      - Convivialité
      - Fonctionnement
+- Créer son propre salon
 
 
 ## Généralités
 
 Le Baggle a été concu pour être suffisamment intuitif pour que chacun puisse 
-jouer sans mode d'emploi compliqué. Il suffit de cliquer sur le bouton "jouer"
-de la page d'accueil, d'entrer son pseudo, puis de choisir un salon et ça y est, la 
-partie est commencée. Il s'agit alors de trouver un maximum de mots à partir 
-des lettres de la grille, dans un temps limité. Le détail des règles du jeu 
-sont expliquées dans la rubrique "Règles".
+jouer sans mode d'emploi compliqué. 
+Il suffit de cliquer sur le bouton "jouer" de la page d'accueil, d'entrer 
+son pseudo, puis de choisir un salon et ça y est, la partie est commencée. 
+Il s'agit alors de trouver un maximum de mots à partir des lettres de la 
+grille, dans un temps limité. Le détail des règles du jeu sont expliquées 
+dans la rubrique "Règles".
 
 
 ## Jouer
 
-### Les salons
+### Les salons (spécificité du B@ggle)
 
 Avant de pouvoir jouer, il faut choisir un salon. Les règles particulières 
 de chacun d'eux sont précisées (nombre mini de lettres, durée de la partie, 
-langue), ainsi que le nombre de joueurs connectés. On peut connaitre, avant 
-d'entrer dans le salon, quels sont les joueurs connectés en passant le 
-pointeur de la souris sur un salon : une petite fenetre s'ouvre alors avec 
-la liste des pseudos connectés. Astuce : si la grille du salon est entourée 
-de bleu, il s'agit d'un salon où tous les mots trouvés comptent. Si elle est 
-entourée de vert, seuls les mots qu'on est le seul à avoir trouvé comptent 
+langue), ainsi que le nombre de joueurs connectés. 
+On peut connaître, avant d'entrer dans le salon, quels sont les joueurs 
+connectés en passant le pointeur de la souris sur un salon : une petite 
+fenêtre s'ouvre alors avec la liste des pseudos connectés. 
+Astuce : si la grille du salon est entourée de bleu, il s'agit d'un salon 
+où tous les mots trouvés comptent. Si elle est entourée de vert, seuls 
+les mots qu'on est le seul à avoir trouvé comptent.
 (voir rubrique "Règles").
 
 
@@ -58,12 +62,12 @@ La méthode la plus simple pour écrire les mots est d'utiliser le clavier :
 entrez le mot dans le champ prévu à cet effet sous la grille, puis faites 
 "Entrée" sur le clavier.
 
-#### Jouer avec la souris :
+#### Jouer avec la souris :  (spécificité du B@ggle) :
 
-Une autre méthode consiste à utiliser la souris : cliquez sur la premiere 
+Une autre méthode consiste à utiliser la souris : cliquez sur la première 
 lettre du mot que vous voules écrire, survolez les lettres du mot avec le 
 pointeur, puis cliquez sur la dernière lettre. Ca y est, le mot est écrit.
-Méthode plus rapide : Vous pouvez aussi cliquer sur la premiere lettre, 
+Méthode plus rapide : Vous pouvez aussi cliquer sur la première lettre, 
 survoler les lettres du mot avec le pointeur en gardant le bouton de la 
 souris appuyé, puis lâcher le bouton de la souris sur la dernière lettre.
 
@@ -73,14 +77,14 @@ Si le mot que vous avez entré est présent dans la grille ET dans le
 dictionnaire, il s'affiche en vert, et s'ajoute à la liste des mots que 
 vous avez déjà trouvés (en bas à  gauche de la fenêtre de jeu). Si le mot
 s'affiche en rouge, c'est qu'il y a une erreur : le mot est soit absent 
-de la grille, soit absent du dictionnaire. (cliquez ici pour en savoir plus sur le 
-dictionnaire)
+de la grille, soit absent du dictionnaire. (cliquez ici pour en savoir plus 
+sur le dictionnaire)
 
-- Si le mot n'est pas dans la grille, une icone symbolisant une grille barrée 
-d'une croix rouge apparait.
+- Si le mot n'est pas dans la grille, une icône symbolisant une grille barrée 
+d'une croix rouge apparaît.
 
-- Si le mot est absent du dictionnaire, une icone symbolisant un dictionnaire 
-barré d'une croix rouge apparait.
+- Si le mot est absent du dictionnaire, une icône symbolisant un dictionnaire 
+barré d'une croix rouge apparaît.
 
 Le mot peut aussi s'afficher en rouge si... vous l'avez déjà trouvé !
 
@@ -88,9 +92,9 @@ Le mot peut aussi s'afficher en rouge si... vous l'avez déjà trouvé !
 ### Fin de partie
 
 En fin de partie, les résultats et le classement de tous les joueurs sont 
-affichés. Vous pouvez ainsi voir les mots qu'ont trouvé les autres baggleurs 
+affichés. Vous pouvez ainsi voir les mots qu'ont trouvé les autres b@ggleurs 
 ! Il est possible de voir tous les mots qu'il y avait dans la grille en 
-cliquant sur le bouton  "toutes les solutions"
+cliquant sur le bouton  "Toutes les solutions"
 
 
 ### Nouvelle partie
@@ -209,4 +213,21 @@ Pour remédier à ça, ajoutez un signe quelconque : "bonjour !" par exemple.
 La fenêtre du chat sert aussi à afficher les messages du programme de jeu : 
 message de bienvenue, messages du robot, nom du gagnant de la partie et son 
 nombre de points, etc.
+
+
+## Créer son propre salon
+
+Vous pouvez aussi créer votre propre salon (exclusivité B@ggle)
+Pour cela, il faut télécharger B@ggle (http://www.B@ggle.org/download.php) 
+et de l'installer sur votre ordinateur (Linux, Windows ou Mac). Vous pouvez 
+alors jouer seul sans être connecté, ou a plusieurs sur votre réseau local.
+Encore plus fort : vous pouvez transformer votre ordinateur en serveur de 
+B@ggle ! 
+Il suffit de télécharger la partie serveur du B@ggle 
+(http://codingteam.net/project/B@ggle/download). 
+Quelques paramètres à régler, et votre ordinateur devient serveur du réseau 
+officiel du B@ggle, visible par tous ! 
+Une option permet d'en restreindre l'accès par un mot de passe.
+
+
 
