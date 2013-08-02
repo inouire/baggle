@@ -12,14 +12,14 @@ REGLES DU JEU DE B@GGLE
 - Précisions
 
 
-Présentation
+## Présentation
 
 Le B@ggle est une version en ligne du célèbre jeu de lettres Boggle. 
 Il vous permet d'affronter des joueurs sur internet pour disputer des parties de Boggle dans 
 les règles de l'art, le tout dans une ambiance conviviale. 
 
 
-Règles générales
+## Règles générales
 
 Il s'agit, dans un laps de temps donné, de trouver le maximum de mots à partir des 16 lettres 
 affichées lors du tirage. 
@@ -28,7 +28,7 @@ Les lettres qui le composent doivent se touchent par les côtés ou par les angl
 Dans le même mot, la même lettre ne soit pas utilisée plusieurs fois.
 
 
-Mots 
+## Mots 
 
 Pour qu'un mot soit valable, il faut qu'il figure dans le dictionnaire du B@ggle (Voir la rubrique 
 dictionnaire pour en savoir plus).
@@ -46,7 +46,7 @@ Précisions sur les mots
 - Sont évidemment exclus les noms propres.
 
 
-Points
+## Points
 
 A chaque longueur de mots est attribué un nombre de points : 
 - Mots de 3 et 4 lettres......1 point
@@ -56,21 +56,21 @@ A chaque longueur de mots est attribué un nombre de points :
 - Mots de 8 lettres et plus..11 points
 
 
-Scores
+## Scores
 
 Le gagnant est celui qui obtient le plus grand nombre de points.
 Variante 1 : pour faire le score, on additionne les points de tous les mots que l'on a trouvé.
 Variante 2 : pour faire le score, on additionne les points des mots qu'on est le seul à avoir trouvé.
 
 
-Règles particulières
+## Règles particulières
 
-Big B@ggle
+### Big B@ggle
 
 Dans le « Big B@ggle », la grille est composée de 25 lettres (carré de 5x5 lettres)
 Règles identiques à l'exception mots qui doivent avoir au moins quatres lettres.
 
-B@ggle « Old Fashion »
+### B@ggle « Old Fashion »
 
 Dans les salons « Old Fashion », on ne fait pas de la conjugaison, on cherche des mots !
 Les règles sont identiques à l'exception des conjugaisons, des féminins et des pluriels* qui sont refusés.
@@ -96,7 +96,7 @@ Comptage des points dans les salons « Old Fashion » : plus c'est long, plus ç
 - Mots de 14 lettres et plus..250 points
 
 
-Quelques détails pour les curieux
+## Quelques détails pour les curieux
 
 Tirages possibles
 Les tirages sont aléatoires, mais fonction des dés utilisés dans le jeu d'origine.
@@ -165,7 +165,7 @@ Du fait de la répartition des lettres, certains mots sont impossibles.
 Par ex : zyzomys, omeyyade, bowwindow, drakkar...
 
 
-Précisions 
+## Précisions 
 
 On peut trouver plusieurs logiciels de Boggle sur internet, mais voilà ce qui fait la spécificité
 du B@ggle :
