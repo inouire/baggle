@@ -58,6 +58,9 @@ public class LANDiscoverThread extends Thread{
     @Override
     public void run(){
         
+        //prepare HMI
+        listener.setStartOfPingProcess();
+        
         SimpleLog.logger.info("Starting LAN discovey");
         
         int refreshId = listener.newRefreshId();

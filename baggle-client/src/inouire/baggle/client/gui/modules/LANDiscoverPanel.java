@@ -20,8 +20,6 @@ package inouire.baggle.client.gui.modules;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Icon;
@@ -29,13 +27,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import inouire.baggle.client.Language;
+import inouire.baggle.client.Main;
 import inouire.baggle.client.gui.ColorFactory;
 import inouire.baggle.client.gui.ConnectionPanel;
 import inouire.baggle.client.threads.LANDiscoverThread;
 import inouire.baggle.datagrams.PINGDatagram;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import javax.swing.JProgressBar;
 
 
 /**
@@ -66,6 +67,10 @@ public class LANDiscoverPanel extends JPanel{
 
     }
     
+    public void setStartOfPingProcess(){
+        listStatusPanel.setStartOfPingProcess();
+    }
+    
     public int newRefreshId(){
         server_ok_counter=0;
         refresh_id++;
@@ -79,6 +84,7 @@ public class LANDiscoverPanel extends JPanel{
             server_ok_counter++;
             this.listStatusPanel.setOkMessage();
             serverListPanel.notifyResize();
+            Main.mainFrame.connectionPane.lanDiscoverPane.listStatusPanel.setEndOfPingProcess();
         }//else ignore
     }
 
@@ -90,6 +96,7 @@ public class LANDiscoverPanel extends JPanel{
     
     private JButton refresh_button = new JButton();
     private JLabel status_label = new JLabel();
+    private JProgressBar scanProgress;
     
     private LANDiscoverPanel parent;
 
@@ -119,8 +126,16 @@ public class LANDiscoverPanel extends JPanel{
             }
         });
         
+        //progress bar
+        scanProgress = new JProgressBar();
+        scanProgress.setPreferredSize(new Dimension(70,10));
+        JPanel scan_wrapper = new JPanel(new GridBagLayout());
+        scan_wrapper.add(scanProgress,ConnectionPanel.CENTERED);
+        scan_wrapper.setOpaque(false);
+        scan_wrapper.setPreferredSize(new Dimension(80,10));
         
         this.setLayout(new BorderLayout());
+        this.add(scan_wrapper, BorderLayout.WEST);
         this.add(status_label, BorderLayout.CENTER);
         this.add(refresh_button, BorderLayout.EAST);
         this.setBackground(ColorFactory.YELLOW_NOTIF);
@@ -145,8 +160,11 @@ public class LANDiscoverPanel extends JPanel{
     public void setStartOfPingProcess(){
         status_label.setText(Language.getString(12));
         status_label.setIcon(status_icons[0]);
+        scanProgress.setVisible(true);
+        scanProgress.setIndeterminate(true);
         refresh_button.setEnabled(false);
     }
+    
     
     public void setOkMessage(){
         status_label.setText(Language.getString(44));
@@ -162,6 +180,8 @@ public class LANDiscoverPanel extends JPanel{
     
     public void setEndOfPingProcess(){
         refresh_button.setEnabled(true);
+        scanProgress.setIndeterminate(false);
+        scanProgress.setValue(100);
     }
 }
 
