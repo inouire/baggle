@@ -54,6 +54,8 @@ public class ConnectionPanel extends JPanel{
                                                        GridBagConstraints.CENTER,
                                                        new Insets (0,0,0,0), 0, 0);
 
+    private boolean local_showed=false;
+    
     public ConnectionPanel(){
         super();
         
@@ -116,10 +118,16 @@ public class ConnectionPanel extends JPanel{
     
     public void showOfficial(){
         networksLayout.show(networksPane, "official");
+        local_showed = false;
     }
     public void showLocal(){
         networksLayout.show(networksPane, "local");
+        local_showed = true;
         new LANDiscoverThread(lanDiscoverPane).start();
+    }
+    
+    public boolean isLocalShowed(){
+        return local_showed;
     }
     
     public void aboutPressed(){

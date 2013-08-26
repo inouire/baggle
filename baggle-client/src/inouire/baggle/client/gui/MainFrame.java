@@ -23,6 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import inouire.baggle.client.Main;
+import inouire.baggle.client.threads.LANDiscoverThread;
 import inouire.baggle.client.threads.MasterServerHTTPConnection;
 /**
  *
@@ -124,8 +125,12 @@ public class MainFrame extends JFrame {
         Main.mainFrame.roomPane.chatPane.eraseAll();
         
         //launch refresh of servers list
-        //connectionPane.officialServersPane.serverListPanel.resetList();
-        new MasterServerHTTPConnection(connectionPane.officialServersPane).start();
+        if(connectionPane.isLocalShowed()){
+            new LANDiscoverThread(connectionPane.lanDiscoverPane).start();
+        }else{
+            new MasterServerHTTPConnection(connectionPane.officialServersPane).start();
+        }
+        
         
         //display connection frame
         Main.mainFrame.switchToConnectionPane();
