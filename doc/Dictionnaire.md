@@ -25,7 +25,7 @@ Malgré le soin apporté à sa réalisation, le dictionnaire du B@ggle peut
 comporter des erreurs ou des oublis.
 
 Afin de nous aider a l'améliorer, vous pouvez envoyer vos remarques ou 
-suggestions à : FORMULAIRE ICI (envoyé sur dico@baggle.org)
+suggestions à : dico@baggle.org
 
 
 
