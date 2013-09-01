@@ -101,7 +101,11 @@ public class Main {
         //log in a room-named file
         String log_file = "log/"+server_config.get("room.name").replaceAll(" ","-")+".log";
         SimpleLog.logger.info("From now on everything will be logged into "+log_file+", see ya !");
-        SimpleLog.initDevConfig();
+        if(Args.getOption("--dev", args)){
+            SimpleLog.initDevConfig();
+        }else{
+            SimpleLog.initProdConfig(log_file);
+        }
         
         
         //start server, with or without gui assistant
