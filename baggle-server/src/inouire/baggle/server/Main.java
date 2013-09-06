@@ -30,11 +30,11 @@ import inouire.basics.SimpleLog;
  */
 public class Main {
 
-    public static String VERSION = "3.0-alpha";
+    public static String VERSION = "3.0";
     public static boolean WITH_GUI = false;
     public static String CONFIG_FILE="";
     public static String DEFAULT_CONFIG_FILE="conf/baggle-server_config.myml";
-
+    public static boolean DEV_MODE;
         
     //core process
     public static BaggleServer server;
@@ -62,6 +62,7 @@ public class Main {
         }
 
         WITH_GUI = Args.getOption(guiFlags, args);
+        DEV_MODE = Args.getOption("--dev", args);
         
         SimpleLog.initConsoleConfig();
         
@@ -101,7 +102,7 @@ public class Main {
         //log in a room-named file
         String log_file = "log/"+server_config.get("room.name").replaceAll(" ","-")+".log";
         SimpleLog.logger.info("From now on everything will be logged into "+log_file+", see ya !");
-        if(Args.getOption("--dev", args)){
+        if(DEV_MODE){
             SimpleLog.initDevConfig();
         }else{
             SimpleLog.initProdConfig(log_file);
