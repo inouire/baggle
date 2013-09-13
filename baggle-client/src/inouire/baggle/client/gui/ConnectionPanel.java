@@ -91,7 +91,7 @@ public class ConnectionPanel extends JPanel{
         top_panel.add(about_button_wrapper,BorderLayout.EAST);
         top_panel.add(network_type_wrapper,BorderLayout.CENTER);
         
-        top_panel.setBackground(ColorFactory.BLUE_BOARD);
+        top_panel.setBackground(ColorFactory.GREEN_BOARD);
         
         JLabel non_dispo = new JLabel("Non disponible pour le moment");
         non_dispo.setHorizontalAlignment(SwingConstants.CENTER);
