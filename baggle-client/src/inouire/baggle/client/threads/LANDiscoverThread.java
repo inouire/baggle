@@ -84,7 +84,7 @@ public class LANDiscoverThread extends Thread{
                 socket.receive(packetR);
                 InetAddress host = packetR.getAddress();
                 received = new String(packetR.getData(), 0, packetR.getLength());
-                SimpleLog.logger.info("[<LANRCV] "+received);
+                SimpleLog.logger.debug("[<LANRCV] "+received);
                 try {
                     PINGDatagram pingD = new PINGDatagram(received.split("\\|"));
                     if(pingD.port==null){

@@ -147,7 +147,7 @@ public class ServerConnection extends Thread{
             while ((packet = in.readLine()) != null){
 
                 datagram = packet.split("\\|");
-                SimpleLog.logger.warn("[<<RECV] "+packet);
+                SimpleLog.logger.debug("[<<RECV] "+packet);
                 try{
                     key=Key.valueOf(datagram[0]);
                     switch (key){
