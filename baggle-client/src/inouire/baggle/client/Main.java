@@ -29,6 +29,7 @@ import inouire.basics.SimpleLog;
 import inouire.utils.Utils;
 import java.io.File;
 import java.util.Timer;
+import org.apache.log4j.Level;
 
 /**
  *
@@ -84,6 +85,7 @@ public class Main {
         printUsage();
         
         SimpleLog.initConsoleConfig();
+        SimpleLog.logger.setLevel(Level.INFO);
         
         MASTER_SERVER_HOST=Args.getStringOption("-M",args,MASTER_SERVER_HOST);
         MASTER_SERVER_PORT=Args.getIntegerOption("-P", args, MASTER_SERVER_PORT);
