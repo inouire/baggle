@@ -28,65 +28,60 @@ import javax.swing.JComponent;
 import inouire.baggle.client.gui.ColorFactory;
 
 /**
- * TODO refactor this class...
- * @author edouard
+ * @author Edouard de Labareyre
  */
 public class MiniBoardPanel extends JComponent{
 
-    Color boardColor = ColorFactory.BROWN_BOARD;
-    private String grid="BAGGLEBAGGLEBAGG";
-
+    private MiniDice[][] des;
+    private Color boardColor;
+    private String grid;
+    public int size;
     boolean is_highlighted=false;
 
     final static private int b=4;//taille du bord
     final static private int i=1;//taille de l'inter-dé
-
-    public int SIZE=4;
-
     final static int STYLE=Font.BOLD;
-    private MiniDice[][] des=new MiniDice[SIZE][SIZE];
-
+    
     public MiniBoardPanel(){
-        for(int k=0;k<SIZE;k++){
-            for(int l=0;l<SIZE;l++){
+        this.size = 0;
+        this.boardColor = ColorFactory.BROWN_BOARD;
+        this.grid = "BAGGLEBAGGLEBAGG";
+    }
+    
+    public MiniBoardPanel(int board_size){
+        this.size = board_size;
+        for(int k=0;k<size;k++){
+            for(int l=0;l<size;l++){
                 des[k][l]=new MiniDice(0, 0, 0,"-",0);
             }
         }
+        this.boardColor = ColorFactory.BROWN_BOARD;
     }
-
-    public void setMode(String mode){
-        if(mode.equalsIgnoreCase("all")){
-            boardColor=ColorFactory.BLUE_BOARD;
-        }else if(mode.equalsIgnoreCase("trad")){
-            boardColor=ColorFactory.GREEN_BOARD;
-        }else{
-            boardColor=ColorFactory.BROWN_BOARD;
-        }
-        repaint();
-    }
-    
-    /**
-     * Set grid size and update dices array if needed
-     * @param grid 
-     */
-    public void setGrid(String grid){
+ 
+    public MiniBoardPanel updateGrid(String grid){
         this.grid=grid;
-        
-        int previous_size=SIZE;
+        int previous_size=size;
         if(grid.length()>16){
-            SIZE=5;
+            this.size=5;
         }else{
-            SIZE=4;
+            this.size=4;
         }
-        if(SIZE != previous_size){
-            des=new MiniDice[SIZE][SIZE];
-            for(int k=0;k<SIZE;k++){
-                for(int l=0;l<SIZE;l++){
+        if(size != previous_size){
+            des=new MiniDice[size][size];
+            for(int k=0;k<size;k++){
+                for(int l=0;l<size;l++){
                     des[k][l]=new MiniDice(0, 0, 0,"-",0);
                 }
             }
         }
         repaint();
+        return this;
+    }
+        
+    public MiniBoardPanel updateMode(String mode){
+        this.boardColor=ColorFactory.getBoardColor((size==5), mode);
+        repaint();
+        return this;
     }
 
     @Override
@@ -114,10 +109,10 @@ public class MiniBoardPanel extends JComponent{
 
         int S=H-(2*b);//size of rectangle
 
-        int d=(S-2*b-(SIZE-1)*i)/SIZE;//size of des
+        int d=(S-2*b-(size-1)*i)/size;//size of des
 
         //recalc rect size
-        S=(2*b)+(SIZE*d)+((SIZE-1)*i);
+        S=(2*b)+(size*d)+((size-1)*i);
 
         //offset
         int X0=(w-S)/2;
@@ -144,9 +139,9 @@ public class MiniBoardPanel extends JComponent{
             grid = "BAGGLEBAGGLEBAGG";
         }
 
-        for(int k=0;k<SIZE;k++){
-            for(int l=0;l<SIZE;l++){
-                des[k][l].reAssign(X0+b+k*(d+i),Y0+b+l*(d+i),d, grid.charAt(SIZE*l+k)+"",m);
+        for(int k=0;k<size;k++){
+            for(int l=0;l<size;l++){
+                des[k][l].reAssign(X0+b+k*(d+i),Y0+b+l*(d+i),d, grid.charAt(size*l+k)+"",m);
                 des[k][l].paintDe(g);
             }
         }
@@ -168,7 +163,6 @@ class MiniDice {
     String letter="A";
     int font_size;
     int font_occupation;
-
 
     Color C1=new Color(240,240,240);
     Color C2=new Color(230,230,230);

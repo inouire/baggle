@@ -91,14 +91,18 @@ public class ServerListPanel extends JPanel{
         this.add(resultsListScrollPane,BorderLayout.CENTER);
         
         addComponentListener(new ComponentListener() {
+            @Override
             public void componentResized(ComponentEvent e) {
                 notifyResize();
             }
 
+            @Override
             public void componentMoved(ComponentEvent e) {}
 
+            @Override
             public void componentShown(ComponentEvent e) {}
 
+            @Override
             public void componentHidden(ComponentEvent e) {}
         });
         
@@ -123,9 +127,11 @@ public class ServerListPanel extends JPanel{
          serverList.addMouseListener(mouseListener);
          
          MouseMotionListener mouseMotionListener = new MouseMotionListener(){
+            @Override
             public void mouseDragged(MouseEvent me) {
             }
 
+            @Override
             public void mouseMoved(MouseEvent me) {
                 clearHighlight();
                 int index = getSelectedIndex(me);
@@ -199,7 +205,8 @@ public class ServerListPanel extends JPanel{
         OneServerPanel S = new OneServerPanel(pingD.name,ip,port,pingD.mode,pingD.min,pingD.players);
         S.setNbPlayers(pingD.nb,pingD.max);
         S.setTime(pingD.time);
-        S.mini_board.setGrid(pingD.grid);
+        S.mini_board.updateGrid(pingD.grid)
+                    .updateMode(pingD.mode);
         if(pingD.lang.equals("fr")){
             S.language_icon.setIcon(language_icons[0]);
         }else{
@@ -243,7 +250,6 @@ class OneServerPanel extends JPanel{
         this.mode=mode;
         this.players=players;
         
-        mini_board.setMode(mode);
         mini_board.setPreferredSize(new Dimension(80,80));
         mini_board.setMinimumSize(new Dimension(80,80));
         

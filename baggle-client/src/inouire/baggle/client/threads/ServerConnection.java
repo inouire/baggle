@@ -196,7 +196,7 @@ public class ServerConnection extends Thread{
         my_id=acceptD.id;
 
         //update UI
-        Main.mainFrame.roomPane.setGameMode(GAME_MODE);
+        Main.mainFrame.roomPane.setGameMode(GAME_MODE,BIG_BOARD);
         Main.mainFrame.roomPane.wordsFoundPane.setLanguage(LANG);
         Main.mainFrame.roomPane.wordsFoundPane.setMinWordLength(MIN_LENGTH);
         Main.mainFrame.roomPane.wordsFoundPane.setGameMode(GAME_MODE);

@@ -42,8 +42,8 @@ public class SolutionsFrame extends JFrame{
     public SolutionsFrame(String grid) throws Exception{
         super();
         
-        miniboard.setGrid(grid);
-        miniboard.setMode(Main.connection.GAME_MODE);
+        miniboard.updateGrid(grid)
+                 .updateMode(Main.connection.GAME_MODE);
         Solver solver;
         solver = new Solver(Main.connection.LANG,Main.connection.PARENTAL_FILTER,Main.connection.BIG_BOARD);
         solver.setMinLength(Main.connection.MIN_LENGTH);

@@ -26,9 +26,9 @@ public class ColorFactory {
     final static public Color BROWN_BOARD= new Color(74,50,19);
     final static public Color BLUE_BOARD = new Color(28,47,85);
     final static public Color GREEN_BOARD = new Color(23,77,19);
-    final static public Color RED_BOARD = new Color(223,61,17);
+    final static public Color RED_BOARD = new Color(113,38,35);
+    final static public Color PURPLE_BOARD = new Color(58,42,69);
     
-
     final static public Color LIGHT_BLUE = new Color(164,178,207);
     final static public Color LIGHT_RED = new Color(255,113,113);
     final static public Color LIGHT_GREEN = new Color(157,195,104);
@@ -82,6 +82,24 @@ public class ColorFactory {
             c=COFFEE_BG;
         }else if(name.equals("colors")){
             c=COLORS_BG;
+        }
+        return c;
+    }
+    
+    public static Color getBoardColor(boolean big_board,String game_mode){
+        Color c;
+        if(big_board){
+            if(game_mode.equalsIgnoreCase("trad")){
+                c=ColorFactory.PURPLE_BOARD;
+            }else{
+                c=ColorFactory.BROWN_BOARD;
+            }
+        }else{
+            if(game_mode.equalsIgnoreCase("all")){
+                c=ColorFactory.BLUE_BOARD;
+            }else{
+                c=ColorFactory.GREEN_BOARD;
+            }
         }
         return c;
     }
