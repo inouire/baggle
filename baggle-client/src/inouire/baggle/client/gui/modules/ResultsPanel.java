@@ -106,13 +106,9 @@ public class ResultsPanel extends JPanel{
    
     public void setGrid(String grid){
         this.grid=grid;
-        miniboard.setGrid(grid);
+        miniboard.updateGrid(grid);
     }
     
-    public void setBoardColor(Color board_color){
-        miniboard.boardColor= board_color;
-        repaint();
-    }
     
     public void allSolutionsClicked() {
         try{

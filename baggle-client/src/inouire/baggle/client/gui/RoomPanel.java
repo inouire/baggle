@@ -227,17 +227,10 @@ public class RoomPanel extends JPanel{
         return this.playersPane.getBotLevel();
     }
 
-    public void setGameMode(String mode){
-        Color background = ColorFactory.BROWN_BOARD;
-        if(mode.equalsIgnoreCase("all")){
-            background=ColorFactory.BLUE_BOARD;
-        }else if(mode.equalsIgnoreCase("trad")){
-            background=ColorFactory.GREEN_BOARD;
-        }
-        
-        this.topBarPane.setBackground(ColorFactory.BLUE_BOARD);
-        this.boardPane.setBoardColor(background);
-        this.resultsPane.setBoardColor(background);
+    public void setGameMode(String mode,boolean big_board){
+        Color boardColor = ColorFactory.getBoardColor(big_board, mode);
+        this.topBarPane.setBackground(boardColor);
+        this.boardPane.setBoardColor(boardColor);
         
         repaint();
     }
