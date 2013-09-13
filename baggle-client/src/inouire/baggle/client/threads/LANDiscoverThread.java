@@ -90,7 +90,7 @@ public class LANDiscoverThread extends Thread{
                     if(pingD.port==null){
                         throw new IllegalDatagramException();
                     }
-                    listener.addValidServer(refreshId, host.getHostName(),pingD.port,pingD);
+                    listener.addValidServer(refreshId, host.getHostAddress(),pingD.port,pingD);
                 } catch (IllegalDatagramException ex) {
                     SimpleLog.logger.warn("error while parsing "+received);
                 }

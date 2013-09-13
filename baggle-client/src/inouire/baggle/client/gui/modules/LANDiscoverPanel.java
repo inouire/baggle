@@ -49,7 +49,6 @@ public class LANDiscoverPanel extends JPanel{
     private ServerListPanel serverListPanel;
     private ListStatusPanel listStatusPanel;
     
-    private int server_ok_counter=0;
     private int refresh_id=1;
     
     public LANDiscoverPanel(){
@@ -72,7 +71,6 @@ public class LANDiscoverPanel extends JPanel{
     }
     
     public int newRefreshId(){
-        server_ok_counter=0;
         refresh_id++;
         serverListPanel.resetList();
         return refresh_id;
@@ -81,7 +79,6 @@ public class LANDiscoverPanel extends JPanel{
     public void addValidServer(int id,String ip, int port,PINGDatagram pingD){
         if(refresh_id==id){
             serverListPanel.addServer(ip,port,pingD);
-            server_ok_counter++;
             this.listStatusPanel.setOkMessage();
             serverListPanel.notifyResize();
             Main.mainFrame.connectionPane.lanDiscoverPane.listStatusPanel.setEndOfPingProcess();
