@@ -29,8 +29,6 @@ import inouire.basics.SimpleLog;
 import inouire.utils.Utils;
 import java.io.File;
 import java.util.Timer;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -41,8 +39,8 @@ public class Main {
     //global variables
     public static String LOCALE=System.getProperty("user.language");
     
-    public final static String VERSION = "3.0-alpha";
-    public final static int BUILD=490;
+    public final static String VERSION = "3.0";
+    public final static int BUILD=3000;
     
     public static final String OFFICIAL_WEBSITE="http://baggle.org";
     public static String MASTER_SERVER_HOST="masterserver.baggle.org";
@@ -85,7 +83,7 @@ public class Main {
 
         printUsage();
         
-        SimpleLog.initDevConfig();
+        SimpleLog.initConsoleConfig();
         
         MASTER_SERVER_HOST=Args.getStringOption("-M",args,MASTER_SERVER_HOST);
         MASTER_SERVER_PORT=Args.getIntegerOption("-P", args, MASTER_SERVER_PORT);
