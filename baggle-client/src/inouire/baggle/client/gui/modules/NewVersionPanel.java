@@ -83,7 +83,7 @@ public class NewVersionPanel extends JPanel{
     }
     
     public void downloadNewVersion(){
-        String url = "http://codingteam.net/project/baggle/download";
+        String url = "http://baggle.org/download.php";
         try {
             Desktop.getDesktop().browse(new URI(url));
         } catch (Exception ex) {
