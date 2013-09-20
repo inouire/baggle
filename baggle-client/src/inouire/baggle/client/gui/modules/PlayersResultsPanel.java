@@ -66,7 +66,7 @@ public class PlayersResultsPanel extends JPanel{
         
         //build list
         for(String a:words){
-            list+=a+",";
+            list+=a+", ";
         }
         
         //remove last char
