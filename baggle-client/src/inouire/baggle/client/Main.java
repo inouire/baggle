@@ -40,8 +40,8 @@ public class Main {
     //global variables
     public static String LOCALE=System.getProperty("user.language");
     
-    public final static String VERSION = "3.0";
-    public final static int BUILD=3000;
+    public final static String VERSION = "3.1";
+    public final static int BUILD=3100;
     
     public static final String OFFICIAL_WEBSITE="http://baggle.org";
     public static String MASTER_SERVER_HOST="masterserver.baggle.org";
