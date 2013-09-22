@@ -47,7 +47,7 @@ import inouire.basics.Value;
 public class BoardPanel extends JComponent{
 
     
-    //internal variables, rebuilt only on board resize
+    //internal constants, rebuilt only on board resize
     int board_size;
     int component_width;
     int component_height;
@@ -56,17 +56,12 @@ public class BoardPanel extends JComponent{
     int x0,xf,y0,yf;
     int X0,Y0;
     int board_margin;
+    int radius_pow2;
     
     boolean dimensions_init=false;
-    
-    //int S=300;//taille d'un coté du plateau
-    boolean vertical_resize;
 
-    //int w,h;
-    int offset_x_mem, offset_y_mem;
-    //int b=2;//taille de bordure
-    int border_ratio=5;//pourcentage de la taille de la bordure par rapport à la taille totale
-    static int i=1;//taille inter-dé
+    private final static int border_ratio=5;//pourcentage de la taille de la bordure par rapport à la taille totale
+    private final static int i=1;//taille inter-dé
     
     boolean surlign=false;
     int rotation=0;
@@ -79,76 +74,14 @@ public class BoardPanel extends JComponent{
     
     int select_mode = 0;//0->idle, 1->start,2->incertain,3->click,4->drag
     boolean resizing=false;
+    boolean vertical_resize;
     int[] previous_dice={-1,-1};
+    int offset_x_mem, offset_y_mem;
     
     Color boardColor = ColorFactory.BROWN_BOARD;//0->marron, 1-> bleu , 2-> vert
     
     private Image[] icons = new Image[3];
 
-            
-    public void updateConstants(int new_board_size){
-        updateConstants(new_board_size, this.getWidth(), this.getHeight());
-    }
-    
-    public void updateConstants(int new_component_width, int new_component_height){
-        updateConstants(this.board_size, new_component_width, new_component_height);
-    }
-    
-    public void updateConstants(int new_board_size,int new_component_width, int new_component_height){
-        
-        int component_size = Math.min(new_component_width, new_component_height);
-        board_size = Value.bound(new_board_size, 75, component_size - 30);
-        component_width = new_component_width;
-        component_height = new_component_height;
-        
-        X0 = (this.component_width  - board_size)/2;
-        Y0 = (this.component_height - board_size)/2;
-        
-        board_margin = board_size * border_ratio / 100;
-        
-        x0 = X0 + board_margin;
-        y0 = Y0 + board_margin;
-        xf = X0 + board_size - board_margin;
-        yf = Y0 + board_size - board_margin;
-        
-        dices_size = xf - x0;
-        dice_width = dices_size / SIZE;
-    }
-    
-    private int[] discretizePoint(int x, int y){
-        //check that we are in the grid zone
-        if( x>xf || x < x0 || y > yf || y < y0){
-            return null;
-        }
-        //get grid coordinate
-        int ix = SIZE * (x - x0)/dices_size;
-        int jy = SIZE * (y - y0)/dices_size;
-        //SimpleLog.logger.info("("+ix+","+jy+")");
-        return new int[]{ix,jy};
-    }
-        
-    /*
-     * Change the size of the board between big or normal board
-     */
-    public void setBigBoard(boolean bigBoard){
-        if(bigBoard){
-            SIZE=5;
-        }else{
-            SIZE=4;
-        }
-        des=new gDe[SIZE][SIZE];
-        for(int k=0;k<SIZE;k++){
-            for(int l=0;l<SIZE;l++){
-                des[k][l]=new gDe(0, 0, 0,"-",0);
-            }
-        }
-    }
-    
-    public void initDimensions(){
-        
-        
-    }
-    
     public BoardPanel(){
         this.board_size = Main.configuration.BOARD_WIDTH;
         setSize(400, 200);
@@ -207,6 +140,89 @@ public class BoardPanel extends JComponent{
                 mouseMovedAction(arg0);
             }
         });
+    }
+                
+    public void updateConstants(int new_board_size){
+        updateConstants(new_board_size, this.getWidth(), this.getHeight());
+    }
+    
+    public void updateConstants(int new_component_width, int new_component_height){
+        updateConstants(this.board_size, new_component_width, new_component_height);
+    }
+    
+    public void updateConstants(int new_board_size,int new_component_width, int new_component_height){
+        
+        int component_size = Math.min(new_component_width, new_component_height);
+        board_size = Value.bound(new_board_size, 75, component_size - 30);
+        component_width = new_component_width;
+        component_height = new_component_height;
+        
+        X0 = (this.component_width  - board_size)/2;
+        Y0 = (this.component_height - board_size)/2;
+        
+        board_margin = board_size * border_ratio / 100;
+        
+        x0 = X0 + board_margin;
+        y0 = Y0 + board_margin;
+        xf = X0 + board_size - board_margin;
+        yf = Y0 + board_size - board_margin;
+        
+        dices_size = xf - x0;
+        dice_width = dices_size / SIZE;
+        
+        int radius_ratio=70;
+        radius_pow2 = (int) Math.pow(radius_ratio * dice_width / 200,2);
+    }
+    
+    private int[] discretizePoint(int x, int y){
+        //check that we are in the grid zone
+        if( x>xf || x < x0 || y > yf || y < y0){
+            return null;
+        }
+        //get grid coordinate
+        int ix = SIZE * (x - x0)/dices_size;
+        int jy = SIZE * (y - y0)/dices_size;
+
+        return new int[]{ix,jy};
+    }
+    
+    private int[] roundDiscretizePoint(int x, int y){
+        
+        // get discrete reference
+        int[] ref = discretizePoint(x, y);
+        
+        if(ref!=null){
+            // compute corresponding coordinates
+            int xref = x0 + ref[0] * dice_width + dice_width/2;
+            int yref = y0 + ref[1] * dice_width + dice_width/2;
+
+            // compute distante^2 between ref and actual point
+            int distance_2 = (int)(Math.pow(x-xref,2) + Math.pow(y-yref,2));
+
+            // check that distance is lower than radius
+            if(distance_2 < radius_pow2){
+                return ref;
+            }
+        }
+        return null;
+    }
+        
+    /*
+     * Change the size of the board between big or normal board
+     */
+    public void setBigBoard(boolean bigBoard){
+        if(bigBoard){
+            SIZE=5;
+        }else{
+            SIZE=4;
+        }
+        des=new gDe[SIZE][SIZE];
+        for(int k=0;k<SIZE;k++){
+            for(int l=0;l<SIZE;l++){
+                des[k][l]=new gDe(0, 0, 0,"-",0);
+            }
+        }
+        updateConstants(board_size);
     }
 
     /**
@@ -283,9 +299,7 @@ public class BoardPanel extends JComponent{
         }
         repaint();
     }
-    
-
-    
+   
     /**
      * Action when mouse is dragged
      * @param arg0 
@@ -303,15 +317,15 @@ public class BoardPanel extends JComponent{
             updateConstants(new_board_size);
             repaint();
         }else if(select_mode==1 || select_mode==2 || select_mode==4){
-            //track dice changing
-            int[] coord = discretizePoint(x, y);
+
+            int[] coord = roundDiscretizePoint(x, y);
             if(coord == null){
                 return;
             }
             int k = coord[0];
             int l = coord[1];
 
-            if(trackDiceChanging(x,y,k,l)){
+            if(trackDiceChanging(k,l)){
                 des[k][l].setSelected();
                 for(int m=0;m<SIZE;m++){
                     for(int n=0;n<SIZE;n++){
@@ -371,9 +385,15 @@ public class BoardPanel extends JComponent{
             }
         }
         if(select_mode==3){//we are in click mode, track a dice changing
-            int k=SIZE*(x-(X0+board_margin))/(board_size-2*board_margin);
-            int l=SIZE*(y-(Y0+board_margin))/(board_size-2*board_margin);
-            if(trackDiceChanging(x,y,k,l)){
+            
+            int[] coord = roundDiscretizePoint(x, y);
+            if(coord == null){
+                return;
+            }
+            int k = coord[0];
+            int l = coord[1];
+
+            if(trackDiceChanging(k,l)){
                 des[k][l].setSelected();
                 for(int m=0;m<SIZE;m++){
                     for(int n=0;n<SIZE;n++){
@@ -395,7 +415,7 @@ public class BoardPanel extends JComponent{
         }
     }
         
-    private boolean trackDiceChanging(int X,int Y,int k, int l){
+    private boolean trackDiceChanging(int k, int l){
         if(previous_dice[0]!=k || previous_dice[1]!=l){
             if(k>=SIZE || k<0 || l>=SIZE || l<0){
                 return false;
@@ -403,19 +423,7 @@ public class BoardPanel extends JComponent{
             if(des[k][l].state!=2){
                 return false;
             }
-            int divisor=250;
-            if(SIZE==5){
-                divisor=200;
-            }
-            //handle the diagonal stuff
-            int ax=(1000*(X-(X0+board_margin))/(board_size-2*board_margin))%divisor;
-            int bx=(1000*(Y-(Y0+board_margin))/(board_size-2*board_margin))%divisor;
-            int T=80;
-            if((ax+bx<T)||(bx-ax>divisor-T)||(ax+bx>divisor*2-T)||(bx-ax<T-divisor*2)){
-                return false;
-            }else{
-                return true;
-            }
+            return true;
         }else{
             return false;
         }
@@ -483,7 +491,7 @@ public class BoardPanel extends JComponent{
                     rotation = 0;
                     repaint();
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    SimpleLog.logger.warn("Error while rotating grid");
                 }finally{
                     turnGrid(clockwise);
                     repaint();
@@ -589,7 +597,7 @@ public class BoardPanel extends JComponent{
         
         // check first init
         if(!dimensions_init){
-            this.updateConstants(board_size, actual_width, actual_height);
+            updateConstants(board_size, actual_width, actual_height);
             dimensions_init = true;
         }
 
