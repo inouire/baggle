@@ -36,6 +36,8 @@ import javax.swing.JComponent;
 import inouire.baggle.client.Language;
 import inouire.baggle.client.Main;
 import inouire.baggle.client.gui.ColorFactory;
+import inouire.basics.SimpleLog;
+import inouire.basics.Value;
 
 
 /**
@@ -44,12 +46,25 @@ import inouire.baggle.client.gui.ColorFactory;
  */
 public class BoardPanel extends JComponent{
 
-    int S=300;//taille d'un coté du plateau
-    boolean vertical_resize;
+    
+    //internal variables, rebuilt only on board resize
+    int board_size;
+    int component_width;
+    int component_height;
+    int dices_size=0;
+    int dice_width;
+    int x0,xf,y0,yf;
     int X0,Y0;
-    int w,h;
+    int board_margin;
+    
+    boolean dimensions_init=false;
+    
+    //int S=300;//taille d'un coté du plateau
+    boolean vertical_resize;
+
+    //int w,h;
     int offset_x_mem, offset_y_mem;
-    int b=2;//taille de bordure
+    //int b=2;//taille de bordure
     int border_ratio=5;//pourcentage de la taille de la bordure par rapport à la taille totale
     static int i=1;//taille inter-dé
     
@@ -67,6 +82,50 @@ public class BoardPanel extends JComponent{
     int[] previous_dice={-1,-1};
     
     Color boardColor = ColorFactory.BROWN_BOARD;//0->marron, 1-> bleu , 2-> vert
+    
+    private Image[] icons = new Image[3];
+
+            
+    public void updateConstants(int new_board_size){
+        updateConstants(new_board_size, this.getWidth(), this.getHeight());
+    }
+    
+    public void updateConstants(int new_component_width, int new_component_height){
+        updateConstants(this.board_size, new_component_width, new_component_height);
+    }
+    
+    public void updateConstants(int new_board_size,int new_component_width, int new_component_height){
+        
+        int component_size = Math.min(new_component_width, new_component_height);
+        board_size = Value.bound(new_board_size, 75, component_size - 30);
+        component_width = new_component_width;
+        component_height = new_component_height;
+        
+        X0 = (this.component_width  - board_size)/2;
+        Y0 = (this.component_height - board_size)/2;
+        
+        board_margin = board_size * border_ratio / 100;
+        
+        x0 = X0 + board_margin;
+        y0 = Y0 + board_margin;
+        xf = X0 + board_size - board_margin;
+        yf = Y0 + board_size - board_margin;
+        
+        dices_size = xf - x0;
+        dice_width = dices_size / SIZE;
+    }
+    
+    private int[] discretizePoint(int x, int y){
+        //check that we are in the grid zone
+        if( x>xf || x < x0 || y > yf || y < y0){
+            return null;
+        }
+        //get grid coordinate
+        int ix = SIZE * (x - x0)/dices_size;
+        int jy = SIZE * (y - y0)/dices_size;
+        //SimpleLog.logger.info("("+ix+","+jy+")");
+        return new int[]{ix,jy};
+    }
         
     /*
      * Change the size of the board between big or normal board
@@ -85,10 +144,22 @@ public class BoardPanel extends JComponent{
         }
     }
     
-    public BoardPanel(){
+    public void initDimensions(){
         
-        this.S=Main.configuration.BOARD_WIDTH;
+        
+    }
+    
+    public BoardPanel(){
+        this.board_size = Main.configuration.BOARD_WIDTH;
         setSize(400, 200);
+        
+        try{
+            icons[0] = ImageIO.read(getClass().getResource("/inouire/baggle/client/icons/resize.png"));
+            icons[1] = ImageIO.read(getClass().getResource("/inouire/baggle/client/icons/turn_counterclockwise.png"));
+            icons[2] = ImageIO.read(getClass().getResource("/inouire/baggle/client/icons/turn_clockwise.png"));
+        }catch(IOException ioe){
+            SimpleLog.logger.warn("Impossible to load rotate and resize icons on grid");
+        }
         
         des=new gDe[SIZE][SIZE];
         for(int k=0;k<SIZE;k++){
@@ -98,7 +169,6 @@ public class BoardPanel extends JComponent{
         }
         
         this.addMouseListener(new MouseListener() {
-
             @Override
             public void mouseClicked(MouseEvent arg0) {
                 mouseClickedAction(arg0);
@@ -157,12 +227,16 @@ public class BoardPanel extends JComponent{
      * @param arg0 
      */
     private void mousePressedAction(MouseEvent arg0){
+        
+        int x = arg0.getX();
+        int y = arg0.getY();
+        
         if(zone==1){//resize button
-            offset_x_mem=arg0.getX()-X0-S;
-            offset_y_mem=arg0.getY()-Y0-S;
+            offset_x_mem = x - X0-board_size;
+            offset_y_mem = y - Y0-board_size;
             resizing=true;
-            int a = Math.abs(arg0.getX()-(w/2));
-            if(a<(S/2)-2){
+            int a = Math.abs(x-(component_width/2));
+            if(a<(board_size/2)-2){
                 vertical_resize=true;
             }else{
                 vertical_resize=false;
@@ -170,14 +244,12 @@ public class BoardPanel extends JComponent{
         }else if(zone==4 && Main.connection.in_game && select_mode==0){//on a dice
             this.select_mode=1;//start mode: we don't know which type of selection yet
             
-            //get which dice has been pressed          
-            int X = arg0.getX();
-            int Y = arg0.getY();
-            int k=SIZE*(X-(X0+b))/(S-2*b);
-            int l=SIZE*(Y-(Y0+b))/(S-2*b);
-            if(k>=SIZE || k<0 || l>=SIZE || l<0){
+            int[] coord = discretizePoint(x, y);
+            if(coord == null){
                 return;
             }
+            int k = coord[0];
+            int l = coord[1];
             
             //Set the dice as selected, and all the dices around as highlighted
             des[k][l].setSelected();
@@ -212,25 +284,34 @@ public class BoardPanel extends JComponent{
         repaint();
     }
     
+
+    
     /**
      * Action when mouse is dragged
      * @param arg0 
      */
     private void mouseDraggedAction(MouseEvent arg0){
+        int x = arg0.getX();
+        int y = arg0.getY();
         if(resizing){//if we are resizing the grid
+            int new_board_size;
             if(vertical_resize){
-                S=Math.abs(2*(arg0.getY()-(h/2)))-offset_y_mem;
+                new_board_size=Math.abs(2*(y-(component_height/2)))-offset_y_mem;
             }else{
-                S=Math.abs(2*(arg0.getX()-(w/2)))-offset_x_mem;
+                new_board_size=Math.abs(2*(x-(component_width/2)))-offset_x_mem;
             }
+            updateConstants(new_board_size);
             repaint();
         }else if(select_mode==1 || select_mode==2 || select_mode==4){
             //track dice changing
-            int X = arg0.getX();
-            int Y = arg0.getY();
-            int k=SIZE*(X-(X0+b))/(S-2*b);
-            int l=SIZE*(Y-(Y0+b))/(S-2*b);
-            if(trackDiceChanging(X,Y,k,l)){
+            int[] coord = discretizePoint(x, y);
+            if(coord == null){
+                return;
+            }
+            int k = coord[0];
+            int l = coord[1];
+
+            if(trackDiceChanging(x,y,k,l)){
                 des[k][l].setSelected();
                 for(int m=0;m<SIZE;m++){
                     for(int n=0;n<SIZE;n++){
@@ -264,9 +345,13 @@ public class BoardPanel extends JComponent{
      * @param arg0 
      */
     private void mouseMovedAction(MouseEvent arg0){
+
+        int x = arg0.getX();
+        int y = arg0.getY();
+        
         //track the zone where the pointer is
         if(!resizing){
-            zone = getZone(arg0.getX(),arg0.getY());
+            zone = getZone(x,y);
             if(zone==4){
                 zone=4;//on one of the square
                 setToolTipText(null);
@@ -286,11 +371,9 @@ public class BoardPanel extends JComponent{
             }
         }
         if(select_mode==3){//we are in click mode, track a dice changing
-            int X = arg0.getX();
-            int Y = arg0.getY();
-            int k=SIZE*(X-(X0+b))/(S-2*b);
-            int l=SIZE*(Y-(Y0+b))/(S-2*b);
-            if(trackDiceChanging(X,Y,k,l)){
+            int k=SIZE*(x-(X0+board_margin))/(board_size-2*board_margin);
+            int l=SIZE*(y-(Y0+board_margin))/(board_size-2*board_margin);
+            if(trackDiceChanging(x,y,k,l)){
                 des[k][l].setSelected();
                 for(int m=0;m<SIZE;m++){
                     for(int n=0;n<SIZE;n++){
@@ -325,8 +408,8 @@ public class BoardPanel extends JComponent{
                 divisor=200;
             }
             //handle the diagonal stuff
-            int ax=(1000*(X-(X0+b))/(S-2*b))%divisor;
-            int bx=(1000*(Y-(Y0+b))/(S-2*b))%divisor;
+            int ax=(1000*(X-(X0+board_margin))/(board_size-2*board_margin))%divisor;
+            int bx=(1000*(Y-(Y0+board_margin))/(board_size-2*board_margin))%divisor;
             int T=80;
             if((ax+bx<T)||(bx-ax>divisor-T)||(ax+bx>divisor*2-T)||(bx-ax<T-divisor*2)){
                 return false;
@@ -338,20 +421,26 @@ public class BoardPanel extends JComponent{
         }
     }
     
-    private int getZone(int X, int Y){
+    private int getZone(int x, int y){
         int Z;
-        if(inZone(X,Y,X0+b,Y0+b,X0+S-b,Y0+S-b)){
+        if(inZone(x, y, x0, y0, xf, yf)){
             Z=4;//on one of the square
             setToolTipText(null);
-        }else if(inZone(X,Y,X0+S,Y0+S,X0+S+16,Y0+S+16)){
+        }else if(inZone(x,y,
+                        X0+board_size, Y0+board_size,
+                        X0+board_size+16, Y0+board_size+16)){
             Z=1;
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) );
             setToolTipText(Language.getString(59));
-        }else if(inZone(X,Y,X0-15,Y0-10,X0+4,Y0+6)){
+        }else if(inZone(x,y,
+                        X0-15, Y0-10,
+                        X0+4, Y0+6)){
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) );
             setToolTipText(Language.getString(58));//turn grid
             Z=2;
-        }else if(inZone(X,Y,X0+S-3,Y0-10,X0+S+16,Y0+6)){
+        }else if(inZone(x, y,
+                        X0+board_size-3, Y0-10,
+                        X0+board_size+16, Y0+6)){
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) );
             setToolTipText(Language.getString(57));//turn grid
             Z=3;
@@ -431,8 +520,8 @@ public class BoardPanel extends JComponent{
         repaint();
     }
 
-    private boolean inZone(int a,int b,int x,int y,int X,int Y){
-        if(a>=(x) && a<=(X) && b>=(y) && b<=(Y)){
+    private boolean inZone(int x,int y,int A,int B,int C,int D){
+        if( x>= A && x <= C && y >= B && y<= D){
             return true;
         }else{
             return false;
@@ -494,43 +583,41 @@ public class BoardPanel extends JComponent{
     
     @Override
     public void paintComponent(Graphics g) {
+        
+        int actual_width  = this.getWidth();
+        int actual_height = this.getHeight();
+        
+        // check first init
+        if(!dimensions_init){
+            this.updateConstants(board_size, actual_width, actual_height);
+            dimensions_init = true;
+        }
+
+        // check if component size has changed
+        if( actual_width != component_width || actual_height != component_height){
+            updateConstants(actual_width, actual_height);
+        }
+                
+        // init graphical component
         Graphics2D g2 = (Graphics2D)g;
         RenderingHints rh = new RenderingHints(
         RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHints(rh);
         super.paintComponent(g);
 
-        int H=0;
-        w=this.getWidth();
-        h=this.getHeight();
-
-        if(w<h){
-            H=w;
-        }else{
-            H=h;
-        }
-        if(S>H-(30)){
-            S=H-(30);
-        }else if(S<=75){
-            S=75;
-        }
-
-        b=S*border_ratio/100;
-        X0=(w-S)/2;
-        Y0=(h-S)/2;
-
+        // handle rotation cases
         if(rotation!=0){
             AffineTransform saveXform = g2.getTransform();
             AffineTransform AA = new AffineTransform();
-            AA.rotate(Math.toRadians(rotation), X0+(S/2), Y0+(S/2));
+            AA.rotate(Math.toRadians(rotation), X0+(board_size/2), Y0+(board_size/2));
             g2.transform(AA);
             g2.setColor(boardColor);
-            g2.fillRect(X0, Y0, S,S);
-            int d=(S-2*b-(SIZE-1)*i)/SIZE;
+            g2.fillRect(X0, Y0, board_size,board_size);
+            int d=(board_size-2*board_margin-(SIZE-1)*i)/SIZE;
             for(int k=0;k<SIZE;k++){
                 for(int l=0;l<SIZE;l++){
                     if(!resizing){
-                        des[k][l].reAssign(X0+b+k*(d+i),Y0+b+l*(d+i),d, "",0);
+                        des[k][l].reAssign(X0+board_margin+k*(d+i),Y0+board_margin+l*(d+i),d, "",0);
                         des[k][l].paintDe(g);
                     }
                 }
@@ -538,12 +625,15 @@ public class BoardPanel extends JComponent{
             g2.transform(saveXform);
             return;
         }
+        
+        // paint board
         g.setColor(boardColor);
-        g.fillRect(X0, Y0, S,S);
-        g.setColor(Color.BLACK);
-        int d=(S-2*b-(SIZE-1)*i)/SIZE;
-
+        g.fillRect(X0, Y0, board_size,board_size);
+        
+        //compute font size
+        // TODO do it in update constants
         int m=10;
+        int d=(board_size-2*board_margin-(SIZE-1)*i)/SIZE;
         int target=d;
         Font F=new Font("Serial", style, m);
         while(g.getFontMetrics(F).getHeight()<target){
@@ -551,41 +641,31 @@ public class BoardPanel extends JComponent{
             F=new Font("Serial", style, m);
         }
 
+        // drwa dices
         String grid = Main.connection.grid;
-
         for(int k=0;k<SIZE;k++){
             for(int l=0;l<SIZE;l++){
                 if(!resizing){
-                    des[k][l].reAssign(X0+b+k*(d+i),Y0+b+l*(d+i),d, grid.charAt(SIZE*l+k)+"",m);
+                    des[k][l].reAssign(X0+board_margin+k*(d+i),Y0+board_margin+l*(d+i),d, grid.charAt(SIZE*l+k)+"",m);
                     des[k][l].paintDe(g);
                 }
             }
         }
 
-        Image image;
-        try {
-            image = ImageIO.read(getClass().getResource("/inouire/baggle/client/icons/resize.png"));
-            g.drawImage(image, X0+S, Y0+S, null);
-            image = ImageIO.read(getClass().getResource("/inouire/baggle/client/icons/turn_counterclockwise.png"));
-            g.drawImage(image, X0-15, Y0-10, null);
-            image = ImageIO.read(getClass().getResource("/inouire/baggle/client/icons/turn_clockwise.png"));
-            g.drawImage(image, X0+S-3, Y0-10, null);
-        } catch (IOException ex) {
+        //draw icons
+        g.drawImage(icons[0], X0+board_size, Y0+board_size, null);
+        g.drawImage(icons[1], X0-15, Y0-10, null);
+        g.drawImage(icons[2], X0+board_size-3, Y0-10, null);
 
-        }
     }
 
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(400,400);
     }
-
-    public void setBoardSize(int width){
-        this.S=width;
-    }
     
     public int getBoardSize(){
-        return S;
+        return board_size;
     }
 }
 
