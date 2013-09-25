@@ -38,6 +38,8 @@ import inouire.baggle.client.Main;
 import inouire.baggle.client.gui.ColorFactory;
 import inouire.basics.SimpleLog;
 import inouire.basics.Value;
+import java.awt.Polygon;
+import java.util.LinkedList;
 
 
 /**
@@ -170,7 +172,7 @@ public class BoardPanel extends JComponent{
         dices_size = xf - x0;
         dice_width = dices_size / SIZE;
         
-        int radius_ratio=70;
+        int radius_ratio=75;
         radius_pow2 = (int) Math.pow(radius_ratio * dice_width / 200,2);
     }
     
@@ -327,6 +329,7 @@ public class BoardPanel extends JComponent{
 
             if(trackDiceChanging(k,l)){
                 des[k][l].setSelected();
+                des[k][l].addConnector(gDe.computeConnector(previous_dice[0],previous_dice[1],k,l));
                 for(int m=0;m<SIZE;m++){
                     for(int n=0;n<SIZE;n++){
                        des[m][n].setUnhighlighted();
@@ -395,6 +398,7 @@ public class BoardPanel extends JComponent{
 
             if(trackDiceChanging(k,l)){
                 des[k][l].setSelected();
+                des[k][l].addConnector(gDe.computeConnector(previous_dice[0],previous_dice[1],k,l));
                 for(int m=0;m<SIZE;m++){
                     for(int n=0;n<SIZE;n++){
                        des[m][n].setUnhighlighted();
@@ -517,7 +521,7 @@ public class BoardPanel extends JComponent{
     public void disableAll() {
         for(int k=0;k<SIZE;k++){
             for(int l=0;l<SIZE;l++){
-                des[k][l].setSelected();
+                des[k][l].setDisabled();
             }
         }
         repaint();
@@ -659,6 +663,13 @@ public class BoardPanel extends JComponent{
                 }
             }
         }
+        for(int k=0;k<SIZE;k++){
+            for(int l=0;l<SIZE;l++){
+                if(!resizing){
+                    des[k][l].paintConnector(g);
+                }
+            }
+        }
 
         //draw icons
         g.drawImage(icons[0], X0+board_size, Y0+board_size, null);
@@ -686,12 +697,15 @@ class gDe {
     String letter="-";
     int font_size;
     int font_occupation;
-    int state=0;//0: standard , 1: grisé, 2: mis en valeur
+    int state=0;//0: standard , 1: sékectionné, 2: mis en valeur, 3: disbabled
 
+    LinkedList<Integer> connectors;
+    
     static Color C1=new Color(240,240,240);
     static Color C2=new Color(230,230,230);
 
     gDe(int x, int y, int size,String letter,int font_size){
+        this.connectors = new LinkedList<Integer>();
         this.size=size;
         this.letter=letter;
         this.x=x;
@@ -710,6 +724,7 @@ class gDe {
 
     void resetStatus(){
         state=0;
+        connectors=new LinkedList<Integer>();
     }
 
     void setSelected(){
@@ -727,7 +742,11 @@ class gDe {
             state=0;
         }
     }
-
+    
+    void setDisabled(){
+        state=3;
+    }
+    
     void paintDe(Graphics g){
         int percent_20=size/5;
         int percent_5=size/20;
@@ -735,6 +754,7 @@ class gDe {
         font_occupation=g.getFontMetrics(F).stringWidth(letter);
         switch(state){
             case 0:
+            case 2:
                 g.setColor(C2);
                 g.fillRoundRect(x, y, size, size, percent_20, percent_20);
                 g.setColor(C1);
@@ -750,28 +770,124 @@ class gDe {
             case 1:
                 g.setColor(C2);
                 g.fillRoundRect(x, y, size, size, percent_20, percent_20);
+                g.setColor(new Color(180,200,200));
+                g.fillOval(x+percent_5, y+percent_5, size-2*percent_5, size-2*percent_5);
+                g.setColor(Color.BLACK);
+                g.drawOval(x+percent_5, y+percent_5, size-2*percent_5, size-2*percent_5);
+                g.setColor(Color.BLACK);
+                g.setFont(F);
+                g.drawString(letter, x+((size/2)-(font_occupation/2)), y+((size)-percent_20));
+                break;
+            case 3:
+                g.setColor(C2);
+                g.fillRoundRect(x, y, size, size, percent_20, percent_20);
                 g.setColor(C1);
+                g.fillOval(x+percent_5, y+percent_5, size-2*percent_5, size-2*percent_5);
+                g.setColor(new Color(189,163,170));
                 g.fillOval(x+percent_5, y+percent_5, size-2*percent_5, size-2*percent_5);
                 g.setColor(Color.LIGHT_GRAY);
                 g.setFont(F);
                 g.drawString(letter, x+((size/2)-(font_occupation/2)), y+((size)-percent_20));
                 break;
-            case 2:
-                g.setColor(C2);
-                g.setColor(new Color(180,200,200));
-                g.fillRoundRect(x, y, size, size, percent_20, percent_20);
-                g.setColor(C1);
-                g.setColor(new Color(180,200,200));
-                g.fillOval(x+percent_5, y+percent_5, size-2*percent_5, size-2*percent_5);
-                if(Main.connection.in_game){
-                   g.setColor(Color.BLACK);
-                }else{
-                   g.setColor(Color.LIGHT_GRAY);
-                }
-                g.setFont(F);
-                g.drawString(letter, x+((size/2)-(font_occupation/2)), y+((size)-percent_20));
-                break;
         }
+        
+        
+    }
+
+    void addConnector(int connector){
+        connectors.add(connector);
+    }
+    
+    static int computeConnector(int i, int j, int k, int l){
+        return 3*(i-k)+(j-l);
+    }
+    
+    void paintConnector(Graphics g){
+        int xc = x + (size/2);
+        int yc = y + (size/2);
+        int margin=size/20;
+        int bold = 5;
+        int inter = 1;
+        
+        int diameter = size-(2*margin);
+        int radius = diameter/2;
+        int straight = 2 * margin +inter;
+        int diagonal = (int)(Math.sqrt(2 * Math.pow(size+1, 2))) - 2*radius + 2;
+        
+        int cosradius = (int) (radius * Math.cos(Math.PI/4));
+        int cosbold = (int) (bold * Math.cos(Math.PI/4));
+        int cosdiagonal = (int)(diagonal * Math.cos(Math.PI/4));
+
+        g.setColor(new Color(255,106,36));
+        for(int connector : connectors){
+            Polygon p = new Polygon();
+           /*                      
+            *   -4  -1   2           
+            *                      
+            *   -3   0   3            
+            *                        
+            *   -2   1   4           
+            */                           
+            switch(connector){
+                case -4:
+                    p.addPoint(xc-cosradius+cosbold, yc-cosradius-cosbold);
+                    p.addPoint(xc-cosradius-cosbold, yc-cosradius+cosbold);
+                    p.addPoint(xc-cosradius-cosdiagonal-cosbold, yc-cosradius-cosdiagonal+cosbold);
+                    p.addPoint(xc-cosradius-cosdiagonal+cosbold, yc-cosradius-cosdiagonal-cosbold);
+                    break;
+                case -3:
+                    p.addPoint(xc-radius, yc+bold);
+                    p.addPoint(xc-radius, yc-bold);
+                    p.addPoint(xc-radius-straight, yc-bold);
+                    p.addPoint(xc-radius-straight, yc+bold);
+                    break;
+                case -2:
+                    p.addPoint(xc-cosradius-cosbold, yc+cosradius-cosbold);
+                    p.addPoint(xc-cosradius+cosbold, yc+cosradius+cosbold);
+                    p.addPoint(xc-cosradius-cosdiagonal+cosbold, yc+cosradius+cosdiagonal+cosbold);
+                    p.addPoint(xc-cosradius-cosdiagonal-cosbold, yc+cosradius+cosdiagonal-cosbold);
+                    break;
+                case -1: 
+                    p.addPoint(xc-bold, yc-radius);
+                    p.addPoint(xc+bold, yc-radius);
+                    p.addPoint(xc+bold, yc-radius-straight);
+                    p.addPoint(xc-bold, yc-radius-straight);
+                    break;
+                case 0:
+                    //draw nothing
+                    break;
+                case 1:
+                    p.addPoint(xc-bold, yc+radius+1);
+                    p.addPoint(xc+bold, yc+radius+1);
+                    p.addPoint(xc+bold, yc+radius+straight+1);
+                    p.addPoint(xc-bold, yc+radius+straight+1);
+                    break;
+                case 2:
+                    p.addPoint(xc+cosradius+cosbold+1, yc-cosradius+cosbold+1);
+                    p.addPoint(xc+cosradius-cosbold+1, yc-cosradius-cosbold+1);
+                    p.addPoint(xc+cosradius+cosdiagonal-cosbold, yc-cosradius-cosdiagonal-cosbold);
+                    p.addPoint(xc+cosradius+cosdiagonal+cosbold, yc-cosradius-cosdiagonal+cosbold);
+                    break;
+                case 3:
+                    p.addPoint(xc+radius+1, yc+bold);
+                    p.addPoint(xc+radius+1, yc-bold);
+                    p.addPoint(xc+radius+straight+1, yc-bold);
+                    p.addPoint(xc+radius+straight+1, yc+bold);
+                    break;
+                case 4:
+                    p.addPoint(xc+cosradius+cosbold+1, yc+cosradius-cosbold+1);
+                    p.addPoint(xc+cosradius-cosbold+1, yc+cosradius+cosbold+1);
+                    p.addPoint(xc+cosradius+cosdiagonal-cosbold, yc+cosradius+cosdiagonal+cosbold);
+                    p.addPoint(xc+cosradius+cosdiagonal+cosbold, yc+cosradius+cosdiagonal-cosbold);
+                    break;
+                
+            }
+            if(p.npoints>=4){
+                g.fillPolygon(p);
+            }
+            
+        }
+    
     }
 
 }
