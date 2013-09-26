@@ -329,7 +329,7 @@ public class BoardPanel extends JComponent{
 
             if(trackDiceChanging(k,l)){
                 des[k][l].setSelected();
-                des[k][l].addConnector(gDe.computeConnector(previous_dice[0],previous_dice[1],k,l));
+                des[k][l].setConnector(gDe.computeConnector(previous_dice[0],previous_dice[1],k,l));
                 for(int m=0;m<SIZE;m++){
                     for(int n=0;n<SIZE;n++){
                        des[m][n].setUnhighlighted();
@@ -398,7 +398,7 @@ public class BoardPanel extends JComponent{
 
             if(trackDiceChanging(k,l)){
                 des[k][l].setSelected();
-                des[k][l].addConnector(gDe.computeConnector(previous_dice[0],previous_dice[1],k,l));
+                des[k][l].setConnector(gDe.computeConnector(previous_dice[0],previous_dice[1],k,l));
                 for(int m=0;m<SIZE;m++){
                     for(int n=0;n<SIZE;n++){
                        des[m][n].setUnhighlighted();
@@ -699,13 +699,13 @@ class gDe {
     int font_occupation;
     int state=0;//0: standard , 1: sékectionné, 2: mis en valeur, 3: disbabled
 
-    LinkedList<Integer> connectors;
+    int connector;
     
     static Color C1=new Color(240,240,240);
     static Color C2=new Color(230,230,230);
 
     gDe(int x, int y, int size,String letter,int font_size){
-        this.connectors = new LinkedList<Integer>();
+        this.connector = 0;
         this.size=size;
         this.letter=letter;
         this.x=x;
@@ -724,7 +724,7 @@ class gDe {
 
     void resetStatus(){
         state=0;
-        connectors=new LinkedList<Integer>();
+        connector=0;
     }
 
     void setSelected(){
@@ -794,8 +794,8 @@ class gDe {
         
     }
 
-    void addConnector(int connector){
-        connectors.add(connector);
+    void setConnector(int connector){
+        this.connector=connector;
     }
     
     static int computeConnector(int i, int j, int k, int l){
@@ -819,73 +819,72 @@ class gDe {
         int cosdiagonal = (int)(diagonal * Math.cos(Math.PI/4));
 
         g.setColor(new Color(255,106,36));
-        for(int connector : connectors){
-            Polygon p = new Polygon();
-           /*                      
-            *   -4  -1   2           
-            *                      
-            *   -3   0   3            
-            *                        
-            *   -2   1   4           
-            */                           
-            switch(connector){
-                case -4:
-                    p.addPoint(xc-cosradius+cosbold, yc-cosradius-cosbold);
-                    p.addPoint(xc-cosradius-cosbold, yc-cosradius+cosbold);
-                    p.addPoint(xc-cosradius-cosdiagonal-cosbold, yc-cosradius-cosdiagonal+cosbold);
-                    p.addPoint(xc-cosradius-cosdiagonal+cosbold, yc-cosradius-cosdiagonal-cosbold);
-                    break;
-                case -3:
-                    p.addPoint(xc-radius, yc+bold);
-                    p.addPoint(xc-radius, yc-bold);
-                    p.addPoint(xc-radius-straight, yc-bold);
-                    p.addPoint(xc-radius-straight, yc+bold);
-                    break;
-                case -2:
-                    p.addPoint(xc-cosradius-cosbold, yc+cosradius-cosbold);
-                    p.addPoint(xc-cosradius+cosbold, yc+cosradius+cosbold);
-                    p.addPoint(xc-cosradius-cosdiagonal+cosbold, yc+cosradius+cosdiagonal+cosbold);
-                    p.addPoint(xc-cosradius-cosdiagonal-cosbold, yc+cosradius+cosdiagonal-cosbold);
-                    break;
-                case -1: 
-                    p.addPoint(xc-bold, yc-radius);
-                    p.addPoint(xc+bold, yc-radius);
-                    p.addPoint(xc+bold, yc-radius-straight);
-                    p.addPoint(xc-bold, yc-radius-straight);
-                    break;
-                case 0:
-                    //draw nothing
-                    break;
-                case 1:
-                    p.addPoint(xc-bold, yc+radius+1);
-                    p.addPoint(xc+bold, yc+radius+1);
-                    p.addPoint(xc+bold, yc+radius+straight+1);
-                    p.addPoint(xc-bold, yc+radius+straight+1);
-                    break;
-                case 2:
-                    p.addPoint(xc+cosradius+cosbold+1, yc-cosradius+cosbold+1);
-                    p.addPoint(xc+cosradius-cosbold+1, yc-cosradius-cosbold+1);
-                    p.addPoint(xc+cosradius+cosdiagonal-cosbold, yc-cosradius-cosdiagonal-cosbold);
-                    p.addPoint(xc+cosradius+cosdiagonal+cosbold, yc-cosradius-cosdiagonal+cosbold);
-                    break;
-                case 3:
-                    p.addPoint(xc+radius+1, yc+bold);
-                    p.addPoint(xc+radius+1, yc-bold);
-                    p.addPoint(xc+radius+straight+1, yc-bold);
-                    p.addPoint(xc+radius+straight+1, yc+bold);
-                    break;
-                case 4:
-                    p.addPoint(xc+cosradius+cosbold+1, yc+cosradius-cosbold+1);
-                    p.addPoint(xc+cosradius-cosbold+1, yc+cosradius+cosbold+1);
-                    p.addPoint(xc+cosradius+cosdiagonal-cosbold, yc+cosradius+cosdiagonal+cosbold);
-                    p.addPoint(xc+cosradius+cosdiagonal+cosbold, yc+cosradius+cosdiagonal-cosbold);
-                    break;
-                
-            }
-            if(p.npoints>=4){
-                g.fillPolygon(p);
-            }
-            
+        
+        //draw connector related to this dice
+        Polygon p = new Polygon();
+       /*                      
+        *   -4  -1   2           
+        *                      
+        *   -3   0   3            
+        *                        
+        *   -2   1   4           
+        */                           
+        switch(connector){
+            case -4:
+                p.addPoint(xc-cosradius+cosbold, yc-cosradius-cosbold);
+                p.addPoint(xc-cosradius-cosbold, yc-cosradius+cosbold);
+                p.addPoint(xc-cosradius-cosdiagonal-cosbold, yc-cosradius-cosdiagonal+cosbold);
+                p.addPoint(xc-cosradius-cosdiagonal+cosbold, yc-cosradius-cosdiagonal-cosbold);
+                break;
+            case -3:
+                p.addPoint(xc-radius, yc+bold);
+                p.addPoint(xc-radius, yc-bold);
+                p.addPoint(xc-radius-straight, yc-bold);
+                p.addPoint(xc-radius-straight, yc+bold);
+                break;
+            case -2:
+                p.addPoint(xc-cosradius-cosbold, yc+cosradius-cosbold);
+                p.addPoint(xc-cosradius+cosbold, yc+cosradius+cosbold);
+                p.addPoint(xc-cosradius-cosdiagonal+cosbold, yc+cosradius+cosdiagonal+cosbold);
+                p.addPoint(xc-cosradius-cosdiagonal-cosbold, yc+cosradius+cosdiagonal-cosbold);
+                break;
+            case -1: 
+                p.addPoint(xc-bold, yc-radius);
+                p.addPoint(xc+bold, yc-radius);
+                p.addPoint(xc+bold, yc-radius-straight);
+                p.addPoint(xc-bold, yc-radius-straight);
+                break;
+            case 0:
+                //draw nothing
+                break;
+            case 1:
+                p.addPoint(xc-bold, yc+radius+1);
+                p.addPoint(xc+bold, yc+radius+1);
+                p.addPoint(xc+bold, yc+radius+straight+1);
+                p.addPoint(xc-bold, yc+radius+straight+1);
+                break;
+            case 2:
+                p.addPoint(xc+cosradius+cosbold+1, yc-cosradius+cosbold+1);
+                p.addPoint(xc+cosradius-cosbold+1, yc-cosradius-cosbold+1);
+                p.addPoint(xc+cosradius+cosdiagonal-cosbold, yc-cosradius-cosdiagonal-cosbold);
+                p.addPoint(xc+cosradius+cosdiagonal+cosbold, yc-cosradius-cosdiagonal+cosbold);
+                break;
+            case 3:
+                p.addPoint(xc+radius+1, yc+bold);
+                p.addPoint(xc+radius+1, yc-bold);
+                p.addPoint(xc+radius+straight+1, yc-bold);
+                p.addPoint(xc+radius+straight+1, yc+bold);
+                break;
+            case 4:
+                p.addPoint(xc+cosradius+cosbold+1, yc+cosradius-cosbold+1);
+                p.addPoint(xc+cosradius-cosbold+1, yc+cosradius+cosbold+1);
+                p.addPoint(xc+cosradius+cosdiagonal-cosbold, yc+cosradius+cosdiagonal+cosbold);
+                p.addPoint(xc+cosradius+cosdiagonal+cosbold, yc+cosradius+cosdiagonal-cosbold);
+                break;
+
+        }
+        if(p.npoints>=4){
+            g.fillPolygon(p);
         }
     
     }
