@@ -168,7 +168,7 @@ public class BoardPanel extends JComponent{
         yf = Y0 + board_size - board_margin;
         
         dices_size = xf - x0;
-        dice_width = (dices_size / SIZE)-2;
+        dice_width = (board_size-2*board_margin-(SIZE-1)*i)/SIZE;
         
         int radius_ratio=75;
         radius_pow2 = (int) Math.pow(radius_ratio * dice_width / 200,2);
