@@ -39,8 +39,6 @@ import inouire.baggle.client.gui.ColorFactory;
 import inouire.basics.SimpleLog;
 import inouire.basics.Value;
 import java.awt.Polygon;
-import java.util.LinkedList;
-
 
 /**
  *
@@ -99,7 +97,7 @@ public class BoardPanel extends JComponent{
         des=new gDe[SIZE][SIZE];
         for(int k=0;k<SIZE;k++){
             for(int l=0;l<SIZE;l++){
-                des[k][l]=new gDe(0, 0, 0,"-",0);
+                des[k][l]=new gDe(0, 0,"-",0);
             }
         }
         
@@ -170,10 +168,12 @@ public class BoardPanel extends JComponent{
         yf = Y0 + board_size - board_margin;
         
         dices_size = xf - x0;
-        dice_width = dices_size / SIZE;
+        dice_width = (dices_size / SIZE)-2;
         
         int radius_ratio=75;
         radius_pow2 = (int) Math.pow(radius_ratio * dice_width / 200,2);
+        
+        gDe.updateConstants(dice_width);
     }
     
     private int[] discretizePoint(int x, int y){
@@ -221,7 +221,7 @@ public class BoardPanel extends JComponent{
         des=new gDe[SIZE][SIZE];
         for(int k=0;k<SIZE;k++){
             for(int l=0;l<SIZE;l++){
-                des[k][l]=new gDe(0, 0, 0,"-",0);
+                des[k][l]=new gDe(0, 0,"-",0);
             }
         }
         updateConstants(board_size);
@@ -629,7 +629,7 @@ public class BoardPanel extends JComponent{
             for(int k=0;k<SIZE;k++){
                 for(int l=0;l<SIZE;l++){
                     if(!resizing){
-                        des[k][l].reAssign(X0+board_margin+k*(d+i),Y0+board_margin+l*(d+i),d, "",0);
+                        des[k][l].reAssign(X0+board_margin+k*(d+i),Y0+board_margin+l*(d+i),"",0);
                         des[k][l].paintDe(g);
                     }
                 }
@@ -653,12 +653,12 @@ public class BoardPanel extends JComponent{
             F=new Font("Serial", style, m);
         }
 
-        // drwa dices
+        // draw dices
         String grid = Main.connection.grid;
         for(int k=0;k<SIZE;k++){
             for(int l=0;l<SIZE;l++){
                 if(!resizing){
-                    des[k][l].reAssign(X0+board_margin+k*(d+i),Y0+board_margin+l*(d+i),d, grid.charAt(SIZE*l+k)+"",m);
+                    des[k][l].reAssign(X0+board_margin+k*(d+i),Y0+board_margin+l*(d+i),grid.charAt(SIZE*l+k)+"",m);
                     des[k][l].paintDe(g);
                 }
             }
@@ -691,7 +691,7 @@ public class BoardPanel extends JComponent{
 
 class gDe {
 
-    int size=100;
+    static int size=100;
     int x;
     int y;
     String letter="-";
@@ -704,9 +704,26 @@ class gDe {
     static Color C1=new Color(240,240,240);
     static Color C2=new Color(230,230,230);
 
-    gDe(int x, int y, int size,String letter,int font_size){
+    static int margin,bold,inter,diameter,radius,straight,diagonal,cosradius,cosbold,cosdiagonal;
+        
+    static void updateConstants(int new_size){
+        size=new_size;
+        margin=size/20;
+        bold = 5;
+        inter = 1;
+        
+        diameter = size-(2*margin);
+        radius = diameter/2;
+        straight = 2 * margin +inter;
+        diagonal = (int)(Math.sqrt(2 * Math.pow(size+1, 2))) - 2*radius + 2;
+        
+        cosradius = (int) (radius * Math.cos(Math.PI/4));
+        cosbold = (int) (bold * Math.cos(Math.PI/4));
+        cosdiagonal = (int)(diagonal * Math.cos(Math.PI/4));
+    }
+    
+    gDe(int x, int y, String letter,int font_size){
         this.connector = 0;
-        this.size=size;
         this.letter=letter;
         this.x=x;
         this.y=y;
@@ -714,8 +731,7 @@ class gDe {
         this.state=0;
     }
 
-    void reAssign(int x, int y, int size,String letter,int font_size){
-        this.size=size;
+    void reAssign(int x, int y, String letter,int font_size){
         this.letter=letter;
         this.x=x;
         this.y=y;
@@ -805,18 +821,6 @@ class gDe {
     void paintConnector(Graphics g){
         int xc = x + (size/2);
         int yc = y + (size/2);
-        int margin=size/20;
-        int bold = 5;
-        int inter = 1;
-        
-        int diameter = size-(2*margin);
-        int radius = diameter/2;
-        int straight = 2 * margin +inter;
-        int diagonal = (int)(Math.sqrt(2 * Math.pow(size+1, 2))) - 2*radius + 2;
-        
-        int cosradius = (int) (radius * Math.cos(Math.PI/4));
-        int cosbold = (int) (bold * Math.cos(Math.PI/4));
-        int cosdiagonal = (int)(diagonal * Math.cos(Math.PI/4));
 
         g.setColor(new Color(255,106,36));
         
