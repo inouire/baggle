@@ -199,6 +199,7 @@ public class GameThread extends Thread{
     private void setShortInactivityTimeout(){
         inactivity_timeout = short_inactivity_timeout;
     }
+    
     private void setLongInactivityTimeout(){
         inactivity_timeout =  long_inactivity_timeout;
     }   
