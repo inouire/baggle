@@ -458,8 +458,6 @@ public class PlayerList {
 
         broadcastEndSignal();
 
-
-        
         //do nothing if participants list is empty
         if(participants.isEmpty()){
             return;
@@ -500,7 +498,11 @@ public class PlayerList {
             }else{
                 broadcast(new RESULTDatagram(p.id,p.score_result,p.words_found_result).toString());
             }
-            p.nb_beaten = nb_players-nb_robots-rank;
+            if(nb_players-nb_robots == 1){
+                p.nb_beaten = 0;
+            }else{
+                p.nb_beaten = nb_players-rank;
+            }
         }
         
         //broadcast the total score of each player
