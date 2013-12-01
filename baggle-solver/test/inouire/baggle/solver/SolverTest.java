@@ -60,7 +60,7 @@ public class SolverTest {
     public void testGridNbPoints()
     {
         System.out.println("Test grid number of points");
-        assertEquals(320,Solver.getNbPoints(test_results_4x4));
+        assertEquals(331,Solver.getNbPoints(test_results_4x4));
     }
     
      /**
