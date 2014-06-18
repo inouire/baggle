@@ -9,7 +9,6 @@
  * Thanks to Sebastien Sauvage for this piece of code
  */
 
-
 package inouire.baggle.client.gui.modules;
 
 import java.awt.*;
