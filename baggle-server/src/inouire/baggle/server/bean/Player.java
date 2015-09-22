@@ -173,7 +173,7 @@ public class Player {
             
             //get the corresponding score
             for(String word: words_found){
-                points+=Solver.getPoints(word);
+                points+=Solver.getPoints(word, Main.server.configuration.rewardBigWords);
                 words_found_result.add(word);
             }
         }catch(Exception e){
@@ -200,7 +200,7 @@ public class Player {
             
             //compute score
             for(String word: words_found_result){
-                points+=Solver.getPoints(word);
+                points+=Solver.getPoints(word, Main.server.configuration.rewardBigWords);
             }
         }catch(Exception e){
         }finally{
