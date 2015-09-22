@@ -149,9 +149,6 @@ public class Solver {
         for(Letter L:letters){
             usolvePrefix(L,"");
         }
-//        for(String a : found){
-//            System.out.println(a);
-//        }
         return found;
     }
 
@@ -191,13 +188,14 @@ public class Solver {
     /**
      * Get the total number of points of a given set of solutions
      * @param solutions
+     * @param rewarding_big_words
      * @return the nb of points that the grid worth
      */
-    public static int getNbPoints(ArrayList<String> solutions)
+    public static int getNbPoints(ArrayList<String> solutions, boolean rewarding_big_words)
     {
         int r=0;
         for(String s:solutions){
-            r+=getPoints(s);
+            r+=getPoints(s, rewarding_big_words);
         }
         return r;
     }
@@ -205,11 +203,17 @@ public class Solver {
     /**
      * Get the number of points that a word worth
      * @param word
+     * @param rewarding_big_words
      * @return the nb of points that the word wort
      */
-    public static int getPoints(String word)
+    public static int getPoints(String word, boolean rewarding_big_words)
     {
-        return getPoints(word.length());
+        if(rewarding_big_words){
+            return getPointsBigWords(word.length());
+        }else{
+            return getPointsClassical(word.length());
+        }
+        
     }
         
     /**
@@ -217,7 +221,7 @@ public class Solver {
      * @param word_size the size of the word
      * @return the nb of points that the word worth
      */
-    public static int getPoints(int word_size)
+    public static int getPointsClassical(int word_size)
     {
         switch(word_size){
             case 3:
@@ -239,6 +243,43 @@ public class Solver {
             case 15:
             case 16:
                 return 11;
+        }
+        return 0;
+    }
+    
+    /**
+     * Get the number of points that a word size worth
+     * @param word_size the size of the word
+     * @return the nb of points that the word worth
+     */
+    public static int getPointsBigWords(int word_size)
+    {            
+        switch(word_size){
+            case 3:
+            case 4:
+                return 1;
+            case 5:
+                return 2;
+            case 6:
+                return 3;
+            case 7:
+                return 5;
+            case 8:
+                return 11;
+            case 9:
+                return 20;
+            case 10:
+                return 50;
+            case 11:
+                return 100;
+            case 12:
+                return 150;
+            case 13:
+                return 200;
+            case 14:
+            case 15:
+            case 16:
+                return 250;
         }
         return 0;
     }
