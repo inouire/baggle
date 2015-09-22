@@ -30,7 +30,6 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.*;
 import inouire.baggle.server.bean.ChangeRequest;
-import inouire.baggle.server.bean.ServerConfigXML;
 import inouire.basics.SimpleLog;
 
 
@@ -41,20 +40,20 @@ import inouire.basics.SimpleLog;
 public class NioServer implements Runnable {
 
     // The host:port combination to listen on
-    private InetAddress hostAddress;
+    private final InetAddress hostAddress;
 
-    private ServerConfiguration configuration;
+    private final ServerConfiguration configuration;
     
-    private MainWorker worker;
+    private final MainWorker worker;
     
     // The channel on which we'll accept connections
     private ServerSocketChannel serverChannel;
 
     // The selector we'll be monitoring
-    private Selector selector;
+    private final Selector selector;
 
     // The buffer into which we'll read data when it's available
-    private ByteBuffer readBuffer = ByteBuffer.allocate(8192);
+    private final ByteBuffer readBuffer = ByteBuffer.allocate(8192);
     
     // A list of PendingChange instances
     private final List pendingChanges = new LinkedList();

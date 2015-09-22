@@ -31,7 +31,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import inouire.baggle.server.Main;
 import inouire.baggle.server.ServerConfiguration;
-import inouire.baggle.server.bean.ServerConfigXML;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 /**
  *

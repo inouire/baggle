@@ -35,6 +35,7 @@ public class ServerConfiguration {
     public boolean allWordsCount;
     public String language;
     public boolean bigBoard;
+    public boolean rewardBigWords;
     
     public boolean blockChat;
     public boolean parentalFilter;
@@ -141,6 +142,7 @@ public class ServerConfiguration {
             this.allWordsCount = config.getBool("room.rules.allWordsCount", true);
             this.language = config.getValue("room.rules.language");
             this.bigBoard = config.getBool("room.rules.bigBoard", false);
+            this.rewardBigWords = config.getBool("room.rules.rewardBigWords", false);
             
             this.blockChat = config.getBool("room.options.blockChat", false);
             this.parentalFilter = config.getBool("room.options.parentalFilter", false);
@@ -163,6 +165,7 @@ public class ServerConfiguration {
         "        allWordsCount: yes",
         "        language: fr",
         "        bigBoard: no",
+        "        rewardBigWords: no",
         "    options:",
         "        blockChat: no",
         "        parentalFilter: no",
@@ -192,6 +195,7 @@ public class ServerConfiguration {
         "        nbLettersMin: integer",
         "        allWordsCount: boolean",
         "        language: string",
+        "        rewardBigWords: boolean",
         "    options:",
         "        blockChat: boolean",
         "        parentalFilter: boolean",

@@ -112,7 +112,7 @@ public class GameThread extends Thread{
                     SimpleLog.logger.warn("Error while solving grid, retrying");
                 }
                 solutions=S;
-                grid_total=Solver.getNbPoints(solutions);
+                grid_total=Solver.getNbPoints(solutions, Main.server.configuration.rewardBigWords);
 
                 //keeping it cool
                 try{sleep(250);}catch(Exception e){}

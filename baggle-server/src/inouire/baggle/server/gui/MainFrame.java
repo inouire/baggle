@@ -32,12 +32,12 @@ import javax.swing.JPanel;
  */
 public class MainFrame extends JFrame{
 
-    private JPanel basePane;
-    private CardLayout baseLayout;
-    private ChoicePanel choicePane;
-    private TestPanel testPane;
+    private final JPanel basePane;
+    private final CardLayout baseLayout;
+    private final ChoicePanel choicePane;
+    private final TestPanel testPane;
     SetupPanel setupPane;
-    private MonitoringPanel monitorPane;
+    private final MonitoringPanel monitorPane;
     
     public ServerConfiguration configuration;
     

@@ -30,7 +30,7 @@ import inouire.basics.SimpleLog;
  */
 public class Main {
 
-    public static String VERSION = "3.3";
+    public static String VERSION = "3.4";
     public static boolean WITH_GUI = false;
     public static String CONFIG_FILE="";
     public static String DEFAULT_CONFIG_FILE="conf/baggle-server_config.myml";
