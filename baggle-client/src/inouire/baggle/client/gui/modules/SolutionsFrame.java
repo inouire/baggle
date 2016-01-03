@@ -52,7 +52,7 @@ public class SolutionsFrame extends JFrame{
         int length=solutions.get(0).length();
         for(String word : solutions){
             if(word.length()<length){
-               int total_points=current.size()*Solver.getPoints(length);
+               int total_points=current.size()*Solver.getPoints(word,Main.connection.REWARD_BIG_WORDS);
                String intitule = length+" lettres: "+current.size()+" ("+total_points+" points)";
                all_results.addResult(intitule , current);
                length=word.length();

@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import inouire.baggle.client.Language;
+import inouire.baggle.client.Main;
 import inouire.baggle.solver.Solver;
 
 
@@ -78,7 +79,7 @@ public class WordsFoundPanel extends JPanel{
 
     public void addWord(String word){
         already_found.setText(" "+word.toUpperCase()+" "+already_found.getText());
-        total_points+=Solver.getPoints(word);
+        total_points+=Solver.getPoints(word,Main.connection.REWARD_BIG_WORDS);
         int pourcent=(100*total_points)/max_points;
         total_gauge.setValue(pourcent);
         total_gauge.setToolTipText(total_points+"/"+max_points);
