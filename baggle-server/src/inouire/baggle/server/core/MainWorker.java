@@ -182,7 +182,7 @@ public class MainWorker implements Runnable {
                             configuration.parentalFilter, mode,nb_players,
                             configuration.maxPlayers,false,
                             Main.server.gameThread.grid,configuration.gameTime,
-                            players.toString(), configuration.bigBoard);
+                            players.toString(), configuration.bigBoard,configuration.rewardBigWords);
         return P.toString();
     }
 
@@ -210,7 +210,7 @@ public class MainWorker implements Runnable {
         }
         reply(new ACCEPTDatagram(auth,new_player_id,configuration.language,
                                 !configuration.blockChat,configuration.nbLettersMin,
-                                configuration.parentalFilter,mode,configuration.gameTime,configuration.bigBoard).toString(),//TODO make this dynamic
+                                configuration.parentalFilter,mode,configuration.gameTime,configuration.bigBoard,configuration.rewardBigWords).toString(),//TODO make this dynamic
                 socket);
 
         //send information to this new player
@@ -251,7 +251,7 @@ public class MainWorker implements Runnable {
             }
             reply(new ACCEPTDatagram(back.auth_token,back.id,configuration.language,
                                 !configuration.blockChat,configuration.nbLettersMin,
-                                configuration.parentalFilter,mode,configuration.gameTime,configuration.bigBoard).toString(),socket);//TODO make this dynamic
+                                configuration.parentalFilter,mode,configuration.gameTime,configuration.bigBoard,configuration.rewardBigWords).toString(),socket);//TODO make this dynamic
 
             //send information to this player and add it to the players list
             players.sendInitInformation(back);
