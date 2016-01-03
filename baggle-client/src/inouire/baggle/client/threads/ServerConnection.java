@@ -41,6 +41,7 @@ public class ServerConnection extends Thread{
     public boolean PARENTAL_FILTER;
     public String GAME_MODE;
     public boolean BIG_BOARD;
+    public boolean REWARD_BIG_WORDS;
             
     //communication channels
     public PrintWriter out = null;
@@ -175,6 +176,7 @@ public class ServerConnection extends Thread{
         PARENTAL_FILTER=acceptD.pf;
         GAME_MODE=acceptD.mode;
         BIG_BOARD=acceptD.big;
+        REWARD_BIG_WORDS=acceptD.rewardbigwords;
         my_id=acceptD.id;
 
         //update UI
