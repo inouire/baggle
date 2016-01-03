@@ -35,6 +35,7 @@ public class PINGDatagram {
     public Integer port=null;
     public String players=null;
     public Boolean big=false;
+    public Boolean rewardbigwords=false;
     
     public Integer returnPort=null;
     
@@ -42,8 +43,8 @@ public class PINGDatagram {
         this.returnPort=returnPort;
     }
     
-    //PING|lang=fr|chat=yes|min=3|pf=no|mode=trad|nb=3|max=5|name=salut a toi|priv=no|grid=BAGRIURGUIGIUEG|time=120|players=bibi,beber,mika|board=classic
-    public PINGDatagram(int port,String name,String lang,boolean chat,int min,boolean pf, String mode,int nb,int max,boolean priv,String grid,int time,String players, boolean big){
+    //PING|lang=fr|chat=yes|min=3|pf=no|mode=trad|nb=3|max=5|name=salut a toi|priv=no|grid=BAGRIURGUIGIUEG|time=120|players=bibi,beber,mika|big=no|rewardbigwords=no
+    public PINGDatagram(int port,String name,String lang,boolean chat,int min,boolean pf, String mode,int nb,int max,boolean priv,String grid,int time,String players, boolean big, boolean rewardbigwords){
         this.port=port;
         this.lang=lang;
         this.chat=chat;
@@ -58,6 +59,7 @@ public class PINGDatagram {
         this.time=time;
         this.players=players;
         this.big=big;
+        this.rewardbigwords=rewardbigwords;
     }
 
     public PINGDatagram(String[] args) throws IllegalDatagramException{
@@ -132,6 +134,12 @@ public class PINGDatagram {
                 }else if(value.equals("no")){
                     this.big=false;
                 }
+            }else if(key.equals("rewardbigwords")){
+                if(value.equals("yes")){
+                    this.rewardbigwords=true;
+                }else if(value.equals("no")){
+                    this.rewardbigwords=false;
+                }
             }
         }
     }
@@ -141,7 +149,7 @@ public class PINGDatagram {
         if(returnPort!=null){
             return "PING|returnPort="+returnPort;
         }else{
-            String p,c,pr,pl,b;
+            String p,c,pr,pl,b,rbw;
             if(pf){
                 p="yes";
             }else{
@@ -167,9 +175,14 @@ public class PINGDatagram {
             }else{
                 b="no";
             }
+            if(rewardbigwords){
+                rbw="yes";
+            }else{
+                rbw="no";
+            }
             return "PING|port="+port+"|lang="+lang+"|chat="+c+"|min="+min+"|pf="+p+"|mode="+mode+"|nb="+nb+
                     "|max="+max+"|name="+Datagram.replaceAccents(name)+"|priv="+pr+"|grid="+grid+"|time="+time+pl+
-                    "|big="+b;
+                    "|big="+"|rewardbigwords="+rbw;
         }
     }
 
