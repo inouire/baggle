@@ -31,9 +31,10 @@ public class ACCEPTDatagram {
     public String mode=null;
     public Integer time=null;
     public Boolean big=false;
+    public Boolean rewardbigwords=false;
 
-    //ACCEPT|id=654|auth=45RT76TR|lang=fr|chat=yes|min=3|pf=no|mode=trad|time=120|big=false
-    public ACCEPTDatagram(String auth,int id,String lang,boolean chat,int min,boolean pf, String mode,Integer time, boolean big){
+    //ACCEPT|id=654|auth=45RT76TR|lang=fr|chat=yes|min=3|pf=no|mode=trad|time=120|big=false|rewardbigwords=no
+    public ACCEPTDatagram(String auth,int id,String lang,boolean chat,int min,boolean pf, String mode,Integer time, boolean big,boolean rewardbigwords){
         this.auth=auth;
         this.id=id;
         this.lang=lang;
@@ -43,6 +44,7 @@ public class ACCEPTDatagram {
         this.mode=mode;
         this.time=time;
         this.big=big;
+        this.rewardbigwords=rewardbigwords;
     }
 
     public ACCEPTDatagram(String[] args) throws IllegalDatagramException{
@@ -99,13 +101,19 @@ public class ACCEPTDatagram {
                 }else if(value.equals("no")){
                     this.big=false;
                 }
+            }else if(key.equals("rewardbigwords")){
+                if(value.equals("yes")){
+                    this.rewardbigwords=true;
+                }else if(value.equals("no")){
+                    this.rewardbigwords=false;
+                }
             }
         }
     }
   
     @Override
     public String toString(){
-        String p,c,b;
+        String p,c,b,rbw;
         if(pf){
             p="yes";
         }else{
@@ -121,7 +129,12 @@ public class ACCEPTDatagram {
         }else{
             b="no";
         }
-        return "ACCEPT|id="+id+"|auth="+auth+"|lang="+lang+"|chat="+c+"|min="+min+"|pf="+p+"|mode="+mode+"|time="+time+"|big="+b;
+        if(rewardbigwords){
+            rbw="yes";
+        }else{
+            rbw="no";
+        }
+        return "ACCEPT|id="+id+"|auth="+auth+"|lang="+lang+"|chat="+c+"|min="+min+"|pf="+p+"|mode="+mode+"|time="+time+"|big="+b+"|rewardbigwords="+rbw;
     }
 
 }
