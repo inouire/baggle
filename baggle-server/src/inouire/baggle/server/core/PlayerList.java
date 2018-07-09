@@ -517,7 +517,7 @@ public class PlayerList {
             message+=winners.get(0).name+Language.getString(2);
         }
         message+=Language.getString(3)+best_score+Language.getString(4);
-        broadcast(new CHATDatagram(0,message).toString());
+        //broadcast(new CHATDatagram(0,message).toString());
         
         
         //add the scores to the queue to send to master

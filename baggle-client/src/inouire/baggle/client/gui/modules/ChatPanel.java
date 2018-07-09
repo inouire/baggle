@@ -21,7 +21,7 @@ import inouire.baggle.client.gui.MainFrame;
  */
 public class ChatPanel extends JPanel{
 
-    static int size=14;
+    static int size=16;
     private int offset=0;
     JPanel center = new JPanel();
 
@@ -48,9 +48,8 @@ public class ChatPanel extends JPanel{
             }
         });
         
-        setMinimumSize(new Dimension(260,10));
-        setPreferredSize(new Dimension(260,10));
-        
+        setMinimumSize(new Dimension(350,10));
+        setPreferredSize(new Dimension(350,10));
     }
 
     public void scroll(int dist){
@@ -68,7 +67,6 @@ public class ChatPanel extends JPanel{
         if(last_author==0){
             blockList.addFirst(ChatBlock.ServerBlock(info));
         }else{
-            blockList.addFirst(ChatBlock.ServerHeaderBlock());
             blockList.addFirst(ChatBlock.ServerBlock(info));
             last_author=0;
         }
@@ -81,10 +79,9 @@ public class ChatPanel extends JPanel{
         String avatar = Main.connection.players_id_avatar.get(id);
         if( name != null && avatar != null){
             if(id == last_author){
-                blockList.addFirst(ChatBlock.ClientBlock(avatar,message));
+                blockList.addFirst(ChatBlock.ClientBlock("", avatar, message));
             }else{
-                blockList.addFirst(ChatBlock.ClientHeaderBlock(avatar,name));
-                blockList.addFirst(ChatBlock.ClientBlock(avatar,message));
+                blockList.addFirst(ChatBlock.ClientBlock(name, avatar, message));
                 last_author=id;
             }
             offset=0;
@@ -155,38 +152,26 @@ public class ChatPanel extends JPanel{
 }
 
 class ChatBlock{
-    String avatar="unknown";
     String name="";
-    String talk="";
-    boolean display_player=true;
+    String message="";
+    String avatar="";
     boolean is_server=false;
 
-    ChatBlock(String avatar,boolean display,String name,String talk, boolean is_server){
-        this.avatar=avatar;
-        this.display_player=display;
+    ChatBlock(String name, String avatar, String message, boolean is_server){
         this.name=name;
-        this.talk=talk;
+        this.avatar=avatar;
+        this.message=message;
         this.is_server=is_server;
     }
 
-    //client header
-    static ChatBlock ClientHeaderBlock(String avatar , String name){
-        return new ChatBlock(avatar,true,name,"",false);
-    }
-
     //client talk
-    static ChatBlock ClientBlock(String avatar , String talk){
-        return new ChatBlock(avatar,false,"",talk,false);
-    }
-
-    //server header
-    static ChatBlock ServerHeaderBlock(){
-        return new ChatBlock("server",true,"","",true);
+    static ChatBlock ClientBlock(String name, String avatar, String message){
+        return new ChatBlock(name, avatar, message, false);
     }
 
     //server talk
-    static ChatBlock ServerBlock(String talk){
-        return new ChatBlock("server",false,"",talk,true);
+    static ChatBlock ServerBlock(String message){
+        return new ChatBlock("server", "server", message,true);
     }
 
 }
@@ -196,12 +181,9 @@ class OneChatPane extends JPanel{
     private ChatBlock block;
     private JTextPane text=new JTextPane();
     private JLabel player=new JLabel();
-    private JLabel server=new JLabel();
-    private boolean top=false;
-    private boolean bottom=false;
 
-    private static Font F= new Font("Serial", Font.BOLD, 12);
-    private static Font f=new Font("Serial", Font.PLAIN, 10);
+    private static Font F= new Font("Serial", Font.BOLD, 13);
+    private static Font f=new Font("Serial", Font.PLAIN, 12);
 
     public ImageIcon[] icons_small = {
         new ImageIcon(getClass().getResource("/inouire/baggle/client/icons/top.png")),
@@ -214,10 +196,6 @@ class OneChatPane extends JPanel{
         player.setFont(F);
         player.setOpaque(false);
         player.setForeground(Color.BLACK);
-
-        server.setFont(F);
-        server.setOpaque(false);
-        server.setForeground(Color.BLACK);
         
         text.setFont(f);
         text.setOpaque(false);
@@ -228,23 +206,10 @@ class OneChatPane extends JPanel{
         this.setOpaque(true);
         this.add(text,BorderLayout.CENTER);
         this.add(player,BorderLayout.WEST);
-        this.add(server,BorderLayout.EAST);
-        server.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if(top){
-                    chatPane.scroll(2);
-                }else if(bottom){
-                    chatPane.scroll(-2);
-                }
-            }
-        });
     }
 
     void setBlock(ChatBlock cb,boolean top, boolean bottom){
         this.block=cb;
-        this.top=top;
-        this.bottom=bottom;
     }
 
     void disableAll(){
@@ -252,9 +217,7 @@ class OneChatPane extends JPanel{
     }
 
     void erase(){
-        server.setIcon(null);
         player.setIcon(null);
-        server.setText("");
         player.setText("");
         text.setText("");
     }
@@ -268,35 +231,23 @@ class OneChatPane extends JPanel{
             return;
         }
 
-        if(top){
-            server.setIcon(icons_small[0]);
-        }else if(bottom){
-            server.setIcon(icons_small[1]);
-        }
-
         //cas particulier du serveur qui parle
         if(block.is_server){
             setBackground(ColorFactory.getAvatarColor("server"));
-            if(block.display_player){
-                server.setIcon(Main.avatarFactory.getSmallAvatar("server"));
-                text.setText("");
-            }else{
-                text.setText(block.talk);
-            }
+            text.setText(block.message);          
             return;
         }
 
-
         setBackground(ColorFactory.getAvatarColor(block.avatar));
-
-        if(block.display_player){
-            player.setIcon(Main.avatarFactory.getSmallAvatar(block.avatar));
-            player.setText(block.name);
-            text.setText("");
-        }else{
-            player.setText("");
-            text.setText(block.talk);
+        
+        String full_text;
+        if (block.name.isEmpty()) {
+            full_text = block.message;
+        } else {
+            full_text = block.name+": "+block.message;
         }
+        //player.setIcon(Main.avatarFactory.getSmallAvatar(block.avatar));
+        text.setText(full_text);         
     }
 }
 

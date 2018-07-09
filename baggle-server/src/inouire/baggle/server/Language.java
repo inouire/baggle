@@ -28,8 +28,8 @@ public class Language {
         " et "," remportent "," remporte ","la manche avec "," points.",//0
         " a quitt&eacute; le salon."," a rejoint le salon.",//5
         "Le chat est désactiv&eacute; pour ce salon.",//7
-        "Bravo, tout les mots de plus de 7 lettres ou plus ont &eacute;t&eacute; trouv&eacute;s !",//8
-        "Il y avait aussi",//9
+        "Bravo, tous les mots de plus de 7 lettres ou plus ont &eacute;t&eacute; trouv&eacute;s !",//8
+        "Fin de la partie ! Il y avait aussi",//9
     };
 
     static String[] en = new String[] {
@@ -37,7 +37,7 @@ public class Language {
         " has left the room."," has join the room.",//5
         "Chat has been disabled for this room.",//7
         "Congrats, all the 7+ letters words have been found !",//8
-        "Other words",//9
+        "End of the game! Other words",//9
     };
 
     public static String getString(int id){
