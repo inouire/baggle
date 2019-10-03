@@ -21,8 +21,8 @@ public class Main {
     //global variables
     public static String LOCALE=System.getProperty("user.language");
     
-    public final static String VERSION = "3.6";
-    public final static int BUILD=3600;
+    public final static String VERSION = "3.7";
+    public final static int BUILD=3700;
     
     public static final String OFFICIAL_WEBSITE="http://baggle.org";
     public static String MASTER_SERVER_HOST="masterserver.baggle.org";
@@ -68,10 +68,10 @@ public class Main {
         SimpleLog.initConsoleConfig();
         SimpleLog.logger.setLevel(Level.INFO);
         
-        MASTER_SERVER_HOST=Args.getStringOption("-M",args,MASTER_SERVER_HOST);
-        MASTER_SERVER_PORT=Args.getIntegerOption("-P", args, MASTER_SERVER_PORT);
-        STORE_CONFIG_LOCALLY=Args.getOption("-l",args);
-        CONNECT_ONLY_TO=Args.getStringOption("--only",args,CONNECT_ONLY_TO);
+        MASTER_SERVER_HOST   = Args.getStringOption("-M",args,MASTER_SERVER_HOST);
+        MASTER_SERVER_PORT   = Args.getIntegerOption("-P", args, MASTER_SERVER_PORT);
+        STORE_CONFIG_LOCALLY = Args.getOption("-l",args);
+        CONNECT_ONLY_TO      = Args.getStringOption("--only",args,CONNECT_ONLY_TO);
         
         //set path of config folder
         if(Main.STORE_CONFIG_LOCALLY){
