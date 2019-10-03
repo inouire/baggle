@@ -65,9 +65,7 @@ public class OfficialServersPanel extends JPanel{
             server_total_counter++;
             server_ok_counter++;
             updateNbAnswers();
-            
         }//else ignore
-        
     }
     
     public void addFailedServer(int id){

@@ -53,6 +53,10 @@ public class ServerEntry {
         } 
     }
     
+    public Boolean equals(ServerEntry server_entry){
+        return (host.equals(server_entry.host) && port.equals(server_entry.port));
+    }
+    
     private void checkDatagram() throws IllegalDatagramException {
         if(host==null || timestamp==null){
             throw new IllegalDatagramException();
@@ -75,6 +79,7 @@ public class ServerEntry {
             }
         }
     }
+    
     
     @Override
     public String toString(){

@@ -32,25 +32,41 @@ public class MasterServerHTTPConnection extends Thread{
         //prepare HMI
         listener.setStartOfPingProcess();
         
-        //get list from master
-        LinkedList<ServerEntry> servers = getServersList();
-        //handle the case where master didn't answer: use cached list
-        if(servers==null || servers.isEmpty()){
-            SimpleLog.logger.info("No server retrived from master server, using cached server list instead");
-            servers=Main.cachedServers.getExplicitHostList();
-        }
+        //get local list if any
+        SimpleLog.logger.info("Loading cached servers list");
+        LinkedList<ServerEntry> memorized_servers = Main.cachedServers.getExplicitHostList();
         
-        //get a new id
-        int refresh_id = listener.newRefreshId(servers.size());
+        //get a new id for refresh process
+        int refresh_id = listener.newRefreshId(memorized_servers.size());
         
         //ping the servers and add them to the panel if they are ok
-        for(ServerEntry server : servers){
-            //ping and display
+        for(ServerEntry server : memorized_servers){
             new ServerPingThread(server,refresh_id,listener).start();          
         }
-       
+        
+        //get list from master
+        SimpleLog.logger.info("Completing with online server list");
+        LinkedList<ServerEntry> connected_servers = getServersList();
+        LinkedList<ServerEntry> new_servers = new LinkedList<ServerEntry>();
+        
+        //ping the servers and add them to the panel if they are ok
+        if (connected_servers != null) {
+            for(ServerEntry server : connected_servers){
+                if (isNewServer(server, memorized_servers)){
+                    new ServerPingThread(server,refresh_id,listener).start();
+                }
+            }
+        }       
     }
     
+    public static Boolean isNewServer(ServerEntry server, LinkedList<ServerEntry> memorized_servers) {
+        for(ServerEntry memorized_server : memorized_servers) {
+            if (memorized_server.equals(server)) {
+                return false;
+            }
+        }
+        return true;
+    }
     
     /**
      * Get all the scores for a given name
@@ -129,9 +145,8 @@ public class MasterServerHTTPConnection extends Thread{
     }
     
     static LinkedList<ServerEntry> getServersList(){
-
         String list=getWsAnswer("getlist.php");
-        if(list==null){
+        if(list==null || list.isEmpty()){
             return null;
         }
         
@@ -155,7 +170,6 @@ public class MasterServerHTTPConnection extends Thread{
         }
         
         return serversList;
-        
     }
     
     /**
@@ -184,9 +198,7 @@ public class MasterServerHTTPConnection extends Thread{
          }catch(Exception e){
             SimpleLog.logger.warn("Error while parsing json for checkversion");
             return null;
-        }  
-        
-        
+        }     
     }
     
     /**
@@ -195,7 +207,7 @@ public class MasterServerHTTPConnection extends Thread{
      * @return the answer of the ws
      */
     static String getWsAnswer(String ws_name){
-        String line=null;
+        String line;
         try{
             URL serverListURL = new URL("http", Main.MASTER_SERVER_HOST,Main.MASTER_SERVER_PORT,"/ws/"+ws_name);
             BufferedReader in = new BufferedReader(new InputStreamReader(serverListURL.openStream()));
@@ -208,6 +220,7 @@ public class MasterServerHTTPConnection extends Thread{
             in.close();
         }catch(Exception e){
             SimpleLog.logger.error("Error while getting ws answer from masterserver at "+ws_name);
+            line = null;
         }
         return line;
     }
