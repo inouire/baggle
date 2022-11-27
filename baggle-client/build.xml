@@ -11,7 +11,7 @@
 	<zipfileset src="dist/lib/baggle-datagrams.jar" excludes="META-INF/*" />
 	<zipfileset src="dist/lib/baggle-solver.jar" excludes="META-INF/*" />
 	<zipfileset src="dist/lib/java-basics.jar" excludes="META-INF/*" />
-	<zipfileset src="dist/lib/json_simple-1.1.jar" excludes="META-INF/*" />
+	<zipfileset src="dist/lib/json-simple-1.1.jar" excludes="META-INF/*" />
         <manifest> 
             <attribute name="Main-Class" value="${main.class}"/>
         </manifest> 

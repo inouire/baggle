@@ -8,9 +8,9 @@ baggle-server/conf/*ml
 
 baggle-*/nbproject/private/
 
-dict-gen/bin/blitzkrieg
+dict-gen/plain-dict/*
+
 
 # Package Files #
-*.jar
 *.war
 *.ear
